@@ -1,7 +1,7 @@
 utf8lite (C Library)
 ====================
 
-[![Build Status](https://api.travis-ci.org/patperry/unicode.svg?branch=master)](https://travis-ci.org/patperry/unicode)
-[![Coverage Status](https://codecov.io/github/patperry/unicode/coverage.svg?branch=master)](https://codecov.io/github/patperry/unicode?branch=master)
+[![Build Status](https://api.travis-ci.org/patperry/utf8lite.svg?branch=master)](https://travis-ci.org/patperry/utf8lite)
+[![Coverage Status](https://codecov.io/github/patperry/utf8lite/coverage.svg?branch=master)](https://codecov.io/github/patperry/utf8lite?branch=master)
 
-Lightweight Unicode handling.
+Lightweight UTF-8 processing.
