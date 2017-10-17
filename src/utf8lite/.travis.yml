@@ -1,0 +1,17 @@
+language: c
+
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y check
+  - export CFLAGS="-coverage -O0"
+  - export LDFLAGS="-coverage"
+
+install:
+  - make
+
+script:
+  - make check || exit 1
+  - gcov -o src src/*.c
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash) -X gcov
