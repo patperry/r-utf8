@@ -1,0 +1,8 @@
+*.a
+*.o
+__pycache__
+project.xcworkspace
+xcuserdata
+/doc/html
+/tests/check_charwidth
+/tests/check_unicode
