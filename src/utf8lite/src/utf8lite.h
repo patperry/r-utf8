@@ -20,17 +20,82 @@
 /**
  * \file utf8lite.h
  *
- * Unicode handling.
+ * Lightweight UTF-8 processing.
  */
 
 #include <stddef.h>
 #include <stdint.h>
+
+/**
+ * \defgroup char Unicode characters
+ * @{
+ */
 
 /** Unicode replacement character */
 #define UTF8LITE_REPLACEMENT	0xFFFD
 
 /** Last valid unicode codepoint */
 #define UTF8LITE_UNICODE_MAX 0x10FFFF
+
+/** Indicates whether a given unsigned integer is a valid ASCII codepoint */
+#define UTF8LITE_IS_ASCII(x) \
+	((x) <= 0x7F)
+
+/** Indicates whether a given unsigned integer is a valid unicode codepoint */
+#define UTF8LITE_IS_UNICODE(x) \
+	(((x) <= UTF8LITE_UNICODE_MAX) \
+	 && !UTF8LITE_IS_UTF16_HIGH(x) \
+	 && !UTF8LITE_IS_UTF16_LOW(x))
+
+/**
+ * Unicode character width type.
+ */
+enum utf8lite_charwidth_type {
+	UTF8LITE_CHARWIDTH_OTHER = -4,	/**< Control and others:
+					  Cc, Cn, Co, Cs, Zl, Zp */
+	UTF8LITE_CHARWIDTH_EMOJI = -3,    /**< Emoji, wide in most contexts */
+	UTF8LITE_CHARWIDTH_AMBIGUOUS = -2,/**< can be narrow or wide depending
+					  on the context */
+	UTF8LITE_CHARWIDTH_IGNORABLE = -1,/**< Default ignorables */
+	UTF8LITE_CHARWIDTH_NONE = 0,	/**< Combining marks: Mc, Me, Mn */
+	UTF8LITE_CHARWIDTH_NARROW = 1,	/**< Most western alphabets */
+	UTF8LITE_CHARWIDTH_WIDE = 2	/**< Most ideographs */
+};
+
+/**
+ * Get the width of a Unicode character, using the East Asian Width table and
+ * the Emoji data.
+ *
+ * \param code the codepoint
+ *
+ * \returns a #utf8lite_charwidth_type value giving the width
+ */
+int utf8lite_charwidth(uint32_t code);
+
+/**
+ * Get whether a Unicode character is white space.
+ *
+ * \param code the codepoint
+ *
+ * \returns 1 if space, 0 otherwise.
+ */
+int utf8lite_isspace(uint32_t code);
+
+/**
+ * Get whether a Unicode character is a default ignorable character.
+ *
+ * \param code the codepoint
+ *
+ * \returns 1 if space, 0 otherwise.
+ */
+int utf8lite_isignorable(uint32_t code);
+
+/**@}*/
+
+/**
+ * \defgroup encode Encoding
+ * @{
+ */
 
 /** Number of bytes in the UTF-8 encoding of a valid unicode codepoint. */
 #define UTF8LITE_UTF8_ENCODE_LEN(u) \
@@ -77,16 +142,6 @@
 /** Maximum number of UTF-8 continuation bytes in a valid encoded character */
 #define UTF8LITE_UTF8_TAIL_MAX 3
 
-/** Indicates whether a given unsigned integer is a valid ASCII codepoint */
-#define UTF8LITE_IS_ASCII(x) \
-	((x) <= 0x7F)
-
-/** Indicates whether a given unsigned integer is a valid unicode codepoint */
-#define UTF8LITE_IS_UNICODE(x) \
-	(((x) <= UTF8LITE_UNICODE_MAX) \
-	 && !UTF8LITE_IS_UTF16_HIGH(x) \
-	 && !UTF8LITE_IS_UTF16_LOW(x))
-
 /**
  * Validate the first character in a UTF-8 character buffer.
  *
@@ -131,6 +186,13 @@ void utf8lite_encode_utf8(uint32_t code, uint8_t **bufptr);
  * 	on exit, a pointer to the start of the encoded codepoint
  */
 void utf8lite_rencode_utf8(uint32_t code, uint8_t **endptr);
+
+/**@}*/
+
+/**
+ * \defgroup normalize Normalization
+ * @{
+ */
 
 /**
  * Unicode character decomposition mappings. The compatibility mappings are
@@ -217,48 +279,6 @@ void utf8lite_order(uint32_t *ptr, size_t len);
  */
 void utf8lite_compose(uint32_t *ptr, size_t *lenptr);
 
-
-/**
- * Unicode character width type.
- */
-enum utf8lite_charwidth_type {
-	UTF8LITE_CHARWIDTH_OTHER = -4,	/**< Control and others:
-					  Cc, Cn, Co, Cs, Zl, Zp */
-	UTF8LITE_CHARWIDTH_EMOJI = -3,    /**< Emoji, wide in most contexts */
-	UTF8LITE_CHARWIDTH_AMBIGUOUS = -2,/**< can be narrow or wide depending
-					  on the context */
-	UTF8LITE_CHARWIDTH_IGNORABLE = -1,/**< Default ignorables */
-	UTF8LITE_CHARWIDTH_NONE = 0,	/**< Combining marks: Mc, Me, Mn */
-	UTF8LITE_CHARWIDTH_NARROW = 1,	/**< Most western alphabets */
-	UTF8LITE_CHARWIDTH_WIDE = 2	/**< Most ideographs */
-};
-
-/**
- * Get the width of a Unicode character, using the East Asian Width table and
- * the Emoji data.
- *
- * \param code the codepoint
- *
- * \returns a #utf8lite_charwidth_type value giving the width
- */
-int utf8lite_charwidth(uint32_t code);
-
-/**
- * Get whether a Unicode character is white space.
- *
- * \param code the codepoint
- *
- * \returns 1 if space, 0 otherwise.
- */
-int utf8lite_isspace(uint32_t code);
-
-/**
- * Get whether a Unicode character is a default ignorable character.
- *
- * \param code the codepoint
- *
- * \returns 1 if space, 0 otherwise.
- */
-int utf8lite_isignorable(uint32_t code);
+/**@}*/
 
 #endif /* UTF8LITE_H */
