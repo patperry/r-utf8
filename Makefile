@@ -37,7 +37,7 @@ UNICODE = http://www.unicode.org/Public/10.0.0
 
 CORPUS_A = libutf8lite.a
 LIB_O	= src/char.o src/encode.o src/error.o src/escape.o src/normalize.o \
-	  src/text.o src/textassign.o
+	  src/text.o src/textassign.o src/textiter.o
 
 DATA    = data/emoji/emoji-data.txt \
 	  data/ucd/CaseFolding.txt \
@@ -188,12 +188,14 @@ src/normalize.o: src/normalize.c src/private/casefold.h \
 	src/private/combining.h src/private/compose.h src/private/decompose.h \
 	src/utf8lite.h
 
-src/text.o: src/text.c src/text.h
+src/text.o: src/text.c src/utf8lite.h
 
 src/textassign.o: src/textassign.c src/utf8lite.h
 
+src/textiter.o: src/textiter.c src/utf8lite.h
+
 tests/check_charwidth.o: tests/check_charwidth.c src/utf8lite.h \
 	tests/testutil.h
-tests/check_text.o: tests/check_text.c src/text.h tests/testutil.h
+tests/check_text.o: tests/check_text.c src/utf8lite.h tests/testutil.h
 tests/check_unicode.o: tests/check_unicode.c src/utf8lite.h tests/testutil.h
 tests/testutil.o: tests/testutil.c src/utf8lite.h tests/testutil.h
