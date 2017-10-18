@@ -84,8 +84,8 @@ int assign_raw(struct utf8lite_text *text, const uint8_t *ptr, size_t size,
 		if (ch & 0x80) {
 			attr |= UTF8LITE_TEXT_UTF8_BIT;
 			ptr--;
-			if ((err = utf8lite_scan_utf8(&ptr, end))) {
-				goto error_inval_utf8;
+			if ((err = utf8lite_scan_utf8(&ptr, end, msg))) {
+				goto error;
 			}
 		}
 	}
@@ -94,17 +94,8 @@ int assign_raw(struct utf8lite_text *text, const uint8_t *ptr, size_t size,
 	text->attr = attr;
 	return 0;
 
-error_inval_utf8:
-	err = UTF8LITE_ERROR_UTF8;
-	utf8lite_message_set(msg, "invalid UTF-8 byte (0x%02X)",
-			     (unsigned)*ptr);
-	goto error_inval;
-
-error_inval:
-	append_location(msg, (size_t)(ptr - input));
-	goto error;
-
 error:
+	append_location(msg, (size_t)(ptr - input));
 	text->ptr = NULL;
 	text->attr = 0;
 	return err;
@@ -131,7 +122,7 @@ int assign_esc(struct utf8lite_text *text, const uint8_t *ptr, size_t size,
 
 			start = ptr;
 			if ((err = utf8lite_scan_escape(&ptr, end, msg))) {
-				goto error_inval_esc;
+				goto error;
 			}
 
 			utf8lite_decode_escape(&start, &code);
@@ -141,8 +132,8 @@ int assign_esc(struct utf8lite_text *text, const uint8_t *ptr, size_t size,
 		} else if (ch & 0x80) {
 			attr |= UTF8LITE_TEXT_UTF8_BIT;
 			ptr--;
-			if ((err = utf8lite_scan_utf8(&ptr, end))) {
-				goto error_inval_utf8;
+			if ((err = utf8lite_scan_utf8(&ptr, end, msg))) {
+				goto error;
 			}
 		}
 	}
@@ -151,21 +142,8 @@ int assign_esc(struct utf8lite_text *text, const uint8_t *ptr, size_t size,
 	text->attr = attr;
 	return 0;
 
-error_inval_esc:
-	// err and scan->message already set
-	goto error_inval;
-
-error_inval_utf8:
-	err = UTF8LITE_ERROR_UTF8;
-	utf8lite_message_set(msg, "invalid UTF-8 byte (0x%02X)",
-			     (unsigned)*ptr);
-	goto error_inval;
-
-error_inval:
-	append_location(msg, (size_t)(ptr - input));
-	goto error;
-
 error:
+	append_location(msg, (size_t)(ptr - input));
 	return err;
 }
 

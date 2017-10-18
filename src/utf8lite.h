@@ -39,17 +39,17 @@
  * Error code.
  */
 enum utf8lite_error_type {
-	UTF8LITE_ERROR_NONE = 0, /**< no error */
-	UTF8LITE_ERROR_UTF8, /**< invalid UTF-8 */
-	UTF8LITE_ERROR_ESCAPE, /**< invalid escape code */
-	UTF8LITE_ERROR_OVERFLOW /**< size exceeds maximum */
+	UTF8LITE_ERROR_NONE = 0,/**< no error */
+	UTF8LITE_ERROR_INVAL,	/**< invalid input */
+	UTF8LITE_ERROR_OVERFLOW,/**< size exceeds maximum */
+	UTF8LITE_ERROR_INTERNAL	/**< internal error */
 };
 
 /**
  * Message buffer.
  */
 struct utf8lite_message {
-	char string[UTF8LITE_MESSAGE_MAX + 1];
+	char string[UTF8LITE_MESSAGE_MAX + 1]; /**< NUL-terminated message */
 };
 
 /**
@@ -203,10 +203,12 @@ int utf8lite_isignorable(uint32_t code);
  * 	the end of the first valid UTF-8 character, or the first invalid
  * 	byte in the encoding
  * \param end the end of the input buffer
+ * \param msg an error message buffer
  *
- * \returns 0 on success, EINVAL on failure
+ * \returns 0 on success
  */
-int utf8lite_scan_utf8(const uint8_t **bufptr, const uint8_t *end);
+int utf8lite_scan_utf8(const uint8_t **bufptr, const uint8_t *end,
+		       struct utf8lite_message *msg);
 
 /**
  * Decode the first codepoint from a UTF-8 character buffer.
@@ -299,15 +301,15 @@ enum utf8lite_casefold_type {
  * From *TR44* Sec. 5.7.3: "Compatibility mappings are guaranteed to be no
  * longer than 18 characters, although most consist of just a few characters."
  */
-#define UTF8LITE_DECOMP_MAX 18
+#define UTF8LITE_UNICODE_DECOMP_MAX 18
 
 /**
  * Apply decomposition and/or casefold mapping to a Unicode character,
  * outputting the result to the specified buffer. The output will be at
  * most #UTF8LITE_UNICODE_DECOMP_MAX codepoints.
  *
- * \param type a bitmask composed from #utf8lite_udecomp_type and
- * 	#utf8lite_ucasefold_type values specifying the mapping type
+ * \param type a bitmask composed from #utf8lite_decomp_type and
+ * 	#utf8lite_casefold_type values specifying the mapping type
  * \param code the input codepoint
  * \param bufptr on entry, a pointer to the output buffer; on exit,
  * 	a pointer past the last output codepoint
@@ -373,6 +375,20 @@ void utf8lite_compose(uint32_t *ptr, size_t *lenptr);
 	(((text)->attr & UTF8LITE_TEXT_ESC_BIT) ? 1 : 0)
 
 /**
+ * Flags for utf8lite_text_assign().
+ */
+enum utf8lite_text_flag {
+	/** validate the input */
+	UTF8LITE_TEXT_UNKNOWN = 0,
+
+	/** do not perform any validation on the input */
+	UTF8LITE_TEXT_VALID = (1 << 0),
+
+	/** interpret backslash (`\`) as an escape */
+	UTF8LITE_TEXT_UNESCAPE = (1 << 1)
+};
+
+/**
  * UTF-8 encoded text, possibly containing JSON-compatible backslash (`\`)
  * escape codes which should be interpreted as such. The client assumes
  * all responsibility for managing the memory for the underlying UTF8-data.
@@ -381,6 +397,22 @@ struct utf8lite_text {
 	uint8_t *ptr;	/**< pointer to valid UTF-8 data */
 	size_t attr;	/**< text attributes */
 };
+
+/**
+ * Assign a text value to point to data in the specified memory location
+ * after validating the input data.
+ *
+ * \param text the text value
+ * \param ptr a pointer to the underlying memory buffer
+ * \param size the number of bytes in the underlying memory buffer
+ * \param flags #utf8lite_text_flag bitmask specifying input type
+ * \param msg an error message buffer, or NULL
+ *
+ * \returns 0 on success
+ */
+int utf8lite_text_assign(struct utf8lite_text *text,
+			 const uint8_t *ptr, size_t size, int flags,
+			 struct utf8lite_message *msg);
 
 /**
  * Initialize a new text object by allocating space for and copying
@@ -468,7 +500,7 @@ int utf8lite_scan_uescape(const uint8_t **bufptr, const uint8_t *end,
 			  struct utf8lite_message *msg);
 
 /**
- * Decode a JSON-style backslahs (\\) escape.
+ * Decode a JSON-style backslash (\\) escape.
  *
  * \param bufptr on input, a pointer to the byte after the backslash;
  * 	on output, a pointer to the byte after the escape
@@ -484,42 +516,6 @@ void utf8lite_decode_escape(const uint8_t **bufptr, uint32_t *codeptr);
  * \param codeptr on output, a pointer to the decoded UTF-32 character
  */
 void utf8lite_decode_uescape(const uint8_t **bufptr, uint32_t *codeptr);
-
-/**@}*/
-
-/**
- * \defgroup textscan Text input and validation
- * @{
- */
-
-/**
- * Flags for utf8lite_text_assign().
- */
-enum utf8lite_text_flag {
-	/** validate the input */
-	UTF8LITE_TEXT_UNKNOWN = 0,
-
-	/** do not perform any validation on the input */
-	UTF8LITE_TEXT_VALID = (1 << 0),
-
-	/** interpret backslash (`\`) as an escape */
-	UTF8LITE_TEXT_UNESCAPE = (1 << 1)
-};
-
-/**
- * Assign a text value to point to data in the specified memory location
- * after validating the input data.
- *
- * \param text the text value
- * \param ptr a pointer to the underlying memory buffer
- * \param size the number of bytes in the underlying memory buffer
- * \param flags #utf8lite_text_flag bitmask specifying input type
- *
- * \returns 0 on success
- */
-int utf8lite_text_assign(struct utf8lite_text *text,
-			 const uint8_t *ptr, size_t size, int flags,
-			 struct utf8lite_message *msg);
 
 /**@}*/
 
