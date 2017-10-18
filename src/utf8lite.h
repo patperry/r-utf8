@@ -66,7 +66,12 @@ void utf8lite_message_clear(struct utf8lite_message *msg);
  * \param fmt format string
  * \param ... format arguments
  */
-void utf8lite_message_set(struct utf8lite_message *msg, const char *fmt, ...);
+void utf8lite_message_set(struct utf8lite_message *msg, const char *fmt, ...)
+#if (defined(_WIN32) || defined(_WIN64))
+	;
+#else
+	__attribute__ ((format (printf, 2, 3)));
+#endif
 
 /**
  * Append to a message.
@@ -75,8 +80,12 @@ void utf8lite_message_set(struct utf8lite_message *msg, const char *fmt, ...);
  * \param fmt format string
  * \param ... format arguments
  */
-void utf8lite_message_append(struct utf8lite_message *msg,
-			     const char *fmt, ...);
+void utf8lite_message_append(struct utf8lite_message *msg, const char *fmt, ...)
+#if (defined(_WIN32) || defined(_WIN64))
+	;
+#else
+	__attribute__ ((format (printf, 2, 3)));
+#endif
 
 /**@}*/
 
@@ -85,11 +94,17 @@ void utf8lite_message_append(struct utf8lite_message *msg,
  * @{
  */
 
+/** Missing Unicode value */
+#define UTF8LITE_CODE_NONE -1
+
 /** Unicode replacement character */
-#define UTF8LITE_REPLACEMENT	0xFFFD
+#define UTF8LITE_CODE_REPLACEMENT 0xFFFD
 
 /** Last valid unicode codepoint */
-#define UTF8LITE_UNICODE_MAX 0x10FFFF
+#define UTF8LITE_CODE_MAX 0x10FFFF
+
+/** Number of bits required to encode a codepoint */
+#define UTF8LITE_CODE_BITS 21
 
 /** Indicates whether a given unsigned integer is a valid ASCII codepoint */
 #define UTF8LITE_IS_ASCII(x) \
@@ -97,7 +112,7 @@ void utf8lite_message_append(struct utf8lite_message *msg,
 
 /** Indicates whether a given unsigned integer is a valid unicode codepoint */
 #define UTF8LITE_IS_UNICODE(x) \
-	(((x) <= UTF8LITE_UNICODE_MAX) \
+	(((x) <= UTF8LITE_CODE_MAX) \
 	 && !UTF8LITE_IS_UTF16_HIGH(x) \
 	 && !UTF8LITE_IS_UTF16_LOW(x))
 
@@ -124,7 +139,7 @@ enum utf8lite_charwidth_type {
  *
  * \returns a #utf8lite_charwidth_type value giving the width
  */
-int utf8lite_charwidth(uint32_t code);
+int utf8lite_charwidth(int32_t code);
 
 /**
  * Get whether a Unicode character is white space.
@@ -133,7 +148,7 @@ int utf8lite_charwidth(uint32_t code);
  *
  * \returns 1 if space, 0 otherwise.
  */
-int utf8lite_isspace(uint32_t code);
+int utf8lite_isspace(int32_t code);
 
 /**
  * Get whether a Unicode character is a default ignorable character.
@@ -142,7 +157,7 @@ int utf8lite_isspace(uint32_t code);
  *
  * \returns 1 if space, 0 otherwise.
  */
-int utf8lite_isignorable(uint32_t code);
+int utf8lite_isignorable(int32_t code);
 
 /**@}*/
 
@@ -218,7 +233,7 @@ int utf8lite_scan_utf8(const uint8_t **bufptr, const uint8_t *end,
  * 	the buffer
  * \param codeptr on exit, the first codepoint in the buffer
  */
-void utf8lite_decode_utf8(const uint8_t **bufptr, uint32_t *codeptr);
+void utf8lite_decode_utf8(const uint8_t **bufptr, int32_t *codeptr);
 
 /**
  * Encode a codepoint into a UTF-8 character buffer. The codepoint must
@@ -229,7 +244,7 @@ void utf8lite_decode_utf8(const uint8_t **bufptr, uint32_t *codeptr);
  * \param bufptr on input, a pointer to the start of the buffer;
  * 	on exit, a pointer to the end of the encoded codepoint
  */
-void utf8lite_encode_utf8(uint32_t code, uint8_t **bufptr);
+void utf8lite_encode_utf8(int32_t code, uint8_t **bufptr);
 
 /**
  * Encode a codepoint in reverse, at the end of UTF-8 character buffer.
@@ -241,7 +256,7 @@ void utf8lite_encode_utf8(uint32_t code, uint8_t **bufptr);
  * \param endptr on input, a pointer to the end of the buffer;
  * 	on exit, a pointer to the start of the encoded codepoint
  */
-void utf8lite_rencode_utf8(uint32_t code, uint8_t **endptr);
+void utf8lite_rencode_utf8(int32_t code, uint8_t **endptr);
 
 /**@}*/
 
@@ -283,7 +298,7 @@ int utf8lite_scan_uescape(const uint8_t **bufptr, const uint8_t *end,
  * 	on output, a pointer to the byte after the escape
  * \param codeptr on output, a pointer to the decoded UTF-32 character
  */
-void utf8lite_decode_escape(const uint8_t **bufptr, uint32_t *codeptr);
+void utf8lite_decode_escape(const uint8_t **bufptr, int32_t *codeptr);
 
 /**
  * Scan a JSON-style backslash-u (\\u) escape.
@@ -292,7 +307,7 @@ void utf8lite_decode_escape(const uint8_t **bufptr, uint32_t *codeptr);
  * 	on output, a pointer to the byte after the escape
  * \param codeptr on output, a pointer to the decoded UTF-32 character
  */
-void utf8lite_decode_uescape(const uint8_t **bufptr, uint32_t *codeptr);
+void utf8lite_decode_uescape(const uint8_t **bufptr, int32_t *codeptr);
 
 /**@}*/
 
@@ -365,7 +380,7 @@ enum utf8lite_casefold_type {
  * \param bufptr on entry, a pointer to the output buffer; on exit,
  * 	a pointer past the last output codepoint
  */
-void utf8lite_map(int type, uint32_t code, uint32_t **bufptr);
+void utf8lite_map(int type, int32_t code, int32_t **bufptr);
 
 /**
  * Apply the canonical ordering algorithm to put an array of Unicode
@@ -374,7 +389,7 @@ void utf8lite_map(int type, uint32_t code, uint32_t **bufptr);
  * \param ptr a pointer to the first codepoint
  * \param len the number of codepoints
  */
-void utf8lite_order(uint32_t *ptr, size_t len);
+void utf8lite_order(int32_t *ptr, size_t len);
 
 /**
  * Apply the canonical composition algorithm to put an array of
@@ -384,7 +399,7 @@ void utf8lite_order(uint32_t *ptr, size_t len);
  * \param lenptr on entry, a pointer to the number of input codepoints;
  * 	on exit, a pointer to the number of composed codepoints
  */
-void utf8lite_compose(uint32_t *ptr, size_t *lenptr);
+void utf8lite_compose(int32_t *ptr, size_t *lenptr);
 
 /**@}*/
 
@@ -532,7 +547,7 @@ struct utf8lite_text_iter {
 	const uint8_t *ptr;	/**< current position in the text buffer*/
 	const uint8_t *end;	/**< end of the text buffer */
 	size_t text_attr;	/**< text attributes */
-	uint32_t current;	/**< current character (UTF-32) */
+	int32_t current;	/**< current character (UTF-32) */
 	size_t attr;		/**< current character attributes */
 };
 

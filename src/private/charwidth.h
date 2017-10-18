@@ -2954,9 +2954,9 @@ static const int8_t charwidth_stage2[][128] = {
   }
 };
 
-static int charwidth(uint32_t code)
+static int charwidth(int32_t code)
 {
-	const uint32_t block_size = 128;
+	const int32_t block_size = 128;
 	uint8_t i = charwidth_stage1[code / block_size];
 	return charwidth_stage2[i][code % block_size];
 }

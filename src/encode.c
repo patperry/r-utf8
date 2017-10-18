@@ -204,10 +204,10 @@ out:
 }
 
 
-void utf8lite_decode_utf8(const uint8_t **bufptr, uint32_t *codeptr)
+void utf8lite_decode_utf8(const uint8_t **bufptr, int32_t *codeptr)
 {
 	const uint8_t *ptr = *bufptr;
-	uint32_t code;
+	int32_t code;
 	uint_fast8_t ch;
 	unsigned nc;
 
@@ -237,10 +237,10 @@ void utf8lite_decode_utf8(const uint8_t **bufptr, uint32_t *codeptr)
 
 
 // http://www.fileformat.info/info/unicode/utf8.htm
-void utf8lite_encode_utf8(uint32_t code, uint8_t **bufptr)
+void utf8lite_encode_utf8(int32_t code, uint8_t **bufptr)
 {
 	uint8_t *ptr = *bufptr;
-	uint32_t x = code;
+	int32_t x = code;
 
 	if (x <= 0x7F) {
 		*ptr++ = (uint8_t)x;
@@ -262,10 +262,10 @@ void utf8lite_encode_utf8(uint32_t code, uint8_t **bufptr)
 }
 
 
-void utf8lite_rencode_utf8(uint32_t code, uint8_t **bufptr)
+void utf8lite_rencode_utf8(int32_t code, uint8_t **bufptr)
 {
 	uint8_t *ptr = *bufptr;
-	uint32_t x = code;
+	int32_t x = code;
 
 	if (x <= 0x7F) {
 		*--ptr = (uint8_t)x;

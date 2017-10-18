@@ -1451,9 +1451,9 @@ static const uint8_t combining_class_stage2[][128] = {
   }
 };
 
-static uint8_t combining_class(uint32_t code)
+static uint8_t combining_class(int32_t code)
 {
-	const uint32_t block_size = 128;
+	const int32_t block_size = 128;
 	uint8_t i = combining_class_stage1[code / block_size];
 	return combining_class_stage2[i][code % block_size];
 }

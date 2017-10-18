@@ -33,16 +33,16 @@
 #define HANTUL_SCOUNT (HANGUL_LCOUNT * HANGUL_NCOUNT)
 
 
-static void hangul_decompose(uint32_t code, uint32_t **bufp)
+static void hangul_decompose(int32_t code, int32_t **bufp)
 {
-	uint32_t *dst = *bufp;
-	uint32_t sindex = code - HANGUL_SBASE;
-	uint32_t lindex = sindex / HANGUL_NCOUNT;
-	uint32_t vindex = (sindex % HANGUL_NCOUNT) / HANGUL_TCOUNT;
-	uint32_t tindex = sindex % HANGUL_TCOUNT;
-	uint32_t lpart = HANGUL_LBASE + lindex;
-	uint32_t vpart = HANGUL_VBASE + vindex;
-	uint32_t tpart = HANGUL_TBASE + tindex;
+	int32_t *dst = *bufp;
+	int32_t sindex = code - HANGUL_SBASE;
+	int32_t lindex = sindex / HANGUL_NCOUNT;
+	int32_t vindex = (sindex % HANGUL_NCOUNT) / HANGUL_TCOUNT;
+	int32_t tindex = sindex % HANGUL_TCOUNT;
+	int32_t lpart = HANGUL_LBASE + lindex;
+	int32_t vpart = HANGUL_VBASE + vindex;
+	int32_t tpart = HANGUL_TBASE + tindex;
 
 	*dst++ = lpart;
 	*dst++ = vpart;
@@ -54,53 +54,53 @@ static void hangul_decompose(uint32_t code, uint32_t **bufp)
 }
 
 
-static int is_hangul_vpart(uint32_t code)
+static int is_hangul_vpart(int32_t code)
 {
 	return (HANGUL_VBASE <= code && code < HANGUL_VBASE + HANGUL_VCOUNT);
 }
 
 
 
-static int is_hangul_tpart(uint32_t code)
+static int is_hangul_tpart(int32_t code)
 {
 	// strict less-than on lower bound
 	return (HANGUL_TBASE < code && code < HANGUL_TBASE + HANGUL_TCOUNT);
 }
 
 
-static uint32_t hangul_compose_lv(uint32_t lpart, uint32_t vpart)
+static int32_t hangul_compose_lv(int32_t lpart, int32_t vpart)
 {
-	uint32_t lindex = lpart - HANGUL_LBASE;
-	uint32_t vindex = vpart - HANGUL_VBASE;
-	uint32_t lvindex = lindex * HANGUL_NCOUNT + vindex * HANGUL_TCOUNT;
-	uint32_t s = HANGUL_SBASE + lvindex;
+	int32_t lindex = lpart - HANGUL_LBASE;
+	int32_t vindex = vpart - HANGUL_VBASE;
+	int32_t lvindex = lindex * HANGUL_NCOUNT + vindex * HANGUL_TCOUNT;
+	int32_t s = HANGUL_SBASE + lvindex;
 	return s;
 }
 
 
-static uint32_t hangul_compose_lvt(uint32_t lvpart, uint32_t tpart)
+static int32_t hangul_compose_lvt(int32_t lvpart, int32_t tpart)
 {
-	uint32_t tindex = tpart - HANGUL_TBASE;
-	uint32_t s = lvpart + tindex;
+	int32_t tindex = tpart - HANGUL_TBASE;
+	int32_t s = lvpart + tindex;
 	return s;
 }
 
 
-static void casefold(int type, uint32_t code, uint32_t **bufp)
+static void casefold(int type, int32_t code, int32_t **bufp)
 {
-	const uint32_t block_size = CASEFOLD_BLOCK_SIZE;
+	const int32_t block_size = CASEFOLD_BLOCK_SIZE;
 	unsigned i = casefold_stage1[code / block_size];
 	struct casefold c = casefold_stage2[i][code % block_size];
 	unsigned length = c.length;
-	const uint32_t *src;
-	uint32_t *dst;
+	const int32_t *src;
+	int32_t *dst;
 
 	if (length == 0) {
 		dst = *bufp;
 		*dst++ = code;
 		*bufp = dst;
 	} else if (length == 1) {
-		utf8lite_map(type, c.data, bufp);
+		utf8lite_map(type, (int32_t)c.data, bufp);
 	} else {
 		src = &casefold_mapping[c.data];
 		while (length-- > 0) {
@@ -112,14 +112,14 @@ static void casefold(int type, uint32_t code, uint32_t **bufp)
 
 
 
-void utf8lite_map(int type, uint32_t code, uint32_t **bufptr)
+void utf8lite_map(int type, int32_t code, int32_t **bufptr)
 {
-	const uint32_t block_size = DECOMPOSITION_BLOCK_SIZE;
+	const int32_t block_size = DECOMPOSITION_BLOCK_SIZE;
 	unsigned i = decomposition_stage1[code / block_size];
 	struct decomposition d = decomposition_stage2[i][code % block_size];
 	unsigned length = d.length;
-	const uint32_t *src;
-	uint32_t *dst;
+	const int32_t *src;
+	int32_t *dst;
 
 	if (length == 0 || (d.type > 0 && !(type & (1 << (d.type - 1))))) {
 		if (type & UTF8LITE_CASEFOLD_ALL) {
@@ -143,12 +143,12 @@ void utf8lite_map(int type, uint32_t code, uint32_t **bufptr)
 }
 
 
-void utf8lite_order(uint32_t *ptr, size_t len)
+void utf8lite_order(int32_t *ptr, size_t len)
 {
-	uint32_t *end = ptr + len;
-	uint32_t *c_begin, *c_end, *c_tail, *c_ptr;
-	uint32_t code, code_prev;
-	uint32_t cl, cl_prev;
+	int32_t *end = ptr + len;
+	int32_t *c_begin, *c_end, *c_tail, *c_ptr;
+	int32_t code, code_prev;
+	int32_t cl, cl_prev;
 
 	while (ptr != end) {
 		c_begin = ptr;
@@ -160,9 +160,11 @@ void utf8lite_order(uint32_t *ptr, size_t len)
 			continue;
 		}
 
-		// mark the start of the combining mark sequence (c_begin)
-		// encode the combining class in the high 8 bits
-		*c_begin = code | (cl << 24);
+		// It takes 21 bits to encode a codepoint and 8 bits
+		// to encode c combining class.
+		// Mark the start of the combining mark sequence (c_begin)
+		// encode the combining class in bits 22-29.
+		*c_begin = code | (cl << UTF8LITE_CODE_BITS);
 
 		// the combining mark sequence ends at the first starter
 		// (c_end)
@@ -176,7 +178,7 @@ void utf8lite_order(uint32_t *ptr, size_t len)
 				break;
 			}
 
-			*c_end = code | (cl << 24);
+			*c_end = code | (cl << UTF8LITE_CODE_BITS);
 			c_end++;
 		}
 
@@ -184,11 +186,12 @@ void utf8lite_order(uint32_t *ptr, size_t len)
 		for (c_tail = c_begin + 1; c_tail != c_end; c_tail++) {
 			c_ptr = c_tail;
 			code = *c_ptr;
-			cl = code & (0xFFU << 24);
+			cl = code & (0xFF << UTF8LITE_CODE_BITS);
 
 			while (c_ptr != c_begin) {
 				code_prev = c_ptr[-1];
-				cl_prev = code_prev & (0xFFU << 24);
+				cl_prev = (code_prev
+					   & (0xFF << UTF8LITE_CODE_BITS));
 
 				if (cl_prev <= cl) {
 					break;
@@ -208,7 +211,7 @@ void utf8lite_order(uint32_t *ptr, size_t len)
 		// remove the combining mark annotations
 		while (c_begin != c_end) {
 			code = *c_begin;
-			*c_begin = code & (~(0xFFU << 24));
+			*c_begin = code & (~(0xFF << UTF8LITE_CODE_BITS));
 			c_begin++;
 		}
 	}
@@ -217,9 +220,9 @@ void utf8lite_order(uint32_t *ptr, size_t len)
 
 
 
-static int has_compose(uint32_t code, int *offsetptr, int *lengthptr)
+static int has_compose(int32_t code, int *offsetptr, int *lengthptr)
 {
-	const uint32_t block_size = COMPOSITION_BLOCK_SIZE;
+	const int32_t block_size = COMPOSITION_BLOCK_SIZE;
 	unsigned i = composition_stage1[code / block_size];
 	struct composition c = composition_stage2[i][code % block_size];
 	int offset = (int)c.offset;
@@ -234,8 +237,8 @@ static int has_compose(uint32_t code, int *offsetptr, int *lengthptr)
 
 static int code_cmp(const void *x1, const void *x2)
 {
-	uint32_t y1 = *(const uint32_t *)x1;
-	uint32_t y2 = *(const uint32_t *)x2;
+	int32_t y1 = *(const int32_t *)x1;
+	int32_t y2 = *(const int32_t *)x2;
 
 	if (y1 < y2) {
 		return -1;
@@ -247,10 +250,10 @@ static int code_cmp(const void *x1, const void *x2)
 }
 
 
-static int combiner_find(int offset, int length, uint32_t code)
+static int combiner_find(int offset, int length, int32_t code)
 {
-	const uint32_t *base = composition_combiner + offset;
-	const uint32_t *ptr;
+	const int32_t *base = composition_combiner + offset;
+	const int32_t *ptr;
 
 	// handle empty and singleton case
 	if (length == 0) {
@@ -270,8 +273,8 @@ static int combiner_find(int offset, int length, uint32_t code)
 }
 
 
-static int has_combiner(uint32_t left, int offset, int length, uint32_t code,
-		        uint32_t *primaryptr)
+static int has_combiner(int32_t left, int offset, int length, int32_t code,
+		        int32_t *primaryptr)
 {
 	int i;
 
@@ -297,13 +300,13 @@ static int has_combiner(uint32_t left, int offset, int length, uint32_t code,
 }
 
 
-void utf8lite_compose(uint32_t *ptr, size_t *lenptr)
+void utf8lite_compose(int32_t *ptr, size_t *lenptr)
 {
 	size_t len = *lenptr;
-	uint32_t *begin = ptr;
-	uint32_t *end = begin + len;
-	uint32_t *leftptr, *dst;
-	uint32_t left = 0, code, prim;
+	int32_t *begin = ptr;
+	int32_t *end = begin + len;
+	int32_t *leftptr, *dst;
+	int32_t left = 0, code, prim;
 	uint8_t code_ccc, prev_ccc = 0;
 	int moff = 0, mlen = 0;
 	int blocked, has_prev, did_del;
@@ -344,7 +347,7 @@ void utf8lite_compose(uint32_t *ptr, size_t *lenptr)
 			has_compose(left, &moff, &mlen);
 
 			// delete C
-			*ptr = UINT32_MAX;
+			*ptr = UTF8LITE_CODE_NONE;
 			did_del = 1;
 		} else if (code_ccc == 0) {
 			// new leftmost combining starter, L
@@ -365,7 +368,7 @@ void utf8lite_compose(uint32_t *ptr, size_t *lenptr)
 		dst = begin;
 		while (ptr != end) {
 			code = *ptr++;
-			if (code != UINT32_MAX) {
+			if (code != UTF8LITE_CODE_NONE) {
 				*dst++ = code;
 			}
 		}

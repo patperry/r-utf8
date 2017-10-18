@@ -1,6 +1,6 @@
 CC     += -std=c99
 
-CFLAGS += -Wall -Wextra -pedantic -Werror \
+CFLAGS += -Wall -Wextra -Weverything -pedantic -Werror \
 	-Wno-cast-qual \
 	-Wno-padded \
 	-Wno-unused-macros \
@@ -27,7 +27,9 @@ TEST_CFLAGS = $(shell pkg-config --cflags check) \
 	-Wno-gnu-zero-variadic-macro-arguments \
 	-Wno-missing-prototypes \
 	-Wno-missing-variable-declarations \
-	-Wno-reserved-id-macro
+	-Wno-reserved-id-macro \
+	-Wno-strict-prototypes \
+	-Wno-used-but-marked-unused
 
 TEST_LIBS = $(shell pkg-config --libs check)
 

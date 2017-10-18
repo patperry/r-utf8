@@ -20,9 +20,6 @@
 /* http://stackoverflow.com/a/11986885 */
 #define hextoi(ch) ((ch > '9') ? (ch &~ 0x20) - 'A' + 10 : (ch - '0'))
 
-#define UTF8LITE_TEXT_CODE_NONE ((uint32_t)-1)
-
-
 static void iter_retreat_escaped(struct utf8lite_text_iter *it,
 				 const uint8_t *begin);
 static void iter_retreat_raw(struct utf8lite_text_iter *it);
@@ -34,7 +31,7 @@ void utf8lite_text_iter_make(struct utf8lite_text_iter *it,
 	it->end = it->ptr + UTF8LITE_TEXT_SIZE(text);
 	it->text_attr = text->attr;
 	it->attr = 0;
-	it->current = UTF8LITE_TEXT_CODE_NONE;
+	it->current = UTF8LITE_CODE_NONE;
 }
 
 
@@ -48,7 +45,7 @@ int utf8lite_text_iter_advance(struct utf8lite_text_iter *it)
 {
 	const uint8_t *ptr = it->ptr;
 	size_t text_attr = it->text_attr;
-	uint32_t code;
+	int32_t code;
 	size_t attr;
 
 	if (!utf8lite_text_iter_can_advance(it)) {
@@ -76,7 +73,7 @@ int utf8lite_text_iter_advance(struct utf8lite_text_iter *it)
 	return 1;
 
 at_end:
-	it->current = UTF8LITE_TEXT_CODE_NONE;
+	it->current = UTF8LITE_CODE_NONE;
 	it->attr = 0;
 	return 0;
 }
@@ -85,7 +82,7 @@ at_end:
 void utf8lite_text_iter_skip(struct utf8lite_text_iter *it)
 {
 	it->ptr = it->end;
-	it->current = UTF8LITE_TEXT_CODE_NONE;
+	it->current = UTF8LITE_CODE_NONE;
 	it->attr = 0;
 }
 
@@ -95,7 +92,7 @@ int utf8lite_text_iter_can_retreat(const struct utf8lite_text_iter *it)
 	const size_t size = (it->text_attr & UTF8LITE_TEXT_SIZE_MASK);
 	const uint8_t *begin = it->end - size;
 	const uint8_t *ptr = it->ptr;
-	uint32_t code = it->current;
+	int32_t code = it->current;
 	struct utf8lite_text_iter it2;
 
 	if (ptr > begin + 12) {
@@ -104,6 +101,10 @@ int utf8lite_text_iter_can_retreat(const struct utf8lite_text_iter *it)
 
 	if (ptr == begin) {
 		return 0;
+	}
+
+	if (code == UTF8LITE_CODE_NONE) {
+		return 1;
 	}
 
 	if (!(it->attr & UTF8LITE_TEXT_ESC_BIT)) {
@@ -123,7 +124,7 @@ int utf8lite_text_iter_retreat(struct utf8lite_text_iter *it)
 	const uint8_t *begin = it->end - size;
 	const uint8_t *ptr = it->ptr;
 	const uint8_t *end = it->end;
-	uint32_t code = it->current;
+	int32_t code = it->current;
 
 	if (ptr == begin) {
 		return 0;
@@ -136,7 +137,7 @@ int utf8lite_text_iter_retreat(struct utf8lite_text_iter *it)
 	}
 
 	// we were at the end of the text
-	if (code == UTF8LITE_TEXT_CODE_NONE) {
+	if (code == UTF8LITE_CODE_NONE) {
 		it->ptr = end;
 		return 1;
 	}
@@ -145,7 +146,7 @@ int utf8lite_text_iter_retreat(struct utf8lite_text_iter *it)
 	ptr = it->ptr;
 
 	if (ptr == begin) {
-		it->current = UTF8LITE_TEXT_CODE_NONE;
+		it->current = UTF8LITE_CODE_NONE;
 		it->attr = 0;
 		return 0;
 	}
@@ -172,7 +173,7 @@ void utf8lite_text_iter_reset(struct utf8lite_text_iter *it)
 	const uint8_t *begin = it->end - size;
 
 	it->ptr = begin;
-	it->current = UTF8LITE_TEXT_CODE_NONE;
+	it->current = UTF8LITE_CODE_NONE;
 	it->attr = 0;
 }
 
@@ -180,7 +181,7 @@ void utf8lite_text_iter_reset(struct utf8lite_text_iter *it)
 void iter_retreat_raw(struct utf8lite_text_iter *it)
 {
 	const uint8_t *ptr = it->ptr;
-	uint32_t code;
+	int32_t code;
 
 	code = *(--ptr);
 
@@ -228,7 +229,7 @@ out:
 void iter_retreat_escaped(struct utf8lite_text_iter *it, const uint8_t *begin)
 {
 	const uint8_t *ptr = it->ptr;
-	uint32_t code, unesc, hi;
+	int32_t code, unesc, hi;
 	size_t attr;
 	int i;
 
