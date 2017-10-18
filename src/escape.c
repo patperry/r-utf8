@@ -67,6 +67,7 @@ error_inval:
 	goto out;
 
 out:
+	*bufptr = ptr;
 	return err;
 }
 

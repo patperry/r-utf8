@@ -474,7 +474,7 @@ int utf8lite_scan_uescape(const uint8_t **bufptr, const uint8_t *end,
  * 	on output, a pointer to the byte after the escape
  * \param codeptr on output, a pointer to the decoded UTF-32 character
  */
-void utf8lite_decode_escape(const uint8_t **inputptr, uint32_t *codeptr);
+void utf8lite_decode_escape(const uint8_t **bufptr, uint32_t *codeptr);
 
 /**
  * Scan a JSON-style backslash-u (\\u) escape.
@@ -483,7 +483,7 @@ void utf8lite_decode_escape(const uint8_t **inputptr, uint32_t *codeptr);
  * 	on output, a pointer to the byte after the escape
  * \param codeptr on output, a pointer to the decoded UTF-32 character
  */
-void utf8lite_decode_uescape(const uint8_t **inputptr, uint32_t *codeptr);
+void utf8lite_decode_uescape(const uint8_t **bufptr, uint32_t *codeptr);
 
 /**@}*/
 
