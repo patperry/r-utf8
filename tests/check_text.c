@@ -38,19 +38,20 @@ void teardown_text(void)
 
 int is_valid_json(const char *str)
 {
-	struct utf8lite_textscan scan;
+	struct utf8lite_text text;
 	size_t n = strlen(str);
-	int err = utf8lite_textscan(&scan, (const uint8_t *)str, n,
-				    UTF8LITE_TEXT_UNESCAPE);
+	int err = utf8lite_text_assign(&text, (const uint8_t *)str, n,
+				       UTF8LITE_TEXT_UNESCAPE, NULL);
 	return !err;
 }
 
 
 int is_valid_raw(const char *str)
 {
-	struct utf8lite_textscan scan;
+	struct utf8lite_text text;
 	size_t n = strlen(str);
-	int err = utf8lite_textscan(&scan, (const uint8_t *)str, n, 0);
+	int err = utf8lite_text_assign(&text, (const uint8_t *)str, n, 0,
+				       NULL);
 	return !err;
 }
 
@@ -457,7 +458,6 @@ START_TEST(test_iter_random)
 	};
 	unsigned ntype = sizeof(types) / sizeof(types[0]);
 
-	struct utf8lite_textscan scan;
 	struct utf8lite_text text;
 	struct utf8lite_text_iter iter;
 	uint8_t buffer[1024 * 12];
@@ -484,8 +484,8 @@ START_TEST(test_iter_random)
 	}
 
 	ptr = buffer;
-	ck_assert(!utf8lite_textscan(&scan, ptr, size, UTF8LITE_TEXT_UNESCAPE));
-	text = scan.text;
+	ck_assert(!utf8lite_text_assign(&text, ptr, size,
+					UTF8LITE_TEXT_UNESCAPE, NULL));
 	ck_assert(UTF8LITE_TEXT_SIZE(&text) == size);
 	ck_assert(UTF8LITE_TEXT_BITS(&text) == attr);
 
