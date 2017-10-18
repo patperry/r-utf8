@@ -1,6 +1,6 @@
 CC     += -std=c99
 
-CFLAGS += -Wall -Wextra -Weverything -pedantic -Werror \
+CFLAGS += -Wall -Wextra -pedantic -Werror \
 	-Wno-cast-qual \
 	-Wno-padded \
 	-Wno-unused-macros \
