@@ -36,7 +36,8 @@ EMOJI = http://www.unicode.org/Public/emoji/5.0
 UNICODE = http://www.unicode.org/Public/10.0.0
 
 CORPUS_A = libutf8lite.a
-LIB_O	= src/char.o src/encode.o src/text.o src/normalize.o
+LIB_O	= src/char.o src/encode.o src/error.o src/escape.o src/normalize.o \
+	  src/text.o src/textassign.o
 
 DATA    = data/emoji/emoji-data.txt \
 	  data/ucd/CaseFolding.txt \
@@ -50,7 +51,8 @@ DATA    = data/emoji/emoji-data.txt \
 	  data/ucd/auxiliary/WordBreakProperty.txt
 
 TESTS_T = tests/check_charwidth tests/check_text tests/check_unicode
-TESTS_O = tests/check_charwidth.o tests/check_text.o tests/check_unicode.o
+TESTS_O = tests/check_charwidth.o tests/check_text.o tests/check_unicode.o \
+		  tests/testutil.o
 
 TESTS_DATA = data/ucd/NormalizationTest.txt
 
@@ -178,14 +180,20 @@ src/char.o: src/char.c src/private/charwidth.h src/utf8lite.h
 
 src/encode.o: src/encode.c src/utf8lite.h
 
+src/error.o: src/error.c src/utf8lite.h
+
+src/escape.o: src/escape.c src/utf8lite.h
+
 src/normalize.o: src/normalize.c src/private/casefold.h \
 	src/private/combining.h src/private/compose.h src/private/decompose.h \
 	src/utf8lite.h
 
 src/text.o: src/text.c src/text.h
 
+src/textassign.o: src/textassign.c src/utf8lite.h
+
 tests/check_charwidth.o: tests/check_charwidth.c src/utf8lite.h \
 	tests/testutil.h
 tests/check_text.o: tests/check_text.c src/text.h tests/testutil.h
 tests/check_unicode.o: tests/check_unicode.c src/utf8lite.h tests/testutil.h
-tests/testutil.o: tests/testutil.c tests/testutil.h
+tests/testutil.o: tests/testutil.c src/utf8lite.h tests/testutil.h
