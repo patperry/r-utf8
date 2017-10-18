@@ -24,13 +24,6 @@
 #include "testutil.h"
 
 
-void ignore_message(int code, const char *message)
-{
-	(void)code;
-	(void)message;
-}
-
-
 void setup_text(void)
 {
 	setup();
