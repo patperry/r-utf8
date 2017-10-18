@@ -246,6 +246,57 @@ void utf8lite_rencode_utf8(uint32_t code, uint8_t **endptr);
 /**@}*/
 
 /**
+ * \defgroup escape Escape code handling
+ * @{
+ */
+
+/**
+ * Scan a JSON-style backslash (\\) escape.
+ *
+ * \param bufptr on input, a pointer to the byte after the backslash;
+ * 	on output, a pointer to the byte after the escape
+ * \param end pointer to the end of the buffer
+ * \param msg error message buffer
+ *
+ * \returns 0 on success
+ */
+int utf8lite_scan_escape(const uint8_t **bufptr, const uint8_t *end,
+			 struct utf8lite_message *msg);
+
+/**
+ * Scan a JSON-style backslash-u (\\u) escape.
+ *
+ * \param bufptr on input, a pointer to the byte after the 'u';
+ * 	on output, a pointer to the byte after the escape
+ * \param end pointer to the end of the buffer
+ * \param msg error message buffer
+ *
+ * \returns 0 on success
+ */
+int utf8lite_scan_uescape(const uint8_t **bufptr, const uint8_t *end,
+			  struct utf8lite_message *msg);
+
+/**
+ * Decode a JSON-style backslash (\\) escape.
+ *
+ * \param bufptr on input, a pointer to the byte after the backslash;
+ * 	on output, a pointer to the byte after the escape
+ * \param codeptr on output, a pointer to the decoded UTF-32 character
+ */
+void utf8lite_decode_escape(const uint8_t **bufptr, uint32_t *codeptr);
+
+/**
+ * Scan a JSON-style backslash-u (\\u) escape.
+ *
+ * \param bufptr on input, a pointer to the byte after the 'u';
+ * 	on output, a pointer to the byte after the escape
+ * \param codeptr on output, a pointer to the decoded UTF-32 character
+ */
+void utf8lite_decode_uescape(const uint8_t **bufptr, uint32_t *codeptr);
+
+/**@}*/
+
+/**
  * \defgroup normalize Normalization
  * @{
  */
@@ -468,54 +519,83 @@ int utf8lite_compare_text(const struct utf8lite_text *text1,
 			  const struct utf8lite_text *text2);
 /**@}*/
 
+
 /**
- * \defgroup escape Escape code handling
+ * \defgroup textiter Text iteration
  * @{
  */
 
 /**
- * Scan a JSON-style backslash (\\) escape.
- *
- * \param bufptr on input, a pointer to the byte after the backslash;
- * 	on output, a pointer to the byte after the escape
- * \param end pointer to the end of the buffer
- * \param msg error message buffer
- *
- * \returns 0 on success
+ * An iterator over the decoded UTF-32 characters in a text.
  */
-int utf8lite_scan_escape(const uint8_t **bufptr, const uint8_t *end,
-			 struct utf8lite_message *msg);
+struct utf8lite_text_iter {
+	const uint8_t *ptr;	/**< current position in the text buffer*/
+	const uint8_t *end;	/**< end of the text buffer */
+	size_t text_attr;	/**< text attributes */
+	uint32_t current;	/**< current character (UTF-32) */
+	size_t attr;		/**< current character attributes */
+};
 
 /**
- * Scan a JSON-style backslash-u (\\u) escape.
+ * Initialize a text iterator to start at the beginning of a text.
  *
- * \param bufptr on input, a pointer to the byte after the 'u';
- * 	on output, a pointer to the byte after the escape
- * \param end pointer to the end of the buffer
- * \param msg error message buffer
- *
- * \returns 0 on success
+ * \param it the iterator
+ * \param text the text
  */
-int utf8lite_scan_uescape(const uint8_t **bufptr, const uint8_t *end,
-			  struct utf8lite_message *msg);
+void utf8lite_text_iter_make(struct utf8lite_text_iter *it,
+			     const struct utf8lite_text *text);
 
 /**
- * Decode a JSON-style backslash (\\) escape.
+ * Advance to the next character in a text.
  *
- * \param bufptr on input, a pointer to the byte after the backslash;
- * 	on output, a pointer to the byte after the escape
- * \param codeptr on output, a pointer to the decoded UTF-32 character
+ * \param it the text iterator
+ *
+ * \returns non-zero if the iterator successfully advanced; zero if
+ * 	the iterator has passed the end of the text
  */
-void utf8lite_decode_escape(const uint8_t **bufptr, uint32_t *codeptr);
+int utf8lite_text_iter_advance(struct utf8lite_text_iter *it);
 
 /**
- * Scan a JSON-style backslash-u (\\u) escape.
+ * Check whether a text iterator can advance.
  *
- * \param bufptr on input, a pointer to the byte after the 'u';
- * 	on output, a pointer to the byte after the escape
- * \param codeptr on output, a pointer to the decoded UTF-32 character
+ * \param it the text iterator
+ *
+ * \returns non-zero if the iterator can advance, zero otherwise
  */
-void utf8lite_decode_uescape(const uint8_t **bufptr, uint32_t *codeptr);
+int utf8lite_text_iter_can_advance(const struct utf8lite_text_iter *it);
+
+/**
+ * Retreat to the previous character in a text.
+ *
+ * \param it the text iterator
+ *
+ * \returns non-zero if the iterator successfully backed up; zero if
+ * 	the iterator has passed the start of the text.
+ */
+int utf8lite_text_iter_retreat(struct utf8lite_text_iter *it);
+
+/**
+ * Check whether a text iterator can retreat.
+ *
+ * \param it the text iterator
+ *
+ * \returns non-zero if the iterator can retreat, zero otherwise
+ */
+int utf8lite_text_iter_can_retreat(const struct utf8lite_text_iter *it);
+
+/**
+ * Reset an iterator to the start of the text.
+ *
+ * \param it the text iterator
+ */
+void utf8lite_text_iter_reset(struct utf8lite_text_iter *it);
+
+/**
+ * Skip an iterator to the end of the text.
+ *
+ * \param it the text iterator
+ */
+void utf8lite_text_iter_skip(struct utf8lite_text_iter *it);
 
 /**@}*/
 

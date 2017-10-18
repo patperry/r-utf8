@@ -20,7 +20,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "../src/utf8lite.h"
-#include "../src/text.h"
 #include "testutil.h"
 
 
