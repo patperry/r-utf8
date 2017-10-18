@@ -67,7 +67,7 @@ void utf8lite_message_clear(struct utf8lite_message *msg);
  * \param ... format arguments
  */
 void utf8lite_message_set(struct utf8lite_message *msg, const char *fmt, ...)
-#if (defined(_WIN32) || defined(_WIN64))
+#if defined(_MSC_VER)
 	;
 #else
 	__attribute__ ((format (printf, 2, 3)));
@@ -81,7 +81,7 @@ void utf8lite_message_set(struct utf8lite_message *msg, const char *fmt, ...)
  * \param ... format arguments
  */
 void utf8lite_message_append(struct utf8lite_message *msg, const char *fmt, ...)
-#if (defined(_WIN32) || defined(_WIN64))
+#if defined(_MSC_VER)
 	;
 #else
 	__attribute__ ((format (printf, 2, 3)));
