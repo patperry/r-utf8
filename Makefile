@@ -36,7 +36,7 @@ EMOJI = http://www.unicode.org/Public/emoji/5.0
 UNICODE = http://www.unicode.org/Public/10.0.0
 
 CORPUS_A = libutf8lite.a
-LIB_O	= src/utf8lite.o
+LIB_O	= src/text.o src/utf8lite.o
 
 DATA    = data/emoji/emoji-data.txt \
 	  data/ucd/CaseFolding.txt \
@@ -49,8 +49,8 @@ DATA    = data/emoji/emoji-data.txt \
 	  data/ucd/auxiliary/SentenceBreakProperty.txt \
 	  data/ucd/auxiliary/WordBreakProperty.txt
 
-TESTS_T = tests/check_charwidth tests/check_unicode
-TESTS_O = tests/check_charwidth.o tests/check_unicode.o
+TESTS_T = tests/check_charwidth tests/check_text tests/check_unicode
+TESTS_O = tests/check_charwidth.o tests/check_text.o tests/check_unicode.o
 
 TESTS_DATA = data/ucd/NormalizationTest.txt
 
@@ -141,6 +141,9 @@ src/private/normalization.h: util/gen-normalization.py \
 tests/check_charwidth: tests/check_charwidth.o tests/testutil.o $(CORPUS_A)
 	$(CC) -o $@ $^ $(LIBS) $(TEST_LIBS) $(LDFLAGS)
 
+tests/check_text: tests/check_text.o tests/testutil.o $(CORPUS_A)
+	$(CC) -o $@ $^ $(LIBS) $(TEST_LIBS) $(LDFLAGS)
+
 tests/check_unicode: tests/check_unicode.o $(CORPUS_A) \
 		data/ucd/NormalizationTest.txt
 	$(CC) -o $@ tests/check_unicode.o $(CORPUS_A) \
@@ -172,11 +175,14 @@ tests/%.o: tests/%.c
 .PHONY: all check clean data doc
 
 
+src/text.o: src/text.c src/text.h
+
 src/utf8lite.o: src/utf8lite.c src/private/casefold.h src/private/charwidth.h \
 	src/private/combining.h src/private/compose.h src/private/decompose.h \
 	src/utf8lite.h
 
 tests/check_charwidth.o: tests/check_charwidth.c src/utf8lite.h \
 	tests/testutil.h
+tests/check_text.o: tests/check_text.c src/text.h tests/testutil.h
 tests/check_unicode.o: tests/check_unicode.c src/utf8lite.h tests/testutil.h
 tests/testutil.o: tests/testutil.c tests/testutil.h

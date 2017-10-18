@@ -21,7 +21,7 @@
 #include <stddef.h>
 #include <stdint.h>
 
-struct corpus_text;
+struct utf8lite_text;
 
 /**
  * This macro is broken on the old version of check (0.9.8) that Travis CI
@@ -132,13 +132,13 @@ void teardown(void);
 void *alloc(size_t size);
 
 /**
- * Allocate a text object, interpreting escape codes.
+ * Allocate a text object, interpreting JSON-style escape codes.
  */
-struct corpus_text *T(const char *str);
+struct utf8lite_text *JS(const char *str);
 
 /**
  * Cast a raw string as a text object, ignoring escape codes.
  */
-struct corpus_text *S(const char *str);
+struct utf8lite_text *S(const char *str);
 
 #endif /* TESTUTIL_H */
