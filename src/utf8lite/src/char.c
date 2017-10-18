@@ -20,7 +20,7 @@
 #include "utf8lite.h"
 
 
-int utf8lite_charwidth(uint32_t code)
+int utf8lite_charwidth(int32_t code)
 {
 	int prop = charwidth(code);
 	switch(prop) {
@@ -46,7 +46,7 @@ int utf8lite_charwidth(uint32_t code)
 
 
 // TODO: use character class lookup table
-int utf8lite_isspace(uint32_t code)
+int utf8lite_isspace(int32_t code)
 {
 	if (code <= 0x7F) {
 		return (code == 0x20 || (0x09 <= code && code < 0x0E));
@@ -79,7 +79,7 @@ int utf8lite_isspace(uint32_t code)
 
 
 // TODO use lookup table
-int utf8lite_isignorable(uint32_t code)
+int utf8lite_isignorable(int32_t code)
 {
 	// Default_Ignorable_Code_Point = Yes
 	if (code <= 0x7F) {

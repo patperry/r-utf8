@@ -225,9 +225,9 @@ for i in range(len(stage2)):
 print("};")
 
 print("")
-print("static int charwidth(uint32_t code)")
+print("static int charwidth(int32_t code)")
 print("{")
-print("\tconst uint32_t block_size = " + str(block_size) + ";")
+print("\tconst int32_t block_size = " + str(block_size) + ";")
 print("\t" + type1 + " i = charwidth_stage1[code / block_size];")
 print("\treturn charwidth_stage2[i][code % block_size];")
 print("}")

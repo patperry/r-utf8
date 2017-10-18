@@ -32,7 +32,7 @@ START_TEST(test_wcwidth9)
 	int32_t code;
 
 	nfail = 0;
-	for (code = 0; code <= UTF8LITE_UNICODE_MAX; code++) {
+	for (code = 0; code <= UTF8LITE_CODE_MAX; code++) {
 		prop0 = (code < 0x10FFFE) ? wcwidth9(code) : -3;
 		prop = utf8lite_charwidth(code);
 

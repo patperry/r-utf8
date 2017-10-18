@@ -185,7 +185,7 @@ for i in range(0,len(stage2)):
         print("")
 print("};")
 print("")
-print("static const uint32_t decomposition_mapping[] = {")
+print("static const int32_t decomposition_mapping[] = {")
 for i in range(len(decomp_map) - 1):
     if i % 8  == 0:
         print("/* 0x{:04X} */ ".format(i), end="")

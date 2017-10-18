@@ -166,17 +166,17 @@ START_TEST(test_unescape_utf16)
 END_TEST
 
 
-static struct utf8lite_text_iter iter;
+static struct utf8lite_text_iter text_iter;
 
 static void start (const struct utf8lite_text *text)
 {
-	utf8lite_text_iter_make(&iter, text);
+	utf8lite_text_iter_make(&text_iter, text);
 }
 
 static int next(void)
 {
-	if (utf8lite_text_iter_advance(&iter)) {
-		return (int)iter.current;
+	if (utf8lite_text_iter_advance(&text_iter)) {
+		return (int)text_iter.current;
 	} else {
 		return -1;
 	}
@@ -185,14 +185,14 @@ static int next(void)
 
 static int has_next()
 {
-	return utf8lite_text_iter_can_advance(&iter);
+	return utf8lite_text_iter_can_advance(&text_iter);
 }
 
 
 static int prev(void)
 {
-	if (utf8lite_text_iter_retreat(&iter)) {
-		return (int)iter.current;
+	if (utf8lite_text_iter_retreat(&text_iter)) {
+		return (int)text_iter.current;
 	} else {
 		return -1;
 	}
@@ -201,7 +201,7 @@ static int prev(void)
 
 static int has_prev()
 {
-	return utf8lite_text_iter_can_retreat(&iter);
+	return utf8lite_text_iter_can_retreat(&text_iter);
 }
 
 
@@ -413,7 +413,7 @@ END_TEST
 
 struct type {
 	const char *string;
-	uint32_t value;
+	int32_t value;
 	size_t attr;
 };
 
@@ -455,7 +455,7 @@ START_TEST(test_iter_random)
 		{ "\xE2\x98\x83", 0x2603, UTF8 },
 		{ "\\uD83D\\uDE42", 0x1F642, ESC|UTF8 }
 	};
-	unsigned ntype = sizeof(types) / sizeof(types[0]);
+	int ntype = sizeof(types) / sizeof(types[0]);
 
 	struct utf8lite_text text;
 	struct utf8lite_text_iter iter;
@@ -467,7 +467,7 @@ START_TEST(test_iter_random)
 	size_t len, size, attr;
 	int i, id;
 
-	srand(_i);
+	srand((unsigned)_i);
 
 	ntok = (337 * (_i))  % ntok_max;
 	size = 0;
@@ -501,7 +501,7 @@ START_TEST(test_iter_random)
 		}
 
 		id = toks[i];
-		ck_assert_uint_eq(iter.current, types[id].value);
+		ck_assert_int_eq(iter.current, types[id].value);
 		ck_assert_uint_eq(iter.attr, types[id].attr);
 
 		len = strlen(types[id].string);
@@ -523,7 +523,7 @@ START_TEST(test_iter_random)
 		}
 
 		id = toks[i];
-		ck_assert_uint_eq(iter.current, types[id].value);
+		ck_assert_int_eq(iter.current, types[id].value);
 		ck_assert_uint_eq(iter.attr, types[id].attr);
 
 		ck_assert(iter.ptr == ptr);

@@ -248,7 +248,7 @@ for i in range(len(stage2)):
         print("")
 print("};")
 print("")
-print("static const uint32_t composition_combiner[] = {")
+print("static const int32_t composition_combiner[] = {")
 for i in range(len(combiner) - 1):
     if i % 8  == 0:
         print("/* {0: >3} */ ".format(i), end="")
@@ -258,7 +258,7 @@ for i in range(len(combiner) - 1):
 print("0x{0:04X}".format(combiner[len(combiner) - 1]))
 print("};")
 print("")
-print("static const uint32_t composition_primary[] = {")
+print("static const int32_t composition_primary[] = {")
 for i in range(len(primary) - 1):
     if i % 8  == 0:
         print("/* {0: >3} */ ".format(i), end="")

@@ -77,7 +77,7 @@ int utf8lite_scan_uescape(const uint8_t **bufptr, const uint8_t *end,
 {
 	const uint8_t *input = *bufptr;
 	const uint8_t *ptr = input;
-	uint32_t code, low;
+	int32_t code, low;
 	uint_fast8_t ch;
 	unsigned i;
 	int err;
@@ -114,7 +114,6 @@ int utf8lite_scan_uescape(const uint8_t **bufptr, const uint8_t *end,
 			ptr -= 6;
 			goto error_inval_low;
 		}
-		code = UTF8LITE_DECODE_UTF16_PAIR(code, low);
 	} else if (UTF8LITE_IS_UTF16_LOW(code)) {
 		goto error_inval_nohigh;
 	}
@@ -126,37 +125,34 @@ error_inval_incomplete:
 	err = UTF8LITE_ERROR_INVAL;
 	utf8lite_message_set(msg, "incomplete escape code (\\u%.*s)",
 			     (int)(end - input), input);
-	goto error_inval;
+	goto out;
 
 error_inval_hex:
 	err = UTF8LITE_ERROR_INVAL;
 	utf8lite_message_set(msg, "invalid hex value in escape code (\\u%.*s)",
 			     4, input);
-	goto error_inval;
+	goto out;
 
 error_inval_nolow:
 	err = UTF8LITE_ERROR_INVAL;
 	utf8lite_message_set(msg, "missing UTF-16 low surrogate"
 			     " after high surrogate escape code (\\u%.*s)",
 			     4, input);
-	goto error_inval;
+	goto out;
 
 error_inval_low:
 	err = UTF8LITE_ERROR_INVAL;
 	utf8lite_message_set(msg, "invalid UTF-16 low surrogate (\\u%.*s)"
 			     " after high surrogate escape code (\\u%.*s)",
 			     4, input, 4, input - 6);
-	goto error_inval;
+	goto out;
 
 error_inval_nohigh:
 	err = UTF8LITE_ERROR_INVAL;
 	utf8lite_message_set(msg, "missing UTF-16 high surrogate"
 			     " before low surrogate escape code (\\u%.*s)",
 			     4, input);
-	goto error_inval;
-
-error_inval:
-	code = UTF8LITE_REPLACEMENT;
+	goto out;
 
 out:
 	*bufptr = ptr;
@@ -164,10 +160,10 @@ out:
 }
 
 
-void utf8lite_decode_uescape(const uint8_t **inputptr, uint32_t *codeptr)
+void utf8lite_decode_uescape(const uint8_t **inputptr, int32_t *codeptr)
 {
 	const uint8_t *ptr = *inputptr;
-	uint32_t code;
+	int32_t code;
 	uint_fast16_t low;
 	uint_fast8_t ch;
 	unsigned i;
@@ -196,10 +192,10 @@ void utf8lite_decode_uescape(const uint8_t **inputptr, uint32_t *codeptr)
 }
 
 
-void utf8lite_decode_escape(const uint8_t **inputptr, uint32_t *codeptr)
+void utf8lite_decode_escape(const uint8_t **inputptr, int32_t *codeptr)
 {
 	const uint8_t *ptr = *inputptr;
-	uint32_t code;
+	int32_t code;
 
 	code = *ptr++;
 

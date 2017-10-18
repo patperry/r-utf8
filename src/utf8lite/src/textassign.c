@@ -109,7 +109,7 @@ int assign_esc(struct utf8lite_text *text, const uint8_t *ptr, size_t size,
 	const uint8_t *start;
 	const uint8_t *end = ptr + size;
 	size_t attr = 0;
-	uint32_t code;
+	int32_t code;
 	uint_fast8_t ch;
 	int err;
 
@@ -176,7 +176,7 @@ void assign_esc_unsafe(struct utf8lite_text *text, const uint8_t *ptr,
 {
 	const uint8_t *end = ptr + size;
 	size_t attr = 0;
-	uint32_t code;
+	int32_t code;
 	uint_fast8_t ch;
 
 	text->ptr = (uint8_t *)ptr;

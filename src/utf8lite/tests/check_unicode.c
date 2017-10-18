@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <inttypes.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <check.h>
@@ -27,32 +28,32 @@
 // http://www.unicode.org/Public/UCD/latest/ucd/NormalizationTest.txt
 struct normalization_test {
 	char comment[1024];
-	unsigned line;
+	int line;
 	int part;
 
-	uint32_t source[128];
-	unsigned source_len;
+	int32_t source[128];
+	int source_len;
 
-	uint32_t nfc[128];
-	unsigned nfc_len;
+	int32_t nfc[128];
+	int nfc_len;
 
-	uint32_t nfd[128];
-	unsigned nfd_len;
+	int32_t nfd[128];
+	int nfd_len;
 
-	uint32_t nfkc[128];
-	unsigned nfkc_len;
+	int32_t nfkc[128];
+	int nfkc_len;
 
-	uint32_t nfkd[128];
-	unsigned nfkd_len;
+	int32_t nfkd[128];
+	int nfkd_len;
 };
 
 struct normalization_test normalization_tests[32768];
-unsigned num_normalization_test;
+int num_normalization_test;
 
 void write_normalization_test(FILE *stream,
 			      const struct normalization_test *test)
 {
-	unsigned i;
+	int i;
 
 	for (i = 0; i < test->source_len; i++) {
 		if (i > 0) {
@@ -103,10 +104,10 @@ void setup_normalization(void)
 	struct normalization_test *test;
 	FILE *file;
 	int part;
-	unsigned field, line, ntest;
-	unsigned code;
-	uint32_t *dst;
-	unsigned *lenp;
+	int field, line, ntest;
+	uint32_t code;
+	int32_t *dst;
+	int *lenp;
 	char *comment;
 	int ch;
 
@@ -196,8 +197,8 @@ void setup_normalization(void)
 			break;
 		default:
 			ungetc(ch, file);
-			ck_assert(fscanf(file, "%X", &code));
-			*dst++ = (uint32_t)code;
+			ck_assert(fscanf(file, "%"SCNx32, &code));
+			*dst++ = (int32_t)code;
 			*lenp = *lenp + 1;
 			break;
 		}
@@ -386,11 +387,11 @@ START_TEST(test_reject_invalid_4byte_utf8)
 END_TEST
 
 
-static void roundtrip(uint32_t code)
+static void roundtrip(int32_t code)
 {
 	uint8_t buf[6];
 	uint8_t *ptr;
-	uint32_t decode;
+	int32_t decode;
 
 	ptr = buf;
 	utf8lite_encode_utf8(code, &ptr);
@@ -407,7 +408,7 @@ static void roundtrip(uint32_t code)
 
 START_TEST(test_encode_decode_utf8)
 {
-	uint32_t code;
+	int32_t code;
 
 	// U+0000..U+FFFF
 	for (code = 0; code <= 0xFFFF; code += 0xFF) {
@@ -438,12 +439,12 @@ START_TEST(test_encode_decode_utf8)
 END_TEST
 
 
-static void reverse_roundtrip(uint32_t code)
+static void reverse_roundtrip(int32_t code)
 {
 	uint8_t buf[6];
 	uint8_t *end = buf + 6;
 	uint8_t *start, *ptr;
-	uint32_t decode;
+	int32_t decode;
 
 	ptr = end;
 	utf8lite_rencode_utf8(code, &ptr);
@@ -460,7 +461,7 @@ static void reverse_roundtrip(uint32_t code)
 
 START_TEST(test_rencode_decode_utf8)
 {
-	uint32_t code;
+	int32_t code;
 
 	// U+0000..U+FFFF
 	for (code = 0; code <= 0xFFFF; code += 0xFF) {
@@ -493,12 +494,12 @@ END_TEST
 
 START_TEST(test_normalize_nfc_nfd)
 {
-	unsigned i, n = num_normalization_test;
-	size_t j, len;
+	int i, j, n = num_normalization_test;
+	size_t len;
 	struct normalization_test *test;
-	uint32_t buf[128];
-	uint32_t *dst;
-	uint32_t code;
+	int32_t buf[128];
+	int32_t *dst;
+	int32_t code;
 
 	for (i = 0; i < n; i++) {
 		test = &normalization_tests[i];
@@ -509,24 +510,24 @@ START_TEST(test_normalize_nfc_nfd)
 		}
 
 		len = (size_t)(dst - buf);
-		ck_assert_int_eq(len, test->nfd_len);
+		ck_assert_uint_eq(len, (size_t)test->nfd_len);
 
 		utf8lite_order(buf, len);
 		for (j = 0; j < test->nfd_len; j++) {
 			if (buf[j] != test->nfd[j]) {
 				write_normalization_test(stderr, test);
 			}
-			ck_assert_uint_eq(buf[j], test->nfd[j]);
+			ck_assert_int_eq(buf[j], test->nfd[j]);
 		}
 
 		utf8lite_compose(buf, &len);
-		ck_assert_uint_eq(len, test->nfc_len);
+		ck_assert_uint_eq(len, (size_t)test->nfc_len);
 
 		for (j = 0; j < test->nfc_len; j++) {
 			if (buf[j] != test->nfc[j]) {
 				write_normalization_test(stderr, test);
 			}
-			ck_assert_uint_eq(buf[j], test->nfc[j]);
+			ck_assert_int_eq(buf[j], test->nfc[j]);
 		}
 	}
 }
@@ -535,12 +536,12 @@ END_TEST
 
 START_TEST(test_normalize_nfkc_nfkd)
 {
-	unsigned i, n = num_normalization_test;
-	size_t j, len;
+	int i, j, n = num_normalization_test;
+	size_t len;
 	struct normalization_test *test;
-	uint32_t buf[128];
-	uint32_t *dst;
-	uint32_t code;
+	int32_t buf[128];
+	int32_t *dst;
+	int32_t code;
 
 	for (i = 0; i < n; i++) {
 		test = &normalization_tests[i];
@@ -551,7 +552,7 @@ START_TEST(test_normalize_nfkc_nfkd)
 		}
 
 		len = (size_t)(dst - buf);
-		ck_assert_int_eq(len, test->nfkd_len);
+		ck_assert_uint_eq(len, (size_t)test->nfkd_len);
 
 		utf8lite_order(buf, len);
 
@@ -559,17 +560,17 @@ START_TEST(test_normalize_nfkc_nfkd)
 			if (buf[j] != test->nfkd[j]) {
 				write_normalization_test(stderr, test);
 			}
-			ck_assert_uint_eq(buf[j], test->nfkd[j]);
+			ck_assert_int_eq(buf[j], test->nfkd[j]);
 		}
 
 		utf8lite_compose(buf, &len);
-		ck_assert_uint_eq(len, test->nfkc_len);
+		ck_assert_uint_eq(len, (size_t)test->nfkc_len);
 
 		for (j = 0; j < test->nfkc_len; j++) {
 			if (buf[j] != test->nfkc[j]) {
 				write_normalization_test(stderr, test);
 			}
-			ck_assert_uint_eq(buf[j], test->nfkc[j]);
+			ck_assert_int_eq(buf[j], test->nfkc[j]);
 		}
 
 	}
