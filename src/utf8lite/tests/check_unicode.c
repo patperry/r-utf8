@@ -219,12 +219,13 @@ void teardown_normalization(void)
 
 int is_utf8(const char *str, size_t len)
 {
+	struct utf8lite_message msg;
 	const uint8_t *ptr = (const uint8_t *)str;
 	const uint8_t *end = ptr + len;
         int err;
 
         while (ptr < end) {
-                if ((err = utf8lite_scan_utf8(&ptr, end))) {
+                if ((err = utf8lite_scan_utf8(&ptr, end, &msg))) {
 			return 0;
                 }
         }

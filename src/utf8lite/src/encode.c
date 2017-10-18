@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-#include <errno.h>
+#include <assert.h>
 #include "utf8lite.h"
 
 /*
@@ -40,16 +40,15 @@
 */
 
 
-int utf8lite_scan_utf8(const uint8_t **bufptr, const uint8_t *end)
+int utf8lite_scan_utf8(const uint8_t **bufptr, const uint8_t *end,
+		       struct utf8lite_message *msg)
 {
 	const uint8_t *ptr = *bufptr;
 	uint_fast8_t ch, ch1;
 	unsigned nc;
 	int err;
 
-	if (ptr >= end) {
-		return EINVAL;
-	}
+	assert(ptr < end);
 
 	/* First byte
 	 * ----------
@@ -87,10 +86,10 @@ int utf8lite_scan_utf8(const uint8_t **bufptr, const uint8_t *end)
 	if ((ch1 & 0x80) == 0) {
 		goto success;
 	} else if ((ch1 & 0xC0) == 0x80) {
-		goto backtrack;
+		goto inval_lead;
 	} else if ((ch1 & 0xE0) == 0xC0) {
 		if (ch1 == 0xC0 || ch1 == 0xC1) {
-			goto backtrack;
+			goto inval_lead;
 		}
 		nc = 1;
 	} else if ((ch1 & 0xF0) == 0xE0) {
@@ -99,13 +98,13 @@ int utf8lite_scan_utf8(const uint8_t **bufptr, const uint8_t *end)
 		nc = 3;
 	} else {
 		// expecting bytes in the following ranges: 00..7F C2..F4
-		goto backtrack;
+		goto inval_lead;
 	}
 
 	// ensure string is long enough
 	if (ptr + nc > end) {
 		// expecting another continuation byte
-		goto backtrack;
+		goto inval_incomplete;
 	}
 
 	/* First Continuation byte
@@ -138,30 +137,30 @@ int utf8lite_scan_utf8(const uint8_t **bufptr, const uint8_t *end)
 	case 0xE0:
 		if ((ch & 0xE0) != 0xA0) {
 			// expecting a byte between A0 and BF
-			goto backtrack;
+			goto inval_cont;
 		}
 		break;
 	case 0xED:
 		if ((ch & 0xE0) != 0x80) {
 			// expecting a byte between A0 and 9F
-			goto backtrack;
+			goto inval_cont;
 		}
 		break;
 	case 0xF0:
 		if ((ch & 0xE0) != 0xA0 && (ch & 0xF0) != 0x90) {
 			// expecting a byte between 90 and BF
-			goto backtrack;
+			goto inval_cont;
 		}
 		break;
 	case 0xF4:
 		if ((ch & 0xF0) != 0x80) {
 			// expecting a byte between 80 and 8F
-			goto backtrack;
+			goto inval_cont;
 		}
 	default:
 		if ((ch & 0xC0) != 0x80) {
 			// expecting a byte between 80 and BF
-			goto backtrack;
+			goto inval_cont;
 		}
 		break;
 	}
@@ -172,16 +171,33 @@ int utf8lite_scan_utf8(const uint8_t **bufptr, const uint8_t *end)
 		ch = *ptr++;
 		if ((ch & 0xC0) != 0x80) {
 			// expecting a byte between 80 and BF
-			goto backtrack;
+			goto inval_cont;
 		}
 	}
 
 success:
 	err = 0;
 	goto out;
-backtrack:
+
+inval_incomplete:
+	utf8lite_message_set(msg, "too few continuation bytes"
+			     " after leading byte (0x%02X)",
+			     (unsigned)ch1);
+	goto error;
+
+inval_lead:
+	utf8lite_message_set(msg, "invalid leading byte (0x%02X)",
+			     (unsigned)ch1);
+	goto error;
+
+inval_cont:
+	utf8lite_message_set(msg, "invalid continuation byte (0x%02X)",
+			     (unsigned)ch);
+	goto error;
+
+error:
 	ptr--;
-	err = EINVAL;
+	err = UTF8LITE_ERROR_INVAL;
 out:
 	*bufptr = ptr;
 	return err;

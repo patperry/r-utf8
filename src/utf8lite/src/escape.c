@@ -57,12 +57,12 @@ int utf8lite_scan_escape(const uint8_t **bufptr, const uint8_t *end,
 	goto out;
 
 error_incomplete:
-	err = UTF8LITE_ERROR_ESCAPE;
+	err = UTF8LITE_ERROR_INVAL;
 	utf8lite_message_set(msg, "incomplete escape code (\\)");
 	goto out;
 
 error_inval:
-	err = UTF8LITE_ERROR_ESCAPE;
+	err = UTF8LITE_ERROR_INVAL;
 	utf8lite_message_set(msg, "invalid escape code (\\%c)", ch);
 	goto out;
 
@@ -123,33 +123,33 @@ int utf8lite_scan_uescape(const uint8_t **bufptr, const uint8_t *end,
 	goto out;
 
 error_inval_incomplete:
-	err = UTF8LITE_ERROR_ESCAPE;
+	err = UTF8LITE_ERROR_INVAL;
 	utf8lite_message_set(msg, "incomplete escape code (\\u%.*s)",
 			     (int)(end - input), input);
 	goto error_inval;
 
 error_inval_hex:
-	err = UTF8LITE_ERROR_ESCAPE;
+	err = UTF8LITE_ERROR_INVAL;
 	utf8lite_message_set(msg, "invalid hex value in escape code (\\u%.*s)",
 			     4, input);
 	goto error_inval;
 
 error_inval_nolow:
-	err = UTF8LITE_ERROR_ESCAPE;
+	err = UTF8LITE_ERROR_INVAL;
 	utf8lite_message_set(msg, "missing UTF-16 low surrogate"
 			     " after high surrogate escape code (\\u%.*s)",
 			     4, input);
 	goto error_inval;
 
 error_inval_low:
-	err = UTF8LITE_ERROR_ESCAPE;
+	err = UTF8LITE_ERROR_INVAL;
 	utf8lite_message_set(msg, "invalid UTF-16 low surrogate (\\u%.*s)"
 			     " after high surrogate escape code (\\u%.*s)",
 			     4, input, 4, input - 6);
 	goto error_inval;
 
 error_inval_nohigh:
-	err = UTF8LITE_ERROR_ESCAPE;
+	err = UTF8LITE_ERROR_INVAL;
 	utf8lite_message_set(msg, "missing UTF-16 high surrogate"
 			     " before low surrogate escape code (\\u%.*s)",
 			     4, input);
