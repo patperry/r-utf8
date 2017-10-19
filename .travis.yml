@@ -1,0 +1,22 @@
+language: R
+cache: packages
+
+# valgrind (disabled; takes too long, and errors don't affect the build)
+#
+# r_check_args: '--use-valgrind'
+#
+# addons:
+#  apt:
+#    packages:
+#    - valgrind
+
+r_github_packages:
+  - jimhester/covr
+
+before_install:
+  - make NEWS
+  - make README
+
+after_success:
+  - export LC_ALL="C"
+  - Rscript -e 'covr::codecov(line_exclusions = c("R/deprecated.R", list.files("src/utf8lite", recursive = TRUE, full.names = TRUE)))'
