@@ -27,7 +27,7 @@ as_character_scalar <- function(name, value, utf8 = TRUE) {
 
 as_character_vector <- function(name, value, utf8 = TRUE) {
   if (!(is.null(value) || is.character(value) || is.factor(value) ||
-    is_corpus_text(value) || all(is.na(value)))) {
+    all(is.na(value)))) {
     stop(sprintf("'%s' must be text, a character vector, or NULL", name))
   }
   if (is.null(value)) {
@@ -38,12 +38,6 @@ as_character_vector <- function(name, value, utf8 = TRUE) {
     value <- as_utf8(value)
   }
   value
-}
-
-
-as_connector <- function(value) {
-  value <- as_character_scalar("connector", value)
-  .Call(C_as_text_filter_connector, value)
 }
 
 
@@ -85,48 +79,6 @@ as_enum <- function(name, value, choices) {
   }
   i <- i[i > 0]
   choices[[i]]
-}
-
-
-as_filter <- function(name, filter) {
-  if (is.null(filter)) {
-    return(NULL)
-  }
-
-  if (!is.list(filter)) {
-    stop(sprintf("'%s' must be a text filter, list, or NULL", name))
-  }
-  filter <- unclass(filter)
-  keys <- names(filter)
-
-  props <- names(text_filter())
-  unknown <- !(keys %in% props)
-  if (any(unknown)) {
-    key <- keys[unknown][1]
-    stop(sprintf("unrecognized text filter property: '%s'", key))
-  }
-
-  ans <- structure(list(), class = "corpus_text_filter")
-  for (prop in props) {
-    ans[[prop]] <- filter[[prop]]
-  }
-  ans
-}
-
-
-as_group <- function(group, n) {
-  if (!is.null(group)) {
-    group <- as.factor(group)
-
-    if (length(group) != n) {
-      stop(paste0(
-        "'group' argument has wrong length ('",
-        length(group), "'; must be '", n, "'"
-      ))
-    }
-  }
-
-  group
 }
 
 
