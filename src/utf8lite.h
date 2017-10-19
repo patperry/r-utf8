@@ -181,12 +181,12 @@ int utf8lite_isignorable(int32_t code);
 /** High (leading) UTF-16 surrogate for a code point in the supplementary
  *  plane (U+10000 to U+10FFFF). */
 #define UTF8LITE_UTF16_HIGH(u) \
-	0xD800 | (((u) - 0x010000) >> 10)
+	0xD800 | (((unsigned)(u) - 0x010000) >> 10)
 
 /** Low (trailing) UTF-16 surrogate for a code point in the supplementary
  *  plane (U+10000 to U+10FFFF). */
 #define UTF8LITE_UTF16_LOW(u) \
-	0xDC00 | (((u) - 0x010000) & 0x03FF)
+	0xDC00 | (((unsigned)(u) - 0x010000) & 0x03FF)
 
 /** Indicates whether a 16-bit code unit is a UTF-16 high surrogate.
  *  High surrogates are in the range 0xD800 `(1101 1000 0000 0000)`
