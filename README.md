@@ -21,7 +21,7 @@ Installation
 *utf8* is [available on CRAN][cran]. To install the latest released version,
 run the following command in R:
 
-    install.packages("utf8")
+    ### install.packages("utf8") # not available yet, actually
 
 
 ### Development version
