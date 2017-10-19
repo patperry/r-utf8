@@ -1,0 +1,21 @@
+Package: utf8
+Version: 0.1.0.9000
+Title: UTF-8 Text Processing 
+Authors@R: c(
+  person(c("Patrick", "O."), "Perry",
+         role = c("aut", "cph", "cre"),
+         email = "pperry@stern.nyu.edu"),
+  person("Unicode, Inc.",
+         role = c("cph", "dtc"),
+         comment = "Unicode Character Database"))
+Depends: R (>= 2.10)
+Suggests:
+  knitr,
+  testthat
+Description: Functions for manipulating and printing UTF-8 text.
+License: Apache License (== 2.0) | file LICENSE
+URL: https://github.com/patperry/r-utf8
+BugReports: https://github.com/patperry/r-utf8/issues
+LazyData: Yes
+Encoding: UTF-8
+VignetteBuilder: knitr

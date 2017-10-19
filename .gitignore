@@ -1,0 +1,8 @@
+*.a
+*.o
+*.so
+.Rhistory
+/NEWS
+/README
+/dist/
+/docs/articles/*.Rmd.in

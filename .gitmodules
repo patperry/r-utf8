@@ -1,0 +1,3 @@
+[submodule "src/utf8lite"]
+	path = src/utf8lite
+	url = https://github.com/patperry/utf8lite.git
