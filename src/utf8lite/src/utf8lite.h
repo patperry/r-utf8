@@ -615,7 +615,7 @@ void utf8lite_text_iter_skip(struct utf8lite_text_iter *it);
 /**@}*/
 
 /**
- * \defgroup textmap Text normalization map.
+ * \defgroup textmap Text normalization map
  * @{
  */
 
@@ -654,7 +654,7 @@ enum utf8lite_textmap_type {
 };
 
 /**
- * Type map, for normalizing tokens to types.
+ * Text normalization map.
  */
 struct utf8lite_textmap {
 	struct utf8lite_text text;/**< result of the most recent call to
