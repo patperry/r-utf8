@@ -42,7 +42,10 @@ enum utf8lite_error_type {
 	UTF8LITE_ERROR_NONE = 0,/**< no error */
 	UTF8LITE_ERROR_INVAL,	/**< invalid input */
 	UTF8LITE_ERROR_NOMEM,	/**< out of memory */
+	UTF8LITE_ERROR_OS,	/**< operating system error */
 	UTF8LITE_ERROR_OVERFLOW,/**< size exceeds maximum */
+	UTF8LITE_ERROR_DOMAIN,	/**< input is out of domain */
+	UTF8LITE_ERROR_RANGE,	/**< output is out of range */
 	UTF8LITE_ERROR_INTERNAL	/**< internal error */
 };
 
