@@ -6,4 +6,5 @@ xcuserdata
 /doc/html
 /tests/check_charwidth
 /tests/check_text
+/tests/check_textmap
 /tests/check_unicode

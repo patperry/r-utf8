@@ -39,7 +39,7 @@ UNICODE = http://www.unicode.org/Public/10.0.0
 
 CORPUS_A = libutf8lite.a
 LIB_O	= src/char.o src/encode.o src/error.o src/escape.o src/normalize.o \
-	  src/text.o src/textassign.o src/textiter.o
+	  src/text.o src/textassign.o src/textiter.o src/textmap.o
 
 DATA    = data/emoji/emoji-data.txt \
 	  data/ucd/CaseFolding.txt \
@@ -52,9 +52,10 @@ DATA    = data/emoji/emoji-data.txt \
 	  data/ucd/auxiliary/SentenceBreakProperty.txt \
 	  data/ucd/auxiliary/WordBreakProperty.txt
 
-TESTS_T = tests/check_charwidth tests/check_text tests/check_unicode
-TESTS_O = tests/check_charwidth.o tests/check_text.o tests/check_unicode.o \
-		  tests/testutil.o
+TESTS_T = tests/check_charwidth tests/check_text tests/check_textmap \
+		  tests/check_unicode
+TESTS_O = tests/check_charwidth.o tests/check_text.o test/check_textmap.o \
+		  tests/check_unicode.o tests/testutil.o
 
 TESTS_DATA = data/ucd/NormalizationTest.txt
 
@@ -148,6 +149,9 @@ tests/check_charwidth: tests/check_charwidth.o tests/testutil.o $(CORPUS_A)
 tests/check_text: tests/check_text.o tests/testutil.o $(CORPUS_A)
 	$(CC) -o $@ $^ $(LIBS) $(TEST_LIBS) $(LDFLAGS)
 
+tests/check_textmap: tests/check_textmap.o tests/testutil.o $(CORPUS_A)
+	$(CC) -o $@ $^ $(LIBS) $(TEST_LIBS) $(LDFLAGS)
+
 tests/check_unicode: tests/check_unicode.o $(CORPUS_A) \
 		data/ucd/NormalizationTest.txt
 	$(CC) -o $@ tests/check_unicode.o $(CORPUS_A) \
@@ -196,8 +200,11 @@ src/textassign.o: src/textassign.c src/utf8lite.h
 
 src/textiter.o: src/textiter.c src/utf8lite.h
 
+src/textmap.o: src/textmap.c src/utf8lite.h
+
 tests/check_charwidth.o: tests/check_charwidth.c src/utf8lite.h \
 	tests/testutil.h
 tests/check_text.o: tests/check_text.c src/utf8lite.h tests/testutil.h
+tests/check_textmap.o: tests/check_text.c src/utf8lite.h tests/testutil.h
 tests/check_unicode.o: tests/check_unicode.c src/utf8lite.h tests/testutil.h
 tests/testutil.o: tests/testutil.c src/utf8lite.h tests/testutil.h
