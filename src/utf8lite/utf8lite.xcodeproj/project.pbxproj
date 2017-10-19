@@ -29,9 +29,11 @@
 		88BAFA2F1F97AD32006A5A78 /* text.c in Sources */ = {isa = PBXBuildFile; fileRef = 88BAF9FC1F97AC74006A5A78 /* text.c */; };
 		88BAFA301F97AD32006A5A78 /* textassign.c in Sources */ = {isa = PBXBuildFile; fileRef = 88BAF9FE1F97AC74006A5A78 /* textassign.c */; };
 		88BAFA311F97AD36006A5A78 /* testutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 88BAFA191F97ACE8006A5A78 /* testutil.c */; };
-		88BAFA351F97B04F006A5A78 /* check_text.c in Sources */ = {isa = PBXBuildFile; fileRef = 88BAFA171F97ACE8006A5A78 /* check_text.c */; };
 		88DA8D671F97F59700125B42 /* textiter.c in Sources */ = {isa = PBXBuildFile; fileRef = 88DA8D661F97F59700125B42 /* textiter.c */; };
 		88DA8D681F97F59E00125B42 /* textiter.c in Sources */ = {isa = PBXBuildFile; fileRef = 88DA8D661F97F59700125B42 /* textiter.c */; };
+		88E5EB1F1F982D3F00E98123 /* textmap.c in Sources */ = {isa = PBXBuildFile; fileRef = 88E5EB1E1F982D3F00E98123 /* textmap.c */; };
+		88E5EB201F982D5000E98123 /* textmap.c in Sources */ = {isa = PBXBuildFile; fileRef = 88E5EB1E1F982D3F00E98123 /* textmap.c */; };
+		88E5EB231F982D8C00E98123 /* check_textmap.c in Sources */ = {isa = PBXBuildFile; fileRef = 88E5EB211F982D5D00E98123 /* check_textmap.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -67,6 +69,8 @@
 		88BAFA1A1F97ACE8006A5A78 /* check_unicode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = check_unicode.c; path = tests/check_unicode.c; sourceTree = "<group>"; };
 		88BAFA231F97AD26006A5A78 /* check_utf8lite */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = check_utf8lite; sourceTree = BUILT_PRODUCTS_DIR; };
 		88DA8D661F97F59700125B42 /* textiter.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = textiter.c; path = src/textiter.c; sourceTree = "<group>"; };
+		88E5EB1E1F982D3F00E98123 /* textmap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = textmap.c; path = src/textmap.c; sourceTree = "<group>"; };
+		88E5EB211F982D5D00E98123 /* check_textmap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = check_textmap.c; path = tests/check_textmap.c; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -117,6 +121,7 @@
 				88BAF9FC1F97AC74006A5A78 /* text.c */,
 				88BAF9FE1F97AC74006A5A78 /* textassign.c */,
 				88DA8D661F97F59700125B42 /* textiter.c */,
+				88E5EB1E1F982D3F00E98123 /* textmap.c */,
 				88BAFA021F97AC75006A5A78 /* utf8lite.h */,
 			);
 			name = src;
@@ -138,6 +143,7 @@
 			isa = PBXGroup;
 			children = (
 				88BAFA171F97ACE8006A5A78 /* check_text.c */,
+				88E5EB211F982D5D00E98123 /* check_textmap.c */,
 				88BAFA1A1F97ACE8006A5A78 /* check_unicode.c */,
 				88BAFA191F97ACE8006A5A78 /* testutil.c */,
 				88BAFA181F97ACE8006A5A78 /* testutil.h */,
@@ -249,6 +255,7 @@
 				88BAFA041F97AC75006A5A78 /* text.c in Sources */,
 				88BAFA031F97AC75006A5A78 /* encode.c in Sources */,
 				88BAFA061F97AC75006A5A78 /* textassign.c in Sources */,
+				88E5EB1F1F982D3F00E98123 /* textmap.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -256,13 +263,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				88BAFA351F97B04F006A5A78 /* check_text.c in Sources */,
 				88BAFA2D1F97AD32006A5A78 /* escape.c in Sources */,
 				88BAFA2B1F97AD32006A5A78 /* encode.c in Sources */,
 				88BAFA311F97AD36006A5A78 /* testutil.c in Sources */,
+				88E5EB231F982D8C00E98123 /* check_textmap.c in Sources */,
 				88BAFA2C1F97AD32006A5A78 /* error.c in Sources */,
 				88BAFA2A1F97AD32006A5A78 /* char.c in Sources */,
 				88BAFA2F1F97AD32006A5A78 /* text.c in Sources */,
+				88E5EB201F982D5000E98123 /* textmap.c in Sources */,
 				88BAFA2E1F97AD32006A5A78 /* normalize.c in Sources */,
 				88DA8D681F97F59E00125B42 /* textiter.c in Sources */,
 				88BAFA301F97AD32006A5A78 /* textassign.c in Sources */,

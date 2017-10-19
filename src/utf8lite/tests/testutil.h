@@ -93,26 +93,26 @@ struct utf8lite_text;
 
 
 #define assert_text_eq(X, Y) do { \
-	const struct corpus_text * _ck_x = (X); \
-	const struct corpus_text * _ck_y = (Y); \
-	ck_assert_msg(corpus_text_equals(_ck_y, _ck_x), \
+	const struct utf8lite_text * _ck_x = (X); \
+	const struct utf8lite_text * _ck_y = (Y); \
+	ck_assert_msg(utf8lite_text_equals(_ck_y, _ck_x), \
 		"Assertion '%s == %s' failed: %s == \"%.*s\" (0x%zx)," \
 		" %s==\"%.*s\" (0x%zx)", \
 		#X, #Y, \
-		#X, (int)CORPUS_TEXT_SIZE(_ck_x), _ck_x->ptr, _ck_x->attr, \
-		#Y, (int)CORPUS_TEXT_SIZE(_ck_y), _ck_y->ptr, _ck_y->attr); \
+		#X, (int)UTF8LITE_TEXT_SIZE(_ck_x), _ck_x->ptr, _ck_x->attr, \
+		#Y, (int)UTF8LITE_TEXT_SIZE(_ck_y), _ck_y->ptr, _ck_y->attr); \
 } while (0)
 
 
 #define assert_text_ne(X, Y) do { \
-	const struct corpus_text * _ck_x = (X); \
-	const struct corpus_text * _ck_y = (Y); \
-	ck_assert_msg(!corpus_text_equals(_ck_y, _ck_x), \
+	const struct utf8lite_text * _ck_x = (X); \
+	const struct utf8lite_text * _ck_y = (Y); \
+	ck_assert_msg(!utf8lite_text_equals(_ck_y, _ck_x), \
 		"Assertion '%s != %s' failed: %s == \"%s\" (0x%zx)," \
 		" %s==\"%s\" (0x%zx)", \
 		#X, #Y, \
-		#X, (int)CORPUS_TEXT_SIZE(_ck_x), _ck_x->ptr, _ck_x->attr, \
-		#Y, (int)CORPUS_TEXT_SIZE(_ck_y), _ck_y->ptr, _ck_y->attr); \
+		#X, (int)UTF8LITE_TEXT_SIZE(_ck_x), _ck_x->ptr, _ck_x->attr, \
+		#Y, (int)UTF8LITE_TEXT_SIZE(_ck_y), _ck_y->ptr, _ck_y->attr); \
 } while (0)
 
 
