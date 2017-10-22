@@ -38,8 +38,9 @@ EMOJI = http://www.unicode.org/Public/emoji/5.0
 UNICODE = http://www.unicode.org/Public/10.0.0
 
 CORPUS_A = libutf8lite.a
-LIB_O	= src/char.o src/encode.o src/error.o src/escape.o src/normalize.o \
-	  src/text.o src/textassign.o src/textiter.o src/textmap.o
+LIB_O	= src/array.o src/char.o src/encode.o src/error.o src/escape.o \
+		  src/normalize.o src/render.o src/text.o src/textassign.o \
+		  src/textiter.o src/textmap.o
 
 DATA    = data/emoji/emoji-data.txt \
 	  data/ucd/CaseFolding.txt \
@@ -188,24 +189,18 @@ tests/%.o: tests/%.c
 
 .PHONY: all check clean data doc
 
+src/array.o: src/array.c src/private/array.h src/utf8lite.h
 src/char.o: src/char.c src/private/charwidth.h src/utf8lite.h
-
 src/encode.o: src/encode.c src/utf8lite.h
-
 src/error.o: src/error.c src/utf8lite.h
-
 src/escape.o: src/escape.c src/utf8lite.h
-
 src/normalize.o: src/normalize.c src/private/casefold.h \
 	src/private/combining.h src/private/compose.h src/private/decompose.h \
 	src/utf8lite.h
-
+src/render.o: src/render.c src/private/array.h src/utf8lite.h
 src/text.o: src/text.c src/utf8lite.h
-
 src/textassign.o: src/textassign.c src/utf8lite.h
-
 src/textiter.o: src/textiter.c src/utf8lite.h
-
 src/textmap.o: src/textmap.c src/utf8lite.h
 
 tests/check_charwidth.o: tests/check_charwidth.c src/utf8lite.h \
