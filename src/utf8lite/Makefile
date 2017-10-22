@@ -49,8 +49,7 @@ DATA    = data/emoji/emoji-data.txt \
 	  data/ucd/PropList.txt \
 	  data/ucd/Scripts.txt \
 	  data/ucd/UnicodeData.txt \
-	  data/ucd/auxiliary/SentenceBreakProperty.txt \
-	  data/ucd/auxiliary/WordBreakProperty.txt
+	  data/ucd/auxiliary/GraphemeBreakProperty.txt
 
 TESTS_T = tests/check_charwidth tests/check_text tests/check_textmap \
 		  tests/check_unicode
@@ -106,6 +105,13 @@ data/ucd/UnicodeData.txt:
 	$(MKDIR_P) data/ucd
 	$(CURL) -o $@ $(UNICODE)/ucd/UnicodeData.txt
 
+data/ucd/auxiliary/GraphemeBreakProperty.txt:
+	$(MKDIR_P) data/ucd/auxiliary
+	$(CURL) -o $@ $(UNICODE)/ucd/auxiliary/GraphemeBreakProperty.txt
+
+data/ucd/auxiliary/GraphemeBreakTest.txt:
+	$(MKDIR_P) data/ucd/auxiliary
+	$(CURL) -o $@ $(UNICODE)/ucd/auxiliary/GraphemeBreakTest.txt
 
 # Generated Sources
 
