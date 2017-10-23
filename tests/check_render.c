@@ -87,8 +87,8 @@ END_TEST
 START_TEST(test_escape_dquote)
 {
 	utf8lite_render_set_flags(&render, 0);
-	ck_assert(!utf8lite_render_char(&render, '\''));
-	ck_assert_str_eq(render.string, "\'");
+	ck_assert(!utf8lite_render_char(&render, '\"'));
+	ck_assert_str_eq(render.string, "\"");
 	utf8lite_render_clear(&render);
 
 	utf8lite_render_set_flags(&render, UTF8LITE_ESCAPE_DQUOTE);
