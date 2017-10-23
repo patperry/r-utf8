@@ -138,6 +138,82 @@ START_TEST(test_escape_backslash)
 END_TEST
 
 
+START_TEST(test_escape_extended)
+{
+	const struct char_test tests[] = {
+		{ "\x01", "\x01", "\x01" },
+		{ "\x20", "\x20", "\x20" },
+		{ "\x7E", "\x7E", "\x7E" },
+		{ "\x7F", "\x7F", "\x7F" },
+		{ "\xC2\x80", "\xC2\x80", "\xC2\x80" },
+		{ "\xC2\xA0", "\xC2\xA0", "\xC2\xA0" },
+		{ "\xEF\xBF\xBD", "\xEF\xBF\xBD", "\xEF\xBF\xBD" },
+		{ "\xEF\xBF\xBF", "\xEF\xBF\xBF", "\xEF\xBF\xBF" },
+		{ "\xF0\x90\x80\x80", "\\U00010000", "\\ud800\\udc00" },
+		{ "\xF0\xAF\xA8\x9D", "\\U0002fa1d", "\\ud87e\\ude1d" },
+		{ "\xF4\x8F\xBF\xBF", "\\U0010ffff", "\\udbff\\udfff" }
+	};
+	int flag = UTF8LITE_ESCAPE_EXTENDED;
+	int i, n = sizeof(tests) / sizeof(tests[0]);
+
+	for (i = 0; i < n; i++) {
+		utf8lite_render_set_flags(&render, 0);
+		ck_assert(!utf8lite_render_string(&render, tests[i].raw));
+		ck_assert_str_eq(render.string, tests[i].raw);
+		utf8lite_render_clear(&render);
+
+		utf8lite_render_set_flags(&render, flag | UTF8LITE_ENCODE_C);
+		ck_assert(!utf8lite_render_string(&render, tests[i].raw));
+		ck_assert_str_eq(render.string, tests[i].c);
+		utf8lite_render_clear(&render);
+
+		utf8lite_render_set_flags(&render, flag | UTF8LITE_ENCODE_JSON);
+		ck_assert(!utf8lite_render_string(&render, tests[i].raw));
+		ck_assert_str_eq(render.string, tests[i].json);
+		utf8lite_render_clear(&render);
+	}
+}
+END_TEST
+
+
+START_TEST(test_escape_utf8)
+{
+	const struct char_test tests[] = {
+		{ "\x01", "\x01", "\x01" },
+		{ "\x20", "\x20", "\x20" },
+		{ "\x7E", "\x7E", "\x7E" },
+		{ "\x7F", "\x7F", "\x7F" },
+		{ "\xC2\x80", "\\u0080", "\\u0080" },
+		{ "\xC2\xA0", "\\u00a0", "\\u00a0" },
+		{ "\xEF\xBF\xBD", "\\ufffd", "\\ufffd" },
+		{ "\xEF\xBF\xBF", "\\uffff", "\\uffff" },
+		{ "\xF0\x90\x80\x80", "\\U00010000", "\\ud800\\udc00" },
+		{ "\xF0\xAF\xA8\x9D", "\\U0002fa1d", "\\ud87e\\ude1d" },
+		{ "\xF4\x8F\xBF\xBF", "\\U0010ffff", "\\udbff\\udfff" }
+	};
+	int flag = UTF8LITE_ESCAPE_UTF8;
+	int i, n = sizeof(tests) / sizeof(tests[0]);
+
+	for (i = 0; i < n; i++) {
+		utf8lite_render_set_flags(&render, 0);
+		ck_assert(!utf8lite_render_string(&render, tests[i].raw));
+		ck_assert_str_eq(render.string, tests[i].raw);
+		utf8lite_render_clear(&render);
+
+		utf8lite_render_set_flags(&render, flag | UTF8LITE_ENCODE_C);
+		ck_assert(!utf8lite_render_string(&render, tests[i].raw));
+		ck_assert_str_eq(render.string, tests[i].c);
+		utf8lite_render_clear(&render);
+
+		utf8lite_render_set_flags(&render, flag | UTF8LITE_ENCODE_JSON);
+		ck_assert(!utf8lite_render_string(&render, tests[i].raw));
+		ck_assert_str_eq(render.string, tests[i].json);
+		utf8lite_render_clear(&render);
+	}
+}
+END_TEST
+
+
 Suite *render_suite(void)
 {
         Suite *s;
@@ -151,6 +227,8 @@ Suite *render_suite(void)
         tcase_add_test(tc, test_escape_dquote);
         tcase_add_test(tc, test_escape_squote);
         tcase_add_test(tc, test_escape_backslash);
+        tcase_add_test(tc, test_escape_extended);
+        tcase_add_test(tc, test_escape_utf8);
         suite_add_tcase(s, tc);
 
 	return s;

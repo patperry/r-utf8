@@ -354,6 +354,10 @@ int utf8lite_render_char(struct utf8lite_render *r, int32_t ch)
 	end = r->string + r->length;
 	if (UTF8LITE_IS_ASCII(ch)) {
 		return utf8lite_render_ascii(r, ch);
+	} else if (r->flags & UTF8LITE_ESCAPE_UTF8) {
+		return utf8lite_escape_utf8(r, ch);
+	} else if (ch > 0xFFFF && (r->flags & UTF8LITE_ESCAPE_EXTENDED)) {
+		return utf8lite_escape_utf8(r, ch);
 	}
 
 	type = utf8lite_charwidth(ch);
