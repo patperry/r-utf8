@@ -82,15 +82,75 @@ START_TEST(test_escape_control)
 }
 END_TEST
 
+START_TEST(test_escape_dquote)
+{
+	utf8lite_render_set_flags(&render, 0);
+	ck_assert(!utf8lite_render_char(&render, '\''));
+	ck_assert_str_eq(render.string, "\'");
+	utf8lite_render_clear(&render);
+
+	utf8lite_render_set_flags(&render, UTF8LITE_ESCAPE_DQUOTE);
+	ck_assert(!utf8lite_render_char(&render, '\"'));
+	ck_assert_str_eq(render.string, "\\\"");
+	utf8lite_render_clear(&render);
+}
+END_TEST
+
+
+START_TEST(test_escape_squote)
+{
+	utf8lite_render_set_flags(&render, 0);
+	ck_assert(!utf8lite_render_char(&render, '\''));
+	ck_assert_str_eq(render.string, "\'");
+	utf8lite_render_clear(&render);
+
+	utf8lite_render_set_flags(&render, UTF8LITE_ESCAPE_SQUOTE);
+	ck_assert(!utf8lite_render_char(&render, '\''));
+	ck_assert_str_eq(render.string, "\\\'");
+	utf8lite_render_clear(&render);
+}
+END_TEST
+
+
+START_TEST(test_escape_backslash)
+{
+	int flags[] = {
+		UTF8LITE_ESCAPE_CONTROL,
+		UTF8LITE_ESCAPE_DQUOTE,
+		UTF8LITE_ESCAPE_SQUOTE,
+		UTF8LITE_ESCAPE_EXTENDED,
+		UTF8LITE_ESCAPE_UTF8
+	};
+	int i, n = sizeof(flags) / sizeof(flags[0]);
+
+	utf8lite_render_set_flags(&render, 0);
+	ck_assert(!utf8lite_render_char(&render, '\\'));
+	ck_assert_str_eq(render.string, "\\");
+	utf8lite_render_clear(&render);
+
+	for (i = 0; i < n; i++) {
+		utf8lite_render_set_flags(&render, flags[i]);
+		ck_assert(!utf8lite_render_char(&render, '\\'));
+		ck_assert_str_eq(render.string, "\\\\");
+		utf8lite_render_clear(&render);
+	}
+}
+END_TEST
+
+
 Suite *render_suite(void)
 {
         Suite *s;
         TCase *tc;
 
         s = suite_create("render");
+
 	tc = tcase_create("escape");
         tcase_add_checked_fixture(tc, setup_render, teardown_render);
         tcase_add_test(tc, test_escape_control);
+        tcase_add_test(tc, test_escape_dquote);
+        tcase_add_test(tc, test_escape_squote);
+        tcase_add_test(tc, test_escape_backslash);
         suite_add_tcase(s, tc);
 
 	return s;
