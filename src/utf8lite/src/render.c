@@ -372,7 +372,7 @@ void utf8lite_render_string(struct utf8lite_render *r, const char *str)
 void utf8lite_render_printf(struct utf8lite_render *r, const char *format, ...)
 {
 	va_list ap, ap2;
-	int err, len;
+	int len;
 
 	if (r->error) {
 		return;
@@ -384,19 +384,19 @@ void utf8lite_render_printf(struct utf8lite_render *r, const char *format, ...)
 	len = vsnprintf(NULL, 0, format, ap);
 	if (len < 0) {
 		// printf formatting error
-		err = UTF8LITE_ERROR_OS;
-		goto out;
+		r->error = UTF8LITE_ERROR_OS;
+		goto exit;
 	}
 
 	utf8lite_render_grow(r, len);
 	if (r->error) {
-		goto out;
+		goto exit;
 	}
 
 	vsprintf(r->string + r->length, format, ap2);
 	r->length += len;
 
-out:
+exit:
 	va_end(ap);
 	va_end(ap2);
 }
