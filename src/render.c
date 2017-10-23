@@ -23,29 +23,30 @@
 #include "private/array.h"
 #include "utf8lite.h"
 
+#define CHECK_ERROR(r) \
+	if (r->error) { \
+		return r->error; \
+	}
 
-static void utf8lite_render_grow(struct utf8lite_render *r, int nadd)
+static int utf8lite_render_grow(struct utf8lite_render *r, int nadd)
 {
 	void *base = r->string;
 	int size = r->length_max + 1;
 	int err;
 
-	if (r->error) {
-		return;
-	}
-
 	if (nadd <= 0 || r->length_max - nadd > r->length) {
-		return;
+		return 0;
 	}
 
 	if ((err = utf8lite_array_grow(&base, &size, sizeof(*r->string),
 				       r->length + 1, nadd))) {
 		r->error = err;
-		return;
+		return r->error;
 	}
 
 	r->string = base;
 	r->length_max = size - 1;
+	return 0;
 }
 
 
@@ -137,55 +138,56 @@ const char *utf8lite_render_set_newline(struct utf8lite_render *r,
 }
 
 
-void utf8lite_render_indent(struct utf8lite_render *r, int nlevel)
+int utf8lite_render_indent(struct utf8lite_render *r, int nlevel)
 {
-	r->indent += nlevel;
-	assert(r->indent >= 0);
+	CHECK_ERROR(r);
+
+	if (nlevel > INT_MAX - r->indent) {
+		r->error = UTF8LITE_ERROR_OVERFLOW;
+	} else {
+		r->indent += nlevel;
+		if (r->indent < 0) {
+			r->indent = 0;
+		}
+	}
+	return r->error;
 }
 
 
-void utf8lite_render_newlines(struct utf8lite_render *r, int nline)
+int utf8lite_render_newlines(struct utf8lite_render *r, int nline)
 {
 	char *end;
 	int i;
 
-	if (r->error) {
-		return;
-	}
+	CHECK_ERROR(r);
 
 	for (i = 0; i < nline; i++) {
 		utf8lite_render_grow(r, r->newline_length);
-		if (r->error) {
-			return;
-		}
+		CHECK_ERROR(r);
 
 		end = r->string + r->length;
 		memcpy(end, r->newline, r->newline_length + 1); // include '\0'
 		r->length += r->newline_length;
 		r->needs_indent = 1;
 	}
+
+	return 0;
 }
 
 
-static void maybe_indent(struct utf8lite_render *r)
+static int maybe_indent(struct utf8lite_render *r)
 {
 	int ntab = r->indent;
 	char *end;
 	int i;
 
-	if (r->error) {
-		return;
-	}
-
 	if (!r->needs_indent) {
-		return;
+		return 0;
 	}
 
 	for (i = 0; i < ntab; i++) {
 		utf8lite_render_grow(r, r->tab_length);
-		if (r->error) {
-			return;
-		}
+		CHECK_ERROR(r);
 
 		end = r->string + r->length;
 		memcpy(end, r->tab, r->tab_length + 1); // include '\0'
@@ -193,10 +195,11 @@ static void maybe_indent(struct utf8lite_render *r)
 	}
 
 	r->needs_indent = 0;
+	return 0;
 }
 
 
-static void utf8lite_escape_utf8(struct utf8lite_render *r, int32_t ch)
+static int utf8lite_escape_utf8(struct utf8lite_render *r, int32_t ch)
 {
 	char *end;
 	unsigned hi, lo;
@@ -214,9 +217,8 @@ static void utf8lite_escape_utf8(struct utf8lite_render *r, int32_t ch)
 	}
 
 	utf8lite_render_grow(r, len);
-	if (r->error) {
-		return;
-	}
+	CHECK_ERROR(r);
+
 	end = r->string + r->length;
 
 	if (ch <= 0xFFFF) {
@@ -230,18 +232,18 @@ static void utf8lite_escape_utf8(struct utf8lite_render *r, int32_t ch)
 	}
 
 	r->length += len;
+	return 0;
 }
 
 
-static void utf8lite_render_ascii(struct utf8lite_render *r, int32_t ch)
+static int utf8lite_render_ascii(struct utf8lite_render *r, int32_t ch)
 {
 	char *end;
 
 	// character expansion for a special escape: \X
 	utf8lite_render_grow(r, 2);
-	if (r->error) {
-		return;
-	}
+	CHECK_ERROR(r);
+
 	end = r->string + r->length;
 
 	if ((ch <= 0x1F || ch == 0x7F)
@@ -249,13 +251,10 @@ static void utf8lite_render_ascii(struct utf8lite_render *r, int32_t ch)
 		switch (ch) {
 		case '\a':
 			if (r->flags & UTF8LITE_ENCODE_JSON) {
-				utf8lite_escape_utf8(r, ch);
-			} else {
-				end[0] = '\\';
-				end[1] = 'a';
-				end[2] = '\0';
-				r->length += 2;
+				return utf8lite_escape_utf8(r, ch);
 			}
+			end[0] = '\\'; end[1] = 'a'; end[2] = '\0';
+			r->length += 2;
 			break;
 		case '\b':
 			end[0] = '\\'; end[1] = 'b'; end[2] = '\0';
@@ -279,61 +278,48 @@ static void utf8lite_render_ascii(struct utf8lite_render *r, int32_t ch)
 			break;
 		case '\v':
 			if (r->flags & UTF8LITE_ENCODE_JSON) {
-				utf8lite_escape_utf8(r, ch);
-			} else {
-				end[0] = '\\';
-				end[1] = 'v';
-				end[2] = '\0';
-				r->length += 2;
+				return utf8lite_escape_utf8(r, ch);
 			}
+			end[0] = '\\'; end[1] = 'v'; end[2] = '\0';
+			r->length += 2;
 			break;
 		default:
-			utf8lite_escape_utf8(r, ch);
-			break;
+			return utf8lite_escape_utf8(r, ch);
 		}
 	} else {
 		end[0] = (char)ch;
 		end[1] = '\0';
 		r->length++;
 	}
+	return 0;
 }
 
 
-void utf8lite_render_char(struct utf8lite_render *r, int32_t ch)
+int utf8lite_render_char(struct utf8lite_render *r, int32_t ch)
 {
 	char *end;
 	uint8_t *uend;
 	int type;
 
-	if (r->error) {
-		return;
-	}
+	CHECK_ERROR(r);
 
 	maybe_indent(r);
-	if (r->error) {
-		return;
-	}
+	CHECK_ERROR(r);
 
-	// maximum character expansion:
-	// \uXXXX\uXXXX
-	// 123456789012
+	// maximum character expansion: \uXXXX\uXXXX
 	utf8lite_render_grow(r, 12);
-	if (r->error) {
-		return;
-	}
+	CHECK_ERROR(r);
 
 	end = r->string + r->length;
 	if (UTF8LITE_IS_ASCII(ch)) {
-		utf8lite_render_ascii(r, ch);
-		return;
+		return utf8lite_render_ascii(r, ch);
 	}
 
 	type = utf8lite_charwidth(ch);
 	switch (type) {
 	case UTF8LITE_CHARWIDTH_OTHER:
 		if (r->flags & UTF8LITE_ESCAPE_CONTROL) {
-			utf8lite_escape_utf8(r, ch);
-			return;
+			return utf8lite_escape_utf8(r, ch);
 		}
 		break;
 	default:
@@ -344,39 +330,33 @@ void utf8lite_render_char(struct utf8lite_render *r, int32_t ch)
 	utf8lite_encode_utf8(ch, &uend);
 	*uend = '\0';
 	r->length += UTF8LITE_UTF8_ENCODE_LEN(ch);
+	return 0;
 }
 
 
-void utf8lite_render_string(struct utf8lite_render *r, const char *str)
+int utf8lite_render_string(struct utf8lite_render *r, const char *str)
 {
-	const uint8_t *ptr = (const uint8_t *)str;
-	int32_t ch;
+	struct utf8lite_text text;
+	const uint8_t *ptr;
+	size_t len;
 
-	if (r->error) {
-		return;
-	}
+	CHECK_ERROR(r);
 
-	while (1) {
-		utf8lite_decode_utf8(&ptr, &ch);
-		if (ch == 0) {
-			return;
-		}
-		utf8lite_render_char(r, ch);
-		if (r->error) {
-			return;
-		}
-	}
+	ptr = (const uint8_t *)str;
+	len = strlen(str);
+	r->error = utf8lite_text_assign(&text, ptr, len, 0, NULL);
+	CHECK_ERROR(r);
+
+	return utf8lite_render_text(r, &text);
 }
 
 
-void utf8lite_render_printf(struct utf8lite_render *r, const char *format, ...)
+int utf8lite_render_printf(struct utf8lite_render *r, const char *format, ...)
 {
 	va_list ap, ap2;
 	int len;
 
-	if (r->error) {
-		return;
-	}
+	CHECK_ERROR(r);
 
 	va_start(ap, format);
 	va_copy(ap2, ap);
@@ -399,23 +379,22 @@ void utf8lite_render_printf(struct utf8lite_render *r, const char *format, ...)
 exit:
 	va_end(ap);
 	va_end(ap2);
+	return r->error;
 }
 
 
-void utf8lite_render_text(struct utf8lite_render *r,
+int utf8lite_render_text(struct utf8lite_render *r,
 			const struct utf8lite_text *text)
 {
 	struct utf8lite_text_iter it;
 
-	if (r->error) {
-		return;
-	}
+	CHECK_ERROR(r);
 
 	utf8lite_text_iter_make(&it, text);
 	while (utf8lite_text_iter_advance(&it)) {
 		utf8lite_render_char(r, it.current);
-		if (r->error) {
-			return;
-		}
+		CHECK_ERROR(r);
 	}
+
+	return 0;
 }
