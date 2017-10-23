@@ -46,6 +46,7 @@ struct char_test {
 START_TEST(test_escape_control)
 {
 	const struct char_test tests[] = {
+		{ "\x01", "\\u0001", "\\u0001" },
 		{ "\a", "\\a", "\\u0007" },
 		{ "\b", "\\b", "\\b" },
 		{ "\f", "\\f", "\\f" },
@@ -53,6 +54,7 @@ START_TEST(test_escape_control)
 		{ "\r", "\\r", "\\r" },
 		{ "\t", "\\t", "\\t" },
 		{ "\v", "\\v", "\\u000b" },
+		{ "\x7F", "\\u007f", "\\u007f" },
 		{ "\xC2\x80", "\\u0080", "\\u0080"},
 		{ "\xC2\x9F", "\\u009f", "\\u009f"},
 		{ "\xE0\xB8\x80", "\\u0e00", "\\u0e00" },
