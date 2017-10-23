@@ -29,11 +29,16 @@
 		88BAFA2F1F97AD32006A5A78 /* text.c in Sources */ = {isa = PBXBuildFile; fileRef = 88BAF9FC1F97AC74006A5A78 /* text.c */; };
 		88BAFA301F97AD32006A5A78 /* textassign.c in Sources */ = {isa = PBXBuildFile; fileRef = 88BAF9FE1F97AC74006A5A78 /* textassign.c */; };
 		88BAFA311F97AD36006A5A78 /* testutil.c in Sources */ = {isa = PBXBuildFile; fileRef = 88BAFA191F97ACE8006A5A78 /* testutil.c */; };
+		88CF04931F9D54CE00AA3475 /* array.c in Sources */ = {isa = PBXBuildFile; fileRef = 88CF04911F9D54CE00AA3475 /* array.c */; };
+		88CF04941F9D54CE00AA3475 /* render.c in Sources */ = {isa = PBXBuildFile; fileRef = 88CF04921F9D54CE00AA3475 /* render.c */; };
+		88CF04961F9D54EA00AA3475 /* array.h in Headers */ = {isa = PBXBuildFile; fileRef = 88CF04951F9D54EA00AA3475 /* array.h */; };
+		88CF04971F9D54EE00AA3475 /* array.c in Sources */ = {isa = PBXBuildFile; fileRef = 88CF04911F9D54CE00AA3475 /* array.c */; };
+		88CF04981F9D54F500AA3475 /* render.c in Sources */ = {isa = PBXBuildFile; fileRef = 88CF04921F9D54CE00AA3475 /* render.c */; };
+		88CF049B1F9D551900AA3475 /* check_render.c in Sources */ = {isa = PBXBuildFile; fileRef = 88CF04991F9D551300AA3475 /* check_render.c */; };
 		88DA8D671F97F59700125B42 /* textiter.c in Sources */ = {isa = PBXBuildFile; fileRef = 88DA8D661F97F59700125B42 /* textiter.c */; };
 		88DA8D681F97F59E00125B42 /* textiter.c in Sources */ = {isa = PBXBuildFile; fileRef = 88DA8D661F97F59700125B42 /* textiter.c */; };
 		88E5EB1F1F982D3F00E98123 /* textmap.c in Sources */ = {isa = PBXBuildFile; fileRef = 88E5EB1E1F982D3F00E98123 /* textmap.c */; };
 		88E5EB201F982D5000E98123 /* textmap.c in Sources */ = {isa = PBXBuildFile; fileRef = 88E5EB1E1F982D3F00E98123 /* textmap.c */; };
-		88E5EB231F982D8C00E98123 /* check_textmap.c in Sources */ = {isa = PBXBuildFile; fileRef = 88E5EB211F982D5D00E98123 /* check_textmap.c */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -68,6 +73,10 @@
 		88BAFA191F97ACE8006A5A78 /* testutil.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = testutil.c; path = tests/testutil.c; sourceTree = "<group>"; };
 		88BAFA1A1F97ACE8006A5A78 /* check_unicode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = check_unicode.c; path = tests/check_unicode.c; sourceTree = "<group>"; };
 		88BAFA231F97AD26006A5A78 /* check_utf8lite */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = check_utf8lite; sourceTree = BUILT_PRODUCTS_DIR; };
+		88CF04911F9D54CE00AA3475 /* array.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = array.c; path = src/array.c; sourceTree = "<group>"; };
+		88CF04921F9D54CE00AA3475 /* render.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = render.c; path = src/render.c; sourceTree = "<group>"; };
+		88CF04951F9D54EA00AA3475 /* array.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = array.h; path = src/private/array.h; sourceTree = "<group>"; };
+		88CF04991F9D551300AA3475 /* check_render.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = check_render.c; path = tests/check_render.c; sourceTree = "<group>"; };
 		88DA8D661F97F59700125B42 /* textiter.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = textiter.c; path = src/textiter.c; sourceTree = "<group>"; };
 		88E5EB1E1F982D3F00E98123 /* textmap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = textmap.c; path = src/textmap.c; sourceTree = "<group>"; };
 		88E5EB211F982D5D00E98123 /* check_textmap.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = check_textmap.c; path = tests/check_textmap.c; sourceTree = "<group>"; };
@@ -113,10 +122,12 @@
 			isa = PBXGroup;
 			children = (
 				88BAFA0B1F97AC7D006A5A78 /* private */,
+				88CF04911F9D54CE00AA3475 /* array.c */,
 				88BAF9FD1F97AC74006A5A78 /* char.c */,
 				88BAF9FB1F97AC74006A5A78 /* encode.c */,
 				88BAFA001F97AC75006A5A78 /* error.c */,
 				88BAFA011F97AC75006A5A78 /* escape.c */,
+				88CF04921F9D54CE00AA3475 /* render.c */,
 				88BAF9FF1F97AC74006A5A78 /* normalize.c */,
 				88BAF9FC1F97AC74006A5A78 /* text.c */,
 				88BAF9FE1F97AC74006A5A78 /* textassign.c */,
@@ -130,6 +141,7 @@
 		88BAFA0B1F97AC7D006A5A78 /* private */ = {
 			isa = PBXGroup;
 			children = (
+				88CF04951F9D54EA00AA3475 /* array.h */,
 				88BAFA0E1F97AC94006A5A78 /* casefold.h */,
 				88BAFA0C1F97AC94006A5A78 /* charwidth.h */,
 				88BAFA0D1F97AC94006A5A78 /* combining.h */,
@@ -142,6 +154,7 @@
 		88BAFA161F97ACBF006A5A78 /* tests */ = {
 			isa = PBXGroup;
 			children = (
+				88CF04991F9D551300AA3475 /* check_render.c */,
 				88BAFA171F97ACE8006A5A78 /* check_text.c */,
 				88E5EB211F982D5D00E98123 /* check_textmap.c */,
 				88BAFA1A1F97ACE8006A5A78 /* check_unicode.c */,
@@ -162,6 +175,7 @@
 				88BAFA0A1F97AC75006A5A78 /* utf8lite.h in Headers */,
 				88BAFA141F97AC94006A5A78 /* compose.h in Headers */,
 				88BAFA151F97AC94006A5A78 /* decompose.h in Headers */,
+				88CF04961F9D54EA00AA3475 /* array.h in Headers */,
 				88BAFA131F97AC94006A5A78 /* casefold.h in Headers */,
 				88BAFA111F97AC94006A5A78 /* charwidth.h in Headers */,
 				88BAFA121F97AC94006A5A78 /* combining.h in Headers */,
@@ -254,8 +268,10 @@
 				88DA8D671F97F59700125B42 /* textiter.c in Sources */,
 				88BAFA041F97AC75006A5A78 /* text.c in Sources */,
 				88BAFA031F97AC75006A5A78 /* encode.c in Sources */,
+				88CF04941F9D54CE00AA3475 /* render.c in Sources */,
 				88BAFA061F97AC75006A5A78 /* textassign.c in Sources */,
 				88E5EB1F1F982D3F00E98123 /* textmap.c in Sources */,
+				88CF04931F9D54CE00AA3475 /* array.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -266,7 +282,7 @@
 				88BAFA2D1F97AD32006A5A78 /* escape.c in Sources */,
 				88BAFA2B1F97AD32006A5A78 /* encode.c in Sources */,
 				88BAFA311F97AD36006A5A78 /* testutil.c in Sources */,
-				88E5EB231F982D8C00E98123 /* check_textmap.c in Sources */,
+				88CF04971F9D54EE00AA3475 /* array.c in Sources */,
 				88BAFA2C1F97AD32006A5A78 /* error.c in Sources */,
 				88BAFA2A1F97AD32006A5A78 /* char.c in Sources */,
 				88BAFA2F1F97AD32006A5A78 /* text.c in Sources */,
@@ -274,6 +290,8 @@
 				88BAFA2E1F97AD32006A5A78 /* normalize.c in Sources */,
 				88DA8D681F97F59E00125B42 /* textiter.c in Sources */,
 				88BAFA301F97AD32006A5A78 /* textassign.c in Sources */,
+				88CF049B1F9D551900AA3475 /* check_render.c in Sources */,
+				88CF04981F9D54F500AA3475 /* render.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
