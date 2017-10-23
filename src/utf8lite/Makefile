@@ -52,10 +52,10 @@ DATA    = data/emoji/emoji-data.txt \
 	  data/ucd/UnicodeData.txt \
 	  data/ucd/auxiliary/GraphemeBreakProperty.txt
 
-TESTS_T = tests/check_charwidth tests/check_text tests/check_textmap \
-		  tests/check_unicode
-TESTS_O = tests/check_charwidth.o tests/check_text.o test/check_textmap.o \
-		  tests/check_unicode.o tests/testutil.o
+TESTS_T = tests/check_charwidth tests/check_render tests/check_text \
+		  tests/check_textmap tests/check_unicode
+TESTS_O = tests/check_charwidth.o tests/check_render.o tests/check_text.o \
+		  test/check_textmap.o tests/check_unicode.o tests/testutil.o
 
 TESTS_DATA = data/ucd/NormalizationTest.txt
 
@@ -153,6 +153,9 @@ src/private/normalization.h: util/gen-normalization.py \
 tests/check_charwidth: tests/check_charwidth.o tests/testutil.o $(CORPUS_A)
 	$(CC) -o $@ $^ $(LIBS) $(TEST_LIBS) $(LDFLAGS)
 
+tests/check_render: tests/check_render.o tests/testutil.o $(CORPUS_A)
+	$(CC) -o $@ $^ $(LIBS) $(TEST_LIBS) $(LDFLAGS)
+
 tests/check_text: tests/check_text.o tests/testutil.o $(CORPUS_A)
 	$(CC) -o $@ $^ $(LIBS) $(TEST_LIBS) $(LDFLAGS)
 
@@ -203,8 +206,8 @@ src/textassign.o: src/textassign.c src/utf8lite.h
 src/textiter.o: src/textiter.c src/utf8lite.h
 src/textmap.o: src/textmap.c src/utf8lite.h
 
-tests/check_charwidth.o: tests/check_charwidth.c src/utf8lite.h \
-	tests/testutil.h
+tests/check_charwidth.o: tests/check_charwidth.c src/utf8lite.h tests/testutil.h
+tests/check_render.o: tests/check_render.c src/utf8lite.h tests/testutil.h
 tests/check_text.o: tests/check_text.c src/utf8lite.h tests/testutil.h
 tests/check_textmap.o: tests/check_text.c src/utf8lite.h tests/testutil.h
 tests/check_unicode.o: tests/check_unicode.c src/utf8lite.h tests/testutil.h

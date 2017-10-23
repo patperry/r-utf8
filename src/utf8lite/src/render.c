@@ -49,7 +49,7 @@ static void utf8lite_render_grow(struct utf8lite_render *r, int nadd)
 }
 
 
-int utf8lite_render_init(struct utf8lite_render *r, int escape_flags)
+int utf8lite_render_init(struct utf8lite_render *r, int flags)
 {
 	int err;
 
@@ -61,7 +61,7 @@ int utf8lite_render_init(struct utf8lite_render *r, int escape_flags)
 
 	r->length = 0;
 	r->length_max = 0;
-	r->escape_flags = escape_flags;
+	r->flags = flags;
 
 	r->tab = "\t";
 	r->tab_length = (int)strlen(r->tab);
@@ -91,10 +91,10 @@ void utf8lite_render_clear(struct utf8lite_render *r)
 }
 
 
-int utf8lite_render_set_escape(struct utf8lite_render *r, int flags)
+int utf8lite_render_set_flags(struct utf8lite_render *r, int flags)
 {
-	int oldflags = r->escape_flags;
-	r->escape_flags = flags;
+	int oldflags = r->flags;
+	r->flags = flags;
 	return oldflags;
 }
 
@@ -196,11 +196,114 @@ static void maybe_indent(struct utf8lite_render *r)
 }
 
 
+static void utf8lite_escape_utf8(struct utf8lite_render *r, int32_t ch)
+{
+	char *end;
+	unsigned hi, lo;
+	int len;
+
+	if (ch <= 0xFFFF) {
+		// \uXXXX
+		len = 6;
+	} else if (r->flags & UTF8LITE_ENCODE_JSON) {
+		// \uXXXX\uYYYY
+		len = 12;
+	} else {
+		// \UXXXXYYYY
+		len = 10;
+	}
+
+	utf8lite_render_grow(r, len);
+	if (r->error) {
+		return;
+	}
+	end = r->string + r->length;
+
+	if (ch <= 0xFFFF) {
+		sprintf(end, "\\u%04x", (unsigned)ch);
+	} else if (r->flags & UTF8LITE_ENCODE_JSON) {
+		hi = UTF8LITE_UTF16_HIGH(ch);
+		lo = UTF8LITE_UTF16_LOW(ch);
+		sprintf(end, "\\u%04x\\u%04x", hi, lo);
+	} else {
+		sprintf(end, "\\U%08x", (unsigned)ch);
+	}
+
+	r->length += len;
+}
+
+
+static void utf8lite_render_ascii(struct utf8lite_render *r, int32_t ch)
+{
+	char *end;
+
+	// character expansion for a special escape: \X
+	utf8lite_render_grow(r, 2);
+	if (r->error) {
+		return;
+	}
+	end = r->string + r->length;
+
+	if ((ch <= 0x1F || ch == 0x7F)
+			&& (r->flags & UTF8LITE_ESCAPE_CONTROL)) {
+		switch (ch) {
+		case '\a':
+			if (r->flags & UTF8LITE_ENCODE_JSON) {
+				utf8lite_escape_utf8(r, ch);
+			} else {
+				end[0] = '\\';
+				end[1] = 'a';
+				end[2] = '\0';
+				r->length += 2;
+			}
+			break;
+		case '\b':
+			end[0] = '\\'; end[1] = 'b'; end[2] = '\0';
+			r->length += 2;
+			break;
+		case '\f':
+			end[0] = '\\'; end[1] = 'f'; end[2] = '\0';
+			r->length += 2;
+			break;
+		case '\n':
+			end[0] = '\\'; end[1] = 'n'; end[2] = '\0';
+			r->length += 2;
+			break;
+		case '\r':
+			end[0] = '\\'; end[1] = 'r'; end[2] = '\0';
+			r->length += 2;
+			break;
+		case '\t':
+			end[0] = '\\'; end[1] = 't'; end[2] = '\0';
+			r->length += 2;
+			break;
+		case '\v':
+			if (r->flags & UTF8LITE_ENCODE_JSON) {
+				utf8lite_escape_utf8(r, ch);
+			} else {
+				end[0] = '\\';
+				end[1] = 'v';
+				end[2] = '\0';
+				r->length += 2;
+			}
+			break;
+		default:
+			utf8lite_escape_utf8(r, ch);
+			break;
+		}
+	} else {
+		end[0] = (char)ch;
+		end[1] = '\0';
+		r->length++;
+	}
+}
+
+
 void utf8lite_render_char(struct utf8lite_render *r, int32_t ch)
 {
 	char *end;
 	uint8_t *uend;
-	unsigned lo, hi;
+	int type;
 
 	if (r->error) {
 		return;
@@ -221,58 +324,26 @@ void utf8lite_render_char(struct utf8lite_render *r, int32_t ch)
 
 	end = r->string + r->length;
 	if (UTF8LITE_IS_ASCII(ch)) {
-		if ((ch <= 0x1F || ch == 0x7F)
-				&& (r->escape_flags & UTF8LITE_ESCAPE_CONTROL)) {
-			switch (ch) {
-			case '\b':
-				end[0] = '\\'; end[1] = 'b'; end[2] = '\0';
-				r->length += 2;
-				break;
-			case '\f':
-				end[0] = '\\'; end[1] = 'f'; end[2] = '\0';
-				r->length += 2;
-				break;
-			case '\n':
-				end[0] = '\\'; end[1] = 'n'; end[2] = '\0';
-				r->length += 2;
-				break;
-			case '\r':
-				end[0] = '\\'; end[1] = 'r'; end[2] = '\0';
-				r->length += 2;
-				break;
-			case '\t':
-				end[0] = '\\'; end[1] = 't'; end[2] = '\0';
-				r->length += 2;
-				break;
-			default:
-				sprintf(end, "\\u%04x", ch);
-				r->length += 6;
-				break;
-			}
-		} else {
-			end[0] = (char)ch;
-			end[1] = '\0';
-			r->length++;
-		}
-	} else if (ch <= 0x9F && (r->escape_flags & UTF8LITE_ESCAPE_CONTROL)) {
-		sprintf(end, "\\u%04x", ch);
-		r->length += 6;
-	} else if (r->escape_flags & UTF8LITE_ESCAPE_UTF8) {
-		if (UTF8LITE_UTF16_ENCODE_LEN(ch) == 1) {
-			sprintf(end, "\\u%04x", ch);
-			r->length += 6;
-		} else {
-			hi = UTF8LITE_UTF16_HIGH(ch);
-			lo = UTF8LITE_UTF16_LOW(ch);
-			sprintf(end, "\\u%04x\\u%04x", hi, lo);
-			r->length += 12;
-		}
-	} else {
-		uend = (uint8_t *)end;
-		utf8lite_encode_utf8(ch, &uend);
-		*uend = '\0';
-		r->length += UTF8LITE_UTF8_ENCODE_LEN(ch);
+		utf8lite_render_ascii(r, ch);
+		return;
 	}
+
+	type = utf8lite_charwidth(ch);
+	switch (type) {
+	case UTF8LITE_CHARWIDTH_OTHER:
+		if (r->flags & UTF8LITE_ESCAPE_CONTROL) {
+			utf8lite_escape_utf8(r, ch);
+			return;
+		}
+		break;
+	default:
+		break;
+	}
+
+	uend = (uint8_t *)end;
+	utf8lite_encode_utf8(ch, &uend);
+	*uend = '\0';
+	r->length += UTF8LITE_UTF8_ENCODE_LEN(ch);
 }
 
 

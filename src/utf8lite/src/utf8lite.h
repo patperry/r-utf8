@@ -768,7 +768,7 @@ struct utf8lite_render {
 	int length_max;		/**< the maximum capacity of the rendered
 				  string before requiring reallocation, not
 				  including the null terminator */
-	int escape_flags;	/**< the flags, a bitmask of
+	int flags;		/**< the flags, a bitmask of
 				  #utf8lite_escape_type and
 				  #utf8lite_encode_type values,
 				  specifying escaping behavior */
