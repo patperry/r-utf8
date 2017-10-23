@@ -294,9 +294,43 @@ static int utf8lite_render_ascii(struct utf8lite_render *r, int32_t ch)
 			return utf8lite_escape_utf8(r, ch);
 		}
 	} else {
+		switch (ch) {
+		case '\"':
+			if (r->flags & UTF8LITE_ESCAPE_DQUOTE) {
+				end[0] = '\\';
+				end[1] = '\"';
+				r->length += 2;
+				goto exit;
+			}
+			break;
+		case '\'':
+			if (r->flags & UTF8LITE_ESCAPE_SQUOTE) {
+				end[0] = '\\';
+				end[1] = '\'';
+				r->length += 2;
+				goto exit;
+			}
+			break;
+		case '\\':
+			if (r->flags & (UTF8LITE_ESCAPE_CONTROL
+						| UTF8LITE_ESCAPE_DQUOTE
+						| UTF8LITE_ESCAPE_SQUOTE
+						| UTF8LITE_ESCAPE_EXTENDED
+						| UTF8LITE_ESCAPE_UTF8)) {
+				end[0] = '\\';
+				end[1] = '\\';
+				r->length += 2;
+				goto exit;
+			}
+			break;
+		default:
+			break;
+		}
+
 		end[0] = (char)ch;
 		r->length++;
 	}
+exit:
 	r->string[r->length] = '\0';
 	return 0;
 }
