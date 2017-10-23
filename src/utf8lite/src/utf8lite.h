@@ -742,7 +742,7 @@ void utf8lite_graphscan_reset(struct utf8lite_graphscan *scan);
  */
 enum utf8lite_escape_type {
 	UTF8LITE_ESCAPE_NONE = 0,		/**< no special escaping */
-	UTF8LITE_ESCAPE_CONTROL = (1 << 0),	/**< control codes */
+	UTF8LITE_ESCAPE_CONTROL = (1 << 0),	/**< control and other codes */
 	UTF8LITE_ESCAPE_DQUOTE = (1 << 1),	/**< ASCII double quote */
 	UTF8LITE_ESCAPE_SQUOTE =  (1 << 2),	/**< ASCII single quote */
 	UTF8LITE_ESCAPE_EXTENDED = (1 << 3),	/**< extended-plane UTF-8 */
