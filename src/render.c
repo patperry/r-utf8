@@ -253,34 +253,41 @@ static int utf8lite_render_ascii(struct utf8lite_render *r, int32_t ch)
 			if (r->flags & UTF8LITE_ENCODE_JSON) {
 				return utf8lite_escape_utf8(r, ch);
 			}
-			end[0] = '\\'; end[1] = 'a'; end[2] = '\0';
+			end[0] = '\\';
+			end[1] = 'a';
 			r->length += 2;
 			break;
 		case '\b':
-			end[0] = '\\'; end[1] = 'b'; end[2] = '\0';
+			end[0] = '\\';
+			end[1] = 'b';
 			r->length += 2;
 			break;
 		case '\f':
-			end[0] = '\\'; end[1] = 'f'; end[2] = '\0';
+			end[0] = '\\';
+			end[1] = 'f';
 			r->length += 2;
 			break;
 		case '\n':
-			end[0] = '\\'; end[1] = 'n'; end[2] = '\0';
+			end[0] = '\\';
+			end[1] = 'n';
 			r->length += 2;
 			break;
 		case '\r':
-			end[0] = '\\'; end[1] = 'r'; end[2] = '\0';
+			end[0] = '\\';
+			end[1] = 'r';
 			r->length += 2;
 			break;
 		case '\t':
-			end[0] = '\\'; end[1] = 't'; end[2] = '\0';
+			end[0] = '\\';
+			end[1] = 't';
 			r->length += 2;
 			break;
 		case '\v':
 			if (r->flags & UTF8LITE_ENCODE_JSON) {
 				return utf8lite_escape_utf8(r, ch);
 			}
-			end[0] = '\\'; end[1] = 'v'; end[2] = '\0';
+			end[0] = '\\';
+			end[1] = 'v';
 			r->length += 2;
 			break;
 		default:
@@ -288,9 +295,9 @@ static int utf8lite_render_ascii(struct utf8lite_render *r, int32_t ch)
 		}
 	} else {
 		end[0] = (char)ch;
-		end[1] = '\0';
 		r->length++;
 	}
+	r->string[r->length] = '\0';
 	return 0;
 }
 
