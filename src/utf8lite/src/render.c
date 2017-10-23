@@ -367,6 +367,11 @@ int utf8lite_render_char(struct utf8lite_render *r, int32_t ch)
 			return utf8lite_escape_utf8(r, ch);
 		}
 		break;
+	case UTF8LITE_CHARWIDTH_IGNORABLE:
+		if (r->flags & UTF8LITE_ENCODE_RMDI) {
+			return 0;
+		}
+		break;
 	default:
 		break;
 	}

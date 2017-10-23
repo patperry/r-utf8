@@ -37,7 +37,7 @@ void teardown_render(void)
         teardown();
 }
 
-struct char_test {
+struct escape_test {
 	const char *raw;
 	const char *c;
 	const char *json;
@@ -45,7 +45,7 @@ struct char_test {
 
 START_TEST(test_escape_control)
 {
-	const struct char_test tests[] = {
+	const struct escape_test tests[] = {
 		{ "\x01", "\\u0001", "\\u0001" },
 		{ "\a", "\\a", "\\u0007" },
 		{ "\b", "\\b", "\\b" },
@@ -142,7 +142,7 @@ END_TEST
 
 START_TEST(test_escape_extended)
 {
-	const struct char_test tests[] = {
+	const struct escape_test tests[] = {
 		{ "\x01", "\x01", "\x01" },
 		{ "\x20", "\x20", "\x20" },
 		{ "\x7E", "\x7E", "\x7E" },
@@ -180,7 +180,7 @@ END_TEST
 
 START_TEST(test_escape_utf8)
 {
-	const struct char_test tests[] = {
+	const struct escape_test tests[] = {
 		{ "\x01", "\x01", "\x01" },
 		{ "\x20", "\x20", "\x20" },
 		{ "\x7E", "\x7E", "\x7E" },
@@ -216,6 +216,36 @@ START_TEST(test_escape_utf8)
 END_TEST
 
 
+START_TEST(test_encode_rmdi)
+{
+	char buffer[32];
+	uint8_t *end;
+	int32_t codes[] = {
+		0x00AD, 0x200B, 0x200C, 0x200D, 0x200E, 0x200F, 0x034F,
+		0xFEFF, 0xE0001, 0xE0020, 0xE01EF
+	};
+	int flag = UTF8LITE_ENCODE_RMDI;
+	int i, n = sizeof(codes) / sizeof(codes[0]);
+
+	for (i = 0; i < n; i++) {
+		end = (uint8_t *)buffer;
+		utf8lite_encode_utf8(codes[i], &end);
+		*end++ = '\0';
+
+		utf8lite_render_set_flags(&render, 0);
+		ck_assert(!utf8lite_render_string(&render, buffer));
+		ck_assert_str_eq(render.string, buffer);
+		utf8lite_render_clear(&render);
+
+		utf8lite_render_set_flags(&render, flag);
+		ck_assert(!utf8lite_render_string(&render, buffer));
+		ck_assert_str_eq(render.string, "");
+		utf8lite_render_clear(&render);
+	}
+}
+END_TEST
+
+
 Suite *render_suite(void)
 {
         Suite *s;
@@ -231,6 +261,11 @@ Suite *render_suite(void)
         tcase_add_test(tc, test_escape_backslash);
         tcase_add_test(tc, test_escape_extended);
         tcase_add_test(tc, test_escape_utf8);
+        suite_add_tcase(s, tc);
+
+	tc = tcase_create("escape");
+        tcase_add_checked_fixture(tc, setup_render, teardown_render);
+        tcase_add_test(tc, test_encode_rmdi);
         suite_add_tcase(s, tc);
 
 	return s;
