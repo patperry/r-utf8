@@ -65,17 +65,17 @@ START_TEST(test_escape_control)
 
 	for (i = 0; i < n; i++) {
 		utf8lite_render_set_flags(&render, 0);
-		utf8lite_render_string(&render, tests[i].raw);
+		ck_assert(!utf8lite_render_string(&render, tests[i].raw));
 		ck_assert_str_eq(render.string, tests[i].raw);
 		utf8lite_render_clear(&render);
 
 		utf8lite_render_set_flags(&render, flag | UTF8LITE_ENCODE_C);
-		utf8lite_render_string(&render, tests[i].raw);
+		ck_assert(!utf8lite_render_string(&render, tests[i].raw));
 		ck_assert_str_eq(render.string, tests[i].c);
 		utf8lite_render_clear(&render);
 
 		utf8lite_render_set_flags(&render, flag | UTF8LITE_ENCODE_JSON);
-		utf8lite_render_string(&render, tests[i].raw);
+		ck_assert(!utf8lite_render_string(&render, tests[i].raw));
 		ck_assert_str_eq(render.string, tests[i].json);
 		utf8lite_render_clear(&render);
 	}

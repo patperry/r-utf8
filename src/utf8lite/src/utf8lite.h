@@ -857,16 +857,20 @@ const char *utf8lite_render_set_newline(struct utf8lite_render *r,
  *
  * \param r the render object
  * \param nlevel the number of levels add or subtract to the indent
+ *
+ * \returns 0 on success
  */
-void utf8lite_render_indent(struct utf8lite_render *r, int nlevel);
+int utf8lite_render_indent(struct utf8lite_render *r, int nlevel);
 
 /**
  * Add new lines.
  *
  * \param r the render object
  * \param nline the number of new lines to add
+ *
+ * \returns 0 on success
  */
-void utf8lite_render_newlines(struct utf8lite_render *r, int nline);
+int utf8lite_render_newlines(struct utf8lite_render *r, int nline);
 
 /**
  * Render a single character. If any render escape flags are set, filter
@@ -874,8 +878,10 @@ void utf8lite_render_newlines(struct utf8lite_render *r, int nline);
  *
  * \param r the render object
  * \param ch the character (UTF-32)
+ *
+ * \returns 0 on success
  */
-void utf8lite_render_char(struct utf8lite_render *r, int32_t ch);
+int utf8lite_render_char(struct utf8lite_render *r, int32_t ch);
 
 /**
  * Render a string. If any render escape flags are set, filter
@@ -883,8 +889,10 @@ void utf8lite_render_char(struct utf8lite_render *r, int32_t ch);
  *
  * \param r the render object
  * \param str the string, valid UTF-8
+ *
+ * \returns 0 on success
  */
-void utf8lite_render_string(struct utf8lite_render *r, const char *str);
+int utf8lite_render_string(struct utf8lite_render *r, const char *str);
 
 /**
  * Render formatted text. If any render escape flags are set, filter
@@ -893,7 +901,7 @@ void utf8lite_render_string(struct utf8lite_render *r, const char *str);
  * \param r the render object
  * \param format the format string
  */
-void utf8lite_render_printf(struct utf8lite_render *r, const char *format, ...)
+int utf8lite_render_printf(struct utf8lite_render *r, const char *format, ...)
 #if defined(_MSC_VER)
 	;
 #else
@@ -906,8 +914,10 @@ void utf8lite_render_printf(struct utf8lite_render *r, const char *format, ...)
  *
  * \param r the render object
  * \param text the text object
+ *
+ * \returns 0 on success
  */
-void utf8lite_render_text(struct utf8lite_render *r,
+int utf8lite_render_text(struct utf8lite_render *r,
 			  const struct utf8lite_text *text);
 
 /**@}*/
