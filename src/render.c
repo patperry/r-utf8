@@ -15,7 +15,7 @@
  */
 
 #include <assert.h>
-#include <errno.h>
+#include <inttypes.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -226,7 +226,7 @@ static void utf8lite_escape_utf8(struct utf8lite_render *r, int32_t ch)
 		lo = UTF8LITE_UTF16_LOW(ch);
 		sprintf(end, "\\u%04x\\u%04x", hi, lo);
 	} else {
-		sprintf(end, "\\U%08x", (unsigned)ch);
+		sprintf(end, "\\U%08"PRIx32, (uint32_t)ch);
 	}
 
 	r->length += len;
