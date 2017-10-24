@@ -5,6 +5,7 @@ project.xcworkspace
 xcuserdata
 /doc/html
 /tests/check_charwidth
+/tests/check_graphscan
 /tests/check_render
 /tests/check_text
 /tests/check_textmap
