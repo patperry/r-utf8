@@ -719,6 +719,21 @@ enum utf8lite_graph_type {
 };
 
 struct utf8lite_graphscan {
+	struct utf8lite_text text;/**< the input text */
+	size_t text_attr;	/**< the input text attributes */
+	int flags;		/**< the scan flags */
+
+	int32_t code;		/**< next code point */
+	size_t attr;		/**< next code's attributes */
+	int prop;		/**< next code's sentence break property */
+	const uint8_t *ptr;	/**< next code's start */
+
+	struct utf8lite_text_iter iter;	/**< an iterator over the input,
+					  positioned past next code */
+	int iter_prop;		/**< iterator code's sentence break property */
+	const uint8_t *iter_ptr;/**< iterator code's start */
+
+	struct utf8lite_text current;	/**< the current sentence */
         enum utf8lite_graph_type type;	/**< the type of the current grapheme */
 };
 
