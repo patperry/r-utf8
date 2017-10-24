@@ -39,18 +39,18 @@ UNICODE = http://www.unicode.org/Public/10.0.0
 
 CORPUS_A = libutf8lite.a
 LIB_O	= src/array.o src/char.o src/encode.o src/error.o src/escape.o \
-		  src/normalize.o src/render.o src/text.o src/textassign.o \
-		  src/textiter.o src/textmap.o
+		  src/graphscan.o src/normalize.o src/render.o src/text.o \
+		  src/textassign.o src/textiter.o src/textmap.o
 
 DATA    = data/emoji/emoji-data.txt \
-	  data/ucd/CaseFolding.txt \
-	  data/ucd/CompositionExclusions.txt \
-	  data/ucd/DerivedCoreProperties.txt \
-	  data/ucd/EastAsianWidth.txt \
-	  data/ucd/PropList.txt \
-	  data/ucd/Scripts.txt \
-	  data/ucd/UnicodeData.txt \
-	  data/ucd/auxiliary/GraphemeBreakProperty.txt
+		  data/ucd/CaseFolding.txt \
+		  data/ucd/CompositionExclusions.txt \
+		  data/ucd/DerivedCoreProperties.txt \
+		  data/ucd/EastAsianWidth.txt \
+		  data/ucd/PropList.txt \
+		  data/ucd/Scripts.txt \
+		  data/ucd/UnicodeData.txt \
+		  data/ucd/auxiliary/GraphemeBreakProperty.txt
 
 TESTS_T = tests/check_charwidth tests/check_render tests/check_text \
 		  tests/check_textmap tests/check_unicode
@@ -202,6 +202,7 @@ src/char.o: src/char.c src/private/charwidth.h src/utf8lite.h
 src/encode.o: src/encode.c src/utf8lite.h
 src/error.o: src/error.c src/utf8lite.h
 src/escape.o: src/escape.c src/utf8lite.h
+src/graphscan.o: src/graphscan.c src/private/graphbreak.h src/utf8lite.h
 src/normalize.o: src/normalize.c src/private/casefold.h \
 	src/private/combining.h src/private/compose.h src/private/decompose.h \
 	src/utf8lite.h
