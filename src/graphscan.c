@@ -114,6 +114,16 @@ Start:
 		NEXT();
 		goto L;
 
+	case GRAPH_BREAK_LV:
+	case GRAPH_BREAK_V:
+		NEXT();
+		goto V;
+
+	case GRAPH_BREAK_LVT:
+	case GRAPH_BREAK_T:
+		NEXT();
+		goto T;
+
 	case GRAPH_BREAK_PREPEND:
 		NEXT();
 		goto Prepend;
@@ -147,11 +157,7 @@ Start:
 	case GRAPH_BREAK_E_MODIFIER:
 	case GRAPH_BREAK_EXTEND:
 	case GRAPH_BREAK_GLUE_AFTER_ZWJ:
-	case GRAPH_BREAK_LV:
-	case GRAPH_BREAK_LVT:
 	case GRAPH_BREAK_SPACINGMARK:
-	case GRAPH_BREAK_T:
-	case GRAPH_BREAK_V:
 		NEXT();
 		goto MaybeBreak;
 	}
