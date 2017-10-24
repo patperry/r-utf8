@@ -120,7 +120,7 @@ const char *utf8lite_render_set_tab(struct utf8lite_render *r, const char *tab)
 
 
 const char *utf8lite_render_set_newline(struct utf8lite_render *r,
-				      const char *newline)
+					const char *newline)
 {
 	const char *oldnewline = r->newline;
 	size_t len;
@@ -434,7 +434,7 @@ exit:
 
 
 int utf8lite_render_text(struct utf8lite_render *r,
-			const struct utf8lite_text *text)
+			 const struct utf8lite_text *text)
 {
 	struct utf8lite_text_iter it;
 

@@ -850,7 +850,7 @@ const char *utf8lite_render_set_tab(struct utf8lite_render *r, const char *tab);
  * \returns the old newline string
  */
 const char *utf8lite_render_set_newline(struct utf8lite_render *r,
-				      const char *newline);
+					const char *newline);
 
 /**
  * Increase or decrease the indent level.
@@ -918,7 +918,7 @@ int utf8lite_render_printf(struct utf8lite_render *r, const char *format, ...)
  * \returns 0 on success
  */
 int utf8lite_render_text(struct utf8lite_render *r,
-			  const struct utf8lite_text *text);
+			 const struct utf8lite_text *text);
 
 /**@}*/
 
