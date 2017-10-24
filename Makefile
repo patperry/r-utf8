@@ -142,6 +142,11 @@ src/private/decompose.h: util/gen-decompose.py util/unicode_data.py \
 	$(MKDIR_P) src/private
 	./util/gen-decompose.py > $@
 
+src/private/graphbreak.h: util/gen-graphbreak.py util/gen-graphbreak.py \
+		data/ucd/auxiliary/GraphemeBreakProperty.txt
+	$(MKDIR_P) src/private
+	./util/gen-graphbreak.py > $@
+
 src/private/normalization.h: util/gen-normalization.py \
 		data/ucd/DerivedNormalizationProps.txt
 	$(MKDIR_P) src/private
