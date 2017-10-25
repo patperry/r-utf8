@@ -49,7 +49,7 @@ const struct utf8lite_text *next(void)
 		return NULL;
 	}
 	graph = alloc(sizeof(*graph));
-	*graph = scan.current;
+	*graph = scan.current.text;
 	return graph;
 }
 
@@ -231,9 +231,10 @@ START_TEST(test_unicode)
 		for (j = 0; j < test->nbreak; j++) {
 			//fprintf(stderr, "Break %u\n", j);
 			ck_assert(utf8lite_graphscan_advance(&scan));
-			ck_assert(scan.current.ptr == test->break_begin[j]);
-			ck_assert(scan.current.ptr
-					+ UTF8LITE_TEXT_SIZE(&scan.current)
+			ck_assert(scan.current.text.ptr == test->break_begin[j]);
+			ck_assert(scan.current.text.ptr
+					+
+					UTF8LITE_TEXT_SIZE(&scan.current.text)
 					== test->break_end[j]);
 		}
 		ck_assert(!utf8lite_graphscan_advance(&scan));
