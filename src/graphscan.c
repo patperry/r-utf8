@@ -116,16 +116,8 @@ Start:
 
 	switch ((enum graph_break_prop)scan->prop) {
 	case GRAPH_BREAK_CR:
-		if (scan->iter_prop == GRAPH_BREAK_LF) {
-			// Do not break within CRLF
-			// GB3: CR * LF
-			NEXT();
-		}
-
-		// Otherwise break after controls
-		// GB4: (Control | CR | LF) +
 		NEXT();
-		goto Break;
+		goto CR;
 
 	case GRAPH_BREAK_CONTROL:
 	case GRAPH_BREAK_LF:
@@ -176,6 +168,14 @@ Start:
 
 	assert(0 && "unhandled word break property");
 	return 0;
+
+CR:
+	// GB3: Do not break within CRLF
+	// GB4: Otherwise break after controls
+	if (scan->prop == GRAPH_BREAK_LF) {
+		NEXT();
+	}
+	goto Break;
 
 L:
 	// GB6: Do not break Hangul syllable sequences.
