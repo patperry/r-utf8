@@ -42,61 +42,33 @@ graph               Ambiguous  Emoji Ignorable Narrow   None  Other   Wide
   ZWJ                       0      0         1      0      0      0      0
 */
 
-#define GRAPH_BREAK_NONE -1
+
+#define NEXT() \
+	do { \
+		scan->current.attr |= scan->iter.attr; \
+		scan->ptr = scan->iter.ptr; \
+		if (utf8lite_text_iter_advance(&scan->iter)) { \
+			scan->prop = graph_break(scan->iter.current); \
+		} else { \
+			scan->prop = -1; \
+		} \
+	} while (0)
+
 
 void utf8lite_graphscan_make(struct utf8lite_graphscan *scan,
-			  const struct utf8lite_text *text)
+			     const struct utf8lite_text *text)
 {
-	scan->text = *text;
-	scan->text_attr = text->attr & ~UTF8LITE_TEXT_SIZE_MASK;
 	utf8lite_text_iter_make(&scan->iter, text);
 	utf8lite_graphscan_reset(scan);
 }
 
 
-#define NEXT() \
-	do { \
-		scan->current.attr |= scan->attr; \
-		scan->ptr = scan->iter_ptr; \
-		scan->code = scan->iter.current; \
-		scan->attr = scan->iter.attr; \
-		scan->prop = scan->iter_prop; \
-		scan->iter_ptr = scan->iter.ptr; \
-		if (utf8lite_text_iter_advance(&scan->iter)) { \
-			scan->iter_prop = graph_break(scan->iter.current); \
-		} else { \
-			scan->iter_prop = GRAPH_BREAK_NONE; \
-		} \
-	} while (0)
-
-
 void utf8lite_graphscan_reset(struct utf8lite_graphscan *scan)
 {
-	scan->current.ptr = 0;
-	scan->current.attr = 0;
-	scan->type = UTF8LITE_GRAPH_NONE;
-
 	utf8lite_text_iter_reset(&scan->iter);
-	scan->ptr = scan->iter.ptr;
-
-	if (utf8lite_text_iter_advance(&scan->iter)) {
-		scan->code = scan->iter.current;
-		scan->attr = scan->iter.attr;
-		scan->prop = graph_break(scan->code);
-
-		scan->iter_ptr = scan->iter.ptr;
-		if (utf8lite_text_iter_advance(&scan->iter)) {
-			scan->iter_prop = graph_break(scan->iter.current);
-		} else {
-			scan->iter_prop = GRAPH_BREAK_NONE;
-		}
-	} else {
-		scan->code = 0;
-		scan->attr = 0;
-		scan->prop = GRAPH_BREAK_NONE;
-		scan->iter_ptr = NULL;
-		scan->iter_prop = GRAPH_BREAK_NONE;
-	}
+	scan->current.ptr = (uint8_t *)scan->iter.ptr;
+	scan->current.attr = 0;
+	NEXT();
 }
 
 
@@ -104,15 +76,12 @@ int utf8lite_graphscan_advance(struct utf8lite_graphscan *scan)
 {
 	scan->current.ptr = (uint8_t *)scan->ptr;
 	scan->current.attr = 0;
-	scan->type = UTF8LITE_GRAPH_NONE;
 
 Start:
-
-	// Break at the start and end of text, unless the text is empty.
-        if (scan->prop < 0) {
-                // GB2: Any + eot
-                goto Break;
-        }
+	// GB2: Break at the end of text
+	if (scan->prop < 0) {
+		goto Break;
+	}
 
 	switch ((enum graph_break_prop)scan->prop) {
 	case GRAPH_BREAK_CR:
@@ -166,7 +135,7 @@ Start:
 		goto MaybeBreak;
 	}
 
-	assert(0 && "unhandled word break property");
+	assert(0 && "unhandled grapheme break property");
 	return 0;
 
 CR:
@@ -230,6 +199,7 @@ Prepend:
 	case GRAPH_BREAK_LF:
 		// GB5: break before controls
 		goto Break;
+
 	default:
 		// GB9b: do not break after Prepend characters.
 		goto Start;
