@@ -38,11 +38,11 @@ START_TEST(test_wcwidth9)
 
 		switch (prop) {
 		case UTF8LITE_CHARWIDTH_OTHER:
-			ok = prop0 == -1 || prop0 == -3;
+			ok = prop0 == -1 || prop0 == -3 || prop0 == 1;
 			break;
 
 		case UTF8LITE_CHARWIDTH_EMOJI:
-			ok = prop0 == 2 || prop0 == -1;
+			ok = prop0 == 2 || prop0 == 1 || prop0 == -1 || prop0 == -2;
 			break;
 
 		case UTF8LITE_CHARWIDTH_AMBIGUOUS:
@@ -54,7 +54,7 @@ START_TEST(test_wcwidth9)
 			break;
 
 		case UTF8LITE_CHARWIDTH_NONE:
-			ok = prop0 == -1;
+			ok = prop0 == -1 || prop0 == 1;
 			break;
 
 		case UTF8LITE_CHARWIDTH_NARROW:

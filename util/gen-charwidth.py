@@ -39,27 +39,68 @@ east_asian_width = property.read(EAST_ASIAN_WIDTH)
 
 
 emoji_props = property.read(EMOJI_DATA, sets=True)
-emoji = emoji_props['Emoji_Presentation']
 
+# text presentation (MacOS)
+emoji_text = set([
+    # number sign, asterisk
+    0x0023, 0x002A,
+
+    # digit zero..digit nine
+    0x0030, 0x0031, 0x0032, 0x0033, 0x0034,
+    0x0035, 0x0036, 0x0037, 0x0038, 0x0039,
+
+    # copyright, reserved
+    0x00A9, 0x00AE,
+
+    # double exclamation, exclamation question mark
+    0x203C, 0x2049,
+
+    # trade mark
+    0x2122,
+
+    # arrows
+    0x2194, 0x2195, 0x2196, 0x2197, 0x2198, 0x2199,
+
+    # black, white small square
+    0x25AA, 0x25AB,
+
+    # play, reverse button
+    0x25B6, 0x25C0,
+
+    # male, female sign
+    0x2640, 0x2642,
+
+    # spade, club, heart, diamond suit
+    0x2660, 0x2663, 0x2665, 0x2666
+    ])
+
+# emoji presentation
+emoji = set()
 for code in emoji_props['Emoji']:
-    if code >= 0x1F000:
+    if code not in emoji_text:
         emoji.add(code)
+
+# The following makes more sense according to the spec, but doesn't catch
+# all presentation emoji (at least, not on MacOS):
+# emoji = emoji_props['Emoji_Presentation']
+# for code in emoji_props['Emoji_Modifier_Base']:
+#     emoji.add(code)
 
 # Treat ignorables as invisible
 derived_core_properties = property.read(DERIVED_CORE_PROPERTIES, sets=True)
 default_ignorable = derived_core_properties['Default_Ignorable_Code_Point']
 
 
-# none: combining
-none_cats = set(['Mc', 'Me', 'Mn'])
-
 # unassigned: not assigned, other, surrogate
 other_cats = set(['Cc', 'Cn', 'Co', 'Cs', 'Zl', 'Zp'])
+none_cats = set(['Cf', 'Me', 'Mn'])
+other = set([0xFFF9, 0xFFFA, 0xFFFB]) # interlinear annotation markers
 none = set()
-other = set()
 for code in range(len(unicode_data.uchars)):
     u = unicode_data.uchars[code]
-    if u is None or u.category in other_cats:
+    if code in other or code in none:
+        pass
+    elif u is None or u.category in other_cats:
         other.add(code)
     elif u.category in none_cats:
         none.add(code)
@@ -68,17 +109,14 @@ for code in range(len(unicode_data.uchars)):
 code_props = [None] * len(east_asian_width)
 for code in range(len(code_props)):
     eaw = east_asian_width[code]
-    if code in emoji: # emoji overrides east_asian_width
-        if eaw is None or eaw != 'A':
-            code_props[code] = 'Emoji'
-        else:
-            code_props[code] = 'Ambiguous'
+    if code in default_ignorable: # default ingorable overrides
+        code_props[code] = 'Ignorable'
+    elif code in emoji: # emoji overrides east_asian_width
+        code_props[code] = 'Emoji'
+    elif code in none: # none overrides
+        code_props[code] = 'None'
     elif code in other: # other overrides east_asian_width
         code_props[code] = 'Other'
-    elif code in default_ignorable:
-        code_props[code] = 'Ignorable'
-    elif code in none:
-        code_props[code] = 'None'
     elif eaw == 'F' or eaw == 'W':
         code_props[code] = 'Wide'
     elif eaw == 'H' or eaw == 'Na' or eaw == 'N':
@@ -89,7 +127,9 @@ for code in range(len(code_props)):
         code_props[code] = 'Narrow' # default to narrow
 
 
-prop_names = ['Other', 'Emoji', 'Ambiguous', 'Ignorable', 'None', 'Narrow', 'Wide']
+prop_names = [
+        'Other', 'Emoji', 'Ambiguous', 'Ignorable', 'None', 'Narrow', 'Wide'
+        ]
 prop_vals = {}
 for p in prop_names:
     prop_vals[p] = len(prop_vals) - 3
@@ -118,6 +158,7 @@ def stage1_item_size(nstage2):
     nbyte = math.ceil(math.log(nstage2, 2) / 8)
     size = 2**math.ceil(math.log(nbyte, 2))
     return size
+
 
 page_size = 4096
 block_size = 256
