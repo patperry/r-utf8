@@ -507,25 +507,40 @@ static int utf8_escape_width(int32_t ch, int flags)
 	}
 }
 
+
 static int utf8_width(int32_t ch, int cw, int flags)
 {
+	int w;
+
 	switch ((enum utf8lite_charwidth_type)cw) {
 	case UTF8LITE_CHARWIDTH_NONE:
 		if (flags & UTF8LITE_ESCAPE_CONTROL) {
-			return utf8_escape_width(ch, flags);
+			w = utf8_escape_width(ch, flags);
 		} else {
-			return 0;
+			w = 0;
 		}
+		break;
 
 	case UTF8LITE_CHARWIDTH_IGNORABLE:
 	case UTF8LITE_CHARWIDTH_MARK:
+		w = 0;
+		break;
+
 	case UTF8LITE_CHARWIDTH_NARROW:
+		w = 1;
+		break;
+
 	case UTF8LITE_CHARWIDTH_AMBIGUOUS:
+		w = (flags & UTF8LITE_ENCODE_AMBIGWIDE) ? 2 : 1;
+		break;
+
 	case UTF8LITE_CHARWIDTH_WIDE:
 	case UTF8LITE_CHARWIDTH_EMOJI:
-		(void)ch;
-		return 0;
+		w = 2;
+		break;
 	}
+
+	return w;
 }
 
 
