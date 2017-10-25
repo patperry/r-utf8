@@ -362,7 +362,7 @@ int utf8lite_render_char(struct utf8lite_render *r, int32_t ch)
 
 	type = utf8lite_charwidth(ch);
 	switch (type) {
-	case UTF8LITE_CHARWIDTH_OTHER:
+	case UTF8LITE_CHARWIDTH_NONE:
 		if (r->flags & UTF8LITE_ESCAPE_CONTROL) {
 			return utf8lite_escape_utf8(r, ch);
 		}

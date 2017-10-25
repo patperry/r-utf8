@@ -24,23 +24,23 @@ int utf8lite_charwidth(int32_t code)
 {
 	int prop = charwidth(code);
 	switch(prop) {
-	case CHARWIDTH_OTHER:
-		return UTF8LITE_CHARWIDTH_OTHER;
-	case CHARWIDTH_EMOJI:
-		return UTF8LITE_CHARWIDTH_EMOJI;
-	case CHARWIDTH_AMBIGUOUS:
-		return UTF8LITE_CHARWIDTH_AMBIGUOUS;
-	case CHARWIDTH_IGNORABLE:
-		return UTF8LITE_CHARWIDTH_IGNORABLE;
 	case CHARWIDTH_NONE:
 		return UTF8LITE_CHARWIDTH_NONE;
+	case CHARWIDTH_IGNORABLE:
+		return UTF8LITE_CHARWIDTH_IGNORABLE;
+	case CHARWIDTH_MARK:
+		return UTF8LITE_CHARWIDTH_MARK;
 	case CHARWIDTH_NARROW:
 		return UTF8LITE_CHARWIDTH_NARROW;
+	case CHARWIDTH_AMBIGUOUS:
+		return UTF8LITE_CHARWIDTH_AMBIGUOUS;
 	case CHARWIDTH_WIDE:
 		return UTF8LITE_CHARWIDTH_WIDE;
+	case CHARWIDTH_EMOJI:
+		return UTF8LITE_CHARWIDTH_EMOJI;
 	default:
 		assert(0 && "internal error: unrecognized charwidth property");
-		return UTF8LITE_CHARWIDTH_OTHER;
+		return prop;
 	}
 }
 

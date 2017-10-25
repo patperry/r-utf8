@@ -124,15 +124,13 @@ void utf8lite_message_append(struct utf8lite_message *msg, const char *fmt, ...)
  * Unicode character width type.
  */
 enum utf8lite_charwidth_type {
-	UTF8LITE_CHARWIDTH_OTHER = -4,	/**< Control and others:
-					  Cc, Cn, Co, Cs, Zl, Zp */
-	UTF8LITE_CHARWIDTH_EMOJI = -3,    /**< Emoji, wide in most contexts */
-	UTF8LITE_CHARWIDTH_AMBIGUOUS = -2,/**< can be narrow or wide depending
-					  on the context */
-	UTF8LITE_CHARWIDTH_IGNORABLE = -1,/**< Default ignorables */
-	UTF8LITE_CHARWIDTH_NONE = 0,	/**< Combining marks: Mc, Me, Mn */
-	UTF8LITE_CHARWIDTH_NARROW = 1,	/**< Most western alphabets */
-	UTF8LITE_CHARWIDTH_WIDE = 2	/**< Most ideographs */
+	UTF8LITE_CHARWIDTH_NONE = 0,	/**< Control or and other */
+	UTF8LITE_CHARWIDTH_IGNORABLE,	/**< Default ignorable */
+	UTF8LITE_CHARWIDTH_MARK,	/**< Zero-width mark or format */
+	UTF8LITE_CHARWIDTH_NARROW,	/**< Most western alphabets */
+	UTF8LITE_CHARWIDTH_AMBIGUOUS,	/**< Width depends on context */
+	UTF8LITE_CHARWIDTH_WIDE,	/**< Most ideographs */
+	UTF8LITE_CHARWIDTH_EMOJI	/**< Emoji presentation */
 };
 
 /**

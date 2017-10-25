@@ -37,23 +37,15 @@ START_TEST(test_wcwidth9)
 		prop = utf8lite_charwidth(code);
 
 		switch (prop) {
-		case UTF8LITE_CHARWIDTH_OTHER:
+		case UTF8LITE_CHARWIDTH_NONE:
 			ok = prop0 == -1 || prop0 == -3 || prop0 == 1;
-			break;
-
-		case UTF8LITE_CHARWIDTH_EMOJI:
-			ok = prop0 == 2 || prop0 == 1 || prop0 == -1 || prop0 == -2;
-			break;
-
-		case UTF8LITE_CHARWIDTH_AMBIGUOUS:
-			ok = prop0 == -2;
 			break;
 
 		case UTF8LITE_CHARWIDTH_IGNORABLE:
 			ok = prop0 == -1 || prop0 >= 1;
 			break;
 
-		case UTF8LITE_CHARWIDTH_NONE:
+		case UTF8LITE_CHARWIDTH_MARK:
 			ok = prop0 == -1 || prop0 == 1;
 			break;
 
@@ -61,8 +53,16 @@ START_TEST(test_wcwidth9)
 			ok = prop0 == 1 || prop0 == -1;
 			break;
 
+		case UTF8LITE_CHARWIDTH_AMBIGUOUS:
+			ok = prop0 == -2;
+			break;
+
 		case UTF8LITE_CHARWIDTH_WIDE:
 			ok = prop0 == 2 || prop0 == -1;
+			break;
+
+		case UTF8LITE_CHARWIDTH_EMOJI:
+			ok = prop0 == 2 || prop0 == 1 || prop0 == -1 || prop0 == -2;
 			break;
 
 		default:
