@@ -1,6 +1,7 @@
 *.a
 *.o
 __pycache__
+a.out
 project.xcworkspace
 xcuserdata
 /doc/html
