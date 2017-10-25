@@ -158,20 +158,8 @@ Start:
 		goto E_Base;
 
 	case GRAPH_BREAK_ZWJ:
-		if (scan->iter_prop == GRAPH_BREAK_GLUE_AFTER_ZWJ) {
-			// Do not break within emoji zwj sequences
-			// GB11: ZWJ * (Glue_After_Zwj | EBG)
-			NEXT();
-			NEXT();
-			goto Break;
-		} else if (scan->iter_prop == GRAPH_BREAK_E_BASE_GAZ) {
-			// GB11: ZWJ * (Glue_After_Zwj | EBG)
-			NEXT();
-			NEXT();
-			goto E_Base;
-		}
 		NEXT();
-		goto MaybeBreak;
+		goto ZWJ;
 
 	case GRAPH_BREAK_REGIONAL_INDICATOR:
 		NEXT();
@@ -258,6 +246,22 @@ E_Base:
 	}
 	goto MaybeBreak;
 
+ZWJ:
+	// Do not break within emoji zwj sequences
+	// GB11: ZWJ * (Glue_After_Zwj | EBG)
+	switch (scan->prop) {
+	case GRAPH_BREAK_GLUE_AFTER_ZWJ:
+		NEXT();
+		goto MaybeBreak;
+
+	case GRAPH_BREAK_E_BASE_GAZ:
+		NEXT();
+		goto E_Base;
+
+	default:
+		goto MaybeBreak;
+	}
+
 Regional_Indicator:
 	// Do not break within emoji flag sequences. That is, do not break
 	// between regional indicator (RI) symbols if there is an odd number
@@ -269,14 +273,18 @@ Regional_Indicator:
 	goto MaybeBreak;
 
 MaybeBreak:
-	switch (scan->prop) {
 	// GB9: Do not break before extending characters or ZWJ.
-	case GRAPH_BREAK_EXTEND:
-	case GRAPH_BREAK_ZWJ:
 	// GB9a: Do not break before SpacingMark [extended grapheme clusters]
+	// GB999: Otherwise, break everywhere
+	switch (scan->prop) {
+	case GRAPH_BREAK_EXTEND:
 	case GRAPH_BREAK_SPACINGMARK:
 		NEXT();
 		goto MaybeBreak;
+
+	case GRAPH_BREAK_ZWJ:
+		NEXT();
+		goto ZWJ;
 
 	default:
 		goto Break;
