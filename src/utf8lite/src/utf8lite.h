@@ -724,8 +724,7 @@ enum utf8lite_graph_type {
  */
 struct utf8lite_graph {
 	struct utf8lite_text text;	/**< grapheme code sequence */
-	int type;			/**< grapheme type, a bit mask of
-						#utf8lite_graph_type values */
+	enum utf8lite_graph_type type;	/**< grapheme type */
 };
 
 /**
