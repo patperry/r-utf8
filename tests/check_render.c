@@ -15,6 +15,7 @@
  */
 
 #include <check.h>
+#include <limits.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "../src/utf8lite.h"
@@ -36,6 +37,25 @@ void teardown_render(void)
 	utf8lite_render_destroy(&render);
         teardown();
 }
+
+
+static int width(const struct utf8lite_text *text)
+{
+	struct utf8lite_graphscan scan;
+	int width, w;
+
+	width = 0;
+	utf8lite_graphscan_make(&scan, text);
+	while (utf8lite_graphscan_advance(&scan)) {
+		ck_assert(!utf8lite_render_measure(&render, &scan.current, &w));
+		ck_assert(w >= 0);
+		ck_assert(width <= INT_MAX - w);
+		width += w;
+	}
+
+	return width;
+}
+
 
 struct escape_test {
 	const char *raw;
@@ -246,6 +266,108 @@ START_TEST(test_encode_rmdi)
 END_TEST
 
 
+START_TEST(test_width_control_raw)
+{
+	utf8lite_render_set_flags(&render, 0);
+	ck_assert_int_eq(width(S("\x01")), 0);
+	ck_assert_int_eq(width(S("\a")), 0);
+	ck_assert_int_eq(width(S("\n")), 0);
+	ck_assert_int_eq(width(S("\r\n")), 0);
+	ck_assert_int_eq(width(S("\x7F")), 0);
+	ck_assert_int_eq(width(JS("\\u0e00")), 0);
+	ck_assert_int_eq(width(JS("\\u2029")), 0);
+	ck_assert_int_eq(width(JS("\\u2029")), 0);
+	ck_assert_int_eq(width(JS("\\udbff\\udfff")), 0); // U+0010FFFF
+}
+END_TEST
+
+
+START_TEST(test_width_control_esc)
+{
+	utf8lite_render_set_flags(&render, UTF8LITE_ESCAPE_CONTROL);
+	ck_assert_int_eq(width(S("\x01")), 6);
+	ck_assert_int_eq(width(S("\a")), 2);
+	ck_assert_int_eq(width(S("\n")), 2);
+	ck_assert_int_eq(width(S("\r\n")), 4);
+	ck_assert_int_eq(width(S("\x7F")), 6);
+	ck_assert_int_eq(width(JS("\\u0e00")), 6);
+	ck_assert_int_eq(width(JS("\\u2029")), 6);
+	ck_assert_int_eq(width(JS("\\u2029")), 6);
+	ck_assert_int_eq(width(JS("\\udbff\\udfff")), 10); // U+0010FFFF
+
+	utf8lite_render_set_flags(&render,
+			UTF8LITE_ESCAPE_CONTROL | UTF8LITE_ENCODE_JSON);
+	ck_assert_int_eq(width(S("\x01")), 6);
+	ck_assert_int_eq(width(S("\a")), 6);
+	ck_assert_int_eq(width(S("\n")), 2);
+	ck_assert_int_eq(width(S("\r\n")), 4);
+	ck_assert_int_eq(width(S("\x7F")), 6);
+	ck_assert_int_eq(width(JS("\\u0e00")), 6);
+	ck_assert_int_eq(width(JS("\\u2029")), 6);
+	ck_assert_int_eq(width(JS("\\u2029")), 6);
+	ck_assert_int_eq(width(JS("\\udbff\\udfff")), 12); // U+0010FFFF
+}
+END_TEST
+
+
+START_TEST(test_width_ignorable_raw)
+{
+	char buffer[32];
+	uint8_t *end;
+	int32_t codes[] = {
+		0x00AD, 0x200B, 0x200C, 0x200D, 0x200E, 0x200F, 0x034F,
+		0xFEFF, 0xE0001, 0xE0020, 0xE01EF
+	};
+	int i, n = sizeof(codes) / sizeof(codes[0]);
+
+	for (i = 0; i < n; i++) {
+		end = (uint8_t *)buffer;
+		utf8lite_encode_utf8(codes[i], &end);
+		*end++ = '\0';
+
+		utf8lite_render_set_flags(&render, 0);
+		ck_assert_int_eq(width(S(buffer)), 0);
+
+		utf8lite_render_set_flags(&render, UTF8LITE_ESCAPE_UTF8);
+		if (codes[i] <= 0xFFFF) {
+			ck_assert_int_eq(width(S(buffer)), 6);
+		} else {
+			ck_assert_int_eq(width(S(buffer)), 10);
+		}
+
+		utf8lite_render_set_flags(&render, UTF8LITE_ESCAPE_EXTENDED);
+		if (codes[i] <= 0xFFFF) {
+			ck_assert_int_eq(width(S(buffer)), 0);
+		} else {
+			ck_assert_int_eq(width(S(buffer)), 10);
+		}
+	}
+}
+END_TEST
+
+
+START_TEST(test_width_ignorable_rm)
+{
+	char buffer[32];
+	uint8_t *end;
+	int32_t codes[] = {
+		0x00AD, 0x200B, 0x200C, 0x200D, 0x200E, 0x200F, 0x034F,
+		0xFEFF, 0xE0001, 0xE0020, 0xE01EF
+	};
+	int i, n = sizeof(codes) / sizeof(codes[0]);
+
+	for (i = 0; i < n; i++) {
+		end = (uint8_t *)buffer;
+		utf8lite_encode_utf8(codes[i], &end);
+		*end++ = '\0';
+
+		utf8lite_render_set_flags(&render, UTF8LITE_ENCODE_RMDI);
+		ck_assert_int_eq(width(S(buffer)), 0);
+	}
+}
+END_TEST
+
+
 Suite *render_suite(void)
 {
         Suite *s;
@@ -266,6 +388,14 @@ Suite *render_suite(void)
 	tc = tcase_create("escape");
         tcase_add_checked_fixture(tc, setup_render, teardown_render);
         tcase_add_test(tc, test_encode_rmdi);
+        suite_add_tcase(s, tc);
+
+	tc = tcase_create("width");
+        tcase_add_checked_fixture(tc, setup_render, teardown_render);
+        tcase_add_test(tc, test_width_control_raw);
+        tcase_add_test(tc, test_width_control_esc);
+        tcase_add_test(tc, test_width_ignorable_raw);
+        tcase_add_test(tc, test_width_ignorable_rm);
         suite_add_tcase(s, tc);
 
 	return s;

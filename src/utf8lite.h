@@ -774,7 +774,7 @@ void utf8lite_graphscan_reset(struct utf8lite_graphscan *scan);
 
 /**
  * Render escaping type. Specifies that certain code-points require
- * special handlinge.
+ * special handling.
  */
 enum utf8lite_escape_type {
 	UTF8LITE_ESCAPE_NONE = 0,		/**< no special escaping */
@@ -792,7 +792,9 @@ enum utf8lite_encode_type {
 	UTF8LITE_ENCODE_C = 0,		/**< C-compatible escapes */
 	UTF8LITE_ENCODE_JSON = (1 << 5),/**< JSON-compatible escapes */
 	UTF8LITE_ENCODE_EMOJI = (1 << 6),/**< put ZWSP after emoji */
-	UTF8LITE_ENCODE_RMDI = (1 << 7)	/**< remove default ignorables */
+	UTF8LITE_ENCODE_RMDI = (1 << 7),/**< remove default ignorables */
+	UTF8LITE_ENCODE_AMBIGWIDE = (1 << 8),/**< assume that ambiguous-width
+					       characters are wide */
 };
 
 /**
@@ -907,6 +909,20 @@ int utf8lite_render_indent(struct utf8lite_render *r, int nlevel);
  * \returns 0 on success
  */
 int utf8lite_render_newlines(struct utf8lite_render *r, int nline);
+
+/**
+ * Get the width of a grapheme under the current render settings.
+ *
+ * \param r the render object
+ * \param g the grapheme
+ * \param widthptr if non-NULL, a pointer to store the width on exit
+ * 	(0 if the grapheme is empty or a non-escaped control)
+ *
+ * \returns 0 on success
+ */
+int utf8lite_render_measure(const struct utf8lite_render *r,
+			    const struct utf8lite_graph *g,
+			    int *widthptr);
 
 /**
  * Render a single character. If any render escape flags are set, filter

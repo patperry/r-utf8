@@ -448,3 +448,116 @@ int utf8lite_render_text(struct utf8lite_render *r,
 
 	return 0;
 }
+
+
+static int ascii_width(int32_t ch, int flags)
+{
+	// handle control characters
+	if (ch <= 0x1F || ch == 0x7F) {
+		if (!(flags & UTF8LITE_ESCAPE_CONTROL)) {
+			return 0;
+		}
+
+		switch (ch) {
+		case '\a':
+		case '\v':
+			// \u0007, \u000b (JSON) : \a, \b (C)
+			return (flags & UTF8LITE_ENCODE_JSON) ? 6 : 2;
+		case '\b':
+		case '\f':
+		case '\n':
+		case '\r':
+		case '\t':
+			return 2;
+		default:
+			return 6; // \uXXXX
+		}
+	}
+
+	// handle printable characters
+	switch (ch) {
+	case '\"':
+		return (flags & UTF8LITE_ESCAPE_DQUOTE) ? 2 : 1;
+	case '\'':
+		return (flags & UTF8LITE_ESCAPE_SQUOTE) ? 2 : 1;
+	case '\\':
+		if (flags & (UTF8LITE_ESCAPE_CONTROL
+				| UTF8LITE_ESCAPE_DQUOTE
+				| UTF8LITE_ESCAPE_SQUOTE
+				| UTF8LITE_ESCAPE_EXTENDED
+				| UTF8LITE_ESCAPE_UTF8)) {
+			return 2;
+		} else {
+			return 1;
+		}
+	default:
+		return 1;
+	}
+}
+
+
+static int utf8_escape_width(int32_t ch, int flags)
+{
+	if (ch <= 0xFFFF) {
+		return 6;
+	} else if (flags & UTF8LITE_ENCODE_JSON) {
+		return 12;
+	} else {
+		return 10;
+	}
+}
+
+static int utf8_width(int32_t ch, int cw, int flags)
+{
+	switch ((enum utf8lite_charwidth_type)cw) {
+	case UTF8LITE_CHARWIDTH_NONE:
+		if (flags & UTF8LITE_ESCAPE_CONTROL) {
+			return utf8_escape_width(ch, flags);
+		} else {
+			return 0;
+		}
+
+	case UTF8LITE_CHARWIDTH_IGNORABLE:
+	case UTF8LITE_CHARWIDTH_MARK:
+	case UTF8LITE_CHARWIDTH_NARROW:
+	case UTF8LITE_CHARWIDTH_AMBIGUOUS:
+	case UTF8LITE_CHARWIDTH_WIDE:
+	case UTF8LITE_CHARWIDTH_EMOJI:
+		(void)ch;
+		return 0;
+	}
+}
+
+
+int utf8lite_render_measure(const struct utf8lite_render *r,
+			    const struct utf8lite_graph *g,
+			    int *widthptr)
+{
+	struct utf8lite_text_iter it;
+	int32_t ch;
+	int cw, w, width = 0;
+
+	utf8lite_text_iter_make(&it, &g->text);
+	while (utf8lite_text_iter_advance(&it)) {
+		ch = it.current;
+		if (ch <= 0x7F) {
+			w = ascii_width(ch, r->flags);
+		} else if (r->flags & UTF8LITE_ESCAPE_UTF8) {
+			w = utf8_escape_width(ch, r->flags);
+		} else if ((r->flags & UTF8LITE_ESCAPE_EXTENDED)
+				&& (ch > 0xFFFF)) {
+			w = utf8_escape_width(ch, r->flags);
+		} else {
+			cw = utf8lite_charwidth(ch);
+			w = utf8_width(ch, cw, r->flags);
+		}
+
+		// TODO check for overflow
+		width += w;
+	}
+
+	if (widthptr) {
+		*widthptr = width;
+	}
+	return 0;
+}
