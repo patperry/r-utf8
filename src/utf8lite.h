@@ -710,6 +710,14 @@ int utf8lite_textmap_set(struct utf8lite_textmap *map,
  * @{
  */
 
+/**
+ * Grapheme scanner, for iterating over the graphemes in a text. Grapheme
+ * boundaries are determined according to
+ * [UAX #29, Unicode Text Segmentation][uax29],
+ * using the extended grapheme cluster rules.
+ *
+ * [uax29]: http://unicode.org/reports/tr29/
+ */
 struct utf8lite_graphscan {
 	struct utf8lite_text_iter iter;	/**< iterator pointed at next code */
 	const uint8_t *ptr;		/**< next code's start */
@@ -717,11 +725,29 @@ struct utf8lite_graphscan {
 	struct utf8lite_text current;	/**< current grapheme */
 };
 
+/**
+ * Create a grapheme scanner over a text object.
+ *
+ * \param scan the scanner to initialize
+ * \param text the text
+ */
 void utf8lite_graphscan_make(struct utf8lite_graphscan *scan,
 			     const struct utf8lite_text *text);
 
+/**
+ * Advance a scanner to the next grapheme.
+ *
+ * \param scan the scanner
+ *
+ * \returns nonzero on success, zero if at the end of the text
+ */
 int utf8lite_graphscan_advance(struct utf8lite_graphscan *scan);
 
+/**
+ * Reset a scanner to the beginning of the text.
+ *
+ * \param scan the scanner
+ */
 void utf8lite_graphscan_reset(struct utf8lite_graphscan *scan);
 
 /**@}*/
