@@ -711,6 +711,24 @@ int utf8lite_textmap_set(struct utf8lite_textmap *map,
  */
 
 /**
+ * Grapheme cluster type.
+ */
+enum utf8lite_graph_type {
+	UTF8LITE_GRAPH_NONE = 0,/**< control sequence or empty */
+	UTF8LITE_GRAPH_TEXT,	/**< text presentation */
+	UTF8LITE_GRAPH_EMOJI,	/**< emoji presentation */
+};
+
+/**
+ * Grapheme cluster.
+ */
+struct utf8lite_graph {
+	struct utf8lite_text text;	/**< grapheme code sequence */
+	int type;			/**< grapheme type, a bit mask of
+						#utf8lite_graph_type values */
+};
+
+/**
  * Grapheme scanner, for iterating over the graphemes in a text. Grapheme
  * boundaries are determined according to
  * [UAX #29, Unicode Text Segmentation][uax29],
@@ -722,7 +740,7 @@ struct utf8lite_graphscan {
 	struct utf8lite_text_iter iter;	/**< iterator pointed at next code */
 	const uint8_t *ptr;		/**< next code's start */
 	int prop;			/**< next code's break property */
-	struct utf8lite_text current;	/**< current grapheme */
+	struct utf8lite_graph current;	/**< current grapheme */
 };
 
 /**
