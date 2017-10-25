@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		880244831FA14699000AEC71 /* graphscan.c in Sources */ = {isa = PBXBuildFile; fileRef = 880244821FA14699000AEC71 /* graphscan.c */; };
+		880244841FA1469F000AEC71 /* graphscan.c in Sources */ = {isa = PBXBuildFile; fileRef = 880244821FA14699000AEC71 /* graphscan.c */; };
+		880244861FA146AA000AEC71 /* graphbreak.h in Headers */ = {isa = PBXBuildFile; fileRef = 880244851FA146AA000AEC71 /* graphbreak.h */; };
 		88BAFA031F97AC75006A5A78 /* encode.c in Sources */ = {isa = PBXBuildFile; fileRef = 88BAF9FB1F97AC74006A5A78 /* encode.c */; };
 		88BAFA041F97AC75006A5A78 /* text.c in Sources */ = {isa = PBXBuildFile; fileRef = 88BAF9FC1F97AC74006A5A78 /* text.c */; };
 		88BAFA051F97AC75006A5A78 /* char.c in Sources */ = {isa = PBXBuildFile; fileRef = 88BAF9FD1F97AC74006A5A78 /* char.c */; };
@@ -54,6 +57,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		880244821FA14699000AEC71 /* graphscan.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = graphscan.c; path = src/graphscan.c; sourceTree = "<group>"; };
+		880244851FA146AA000AEC71 /* graphbreak.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = graphbreak.h; path = src/private/graphbreak.h; sourceTree = "<group>"; };
 		885E0CEF1F97AC280002F6CB /* libutf8lite.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libutf8lite.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
 		88BAF9FB1F97AC74006A5A78 /* encode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = encode.c; path = src/encode.c; sourceTree = "<group>"; };
 		88BAF9FC1F97AC74006A5A78 /* text.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = text.c; path = src/text.c; sourceTree = "<group>"; };
@@ -127,6 +132,7 @@
 				88BAF9FB1F97AC74006A5A78 /* encode.c */,
 				88BAFA001F97AC75006A5A78 /* error.c */,
 				88BAFA011F97AC75006A5A78 /* escape.c */,
+				880244821FA14699000AEC71 /* graphscan.c */,
 				88CF04921F9D54CE00AA3475 /* render.c */,
 				88BAF9FF1F97AC74006A5A78 /* normalize.c */,
 				88BAF9FC1F97AC74006A5A78 /* text.c */,
@@ -147,6 +153,7 @@
 				88BAFA0D1F97AC94006A5A78 /* combining.h */,
 				88BAFA0F1F97AC94006A5A78 /* compose.h */,
 				88BAFA101F97AC94006A5A78 /* decompose.h */,
+				880244851FA146AA000AEC71 /* graphbreak.h */,
 			);
 			name = private;
 			sourceTree = "<group>";
@@ -176,6 +183,7 @@
 				88BAFA141F97AC94006A5A78 /* compose.h in Headers */,
 				88BAFA151F97AC94006A5A78 /* decompose.h in Headers */,
 				88CF04961F9D54EA00AA3475 /* array.h in Headers */,
+				880244861FA146AA000AEC71 /* graphbreak.h in Headers */,
 				88BAFA131F97AC94006A5A78 /* casefold.h in Headers */,
 				88BAFA111F97AC94006A5A78 /* charwidth.h in Headers */,
 				88BAFA121F97AC94006A5A78 /* combining.h in Headers */,
@@ -268,6 +276,7 @@
 				88DA8D671F97F59700125B42 /* textiter.c in Sources */,
 				88BAFA041F97AC75006A5A78 /* text.c in Sources */,
 				88BAFA031F97AC75006A5A78 /* encode.c in Sources */,
+				880244831FA14699000AEC71 /* graphscan.c in Sources */,
 				88CF04941F9D54CE00AA3475 /* render.c in Sources */,
 				88BAFA061F97AC75006A5A78 /* textassign.c in Sources */,
 				88E5EB1F1F982D3F00E98123 /* textmap.c in Sources */,
@@ -292,6 +301,7 @@
 				88BAFA301F97AD32006A5A78 /* textassign.c in Sources */,
 				88CF049B1F9D551900AA3475 /* check_render.c in Sources */,
 				88CF04981F9D54F500AA3475 /* render.c in Sources */,
+				880244841FA1469F000AEC71 /* graphscan.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

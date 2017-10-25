@@ -33,7 +33,7 @@ graph               Ambiguous  Emoji Ignorable Narrow   Mark   None   Wide
   LF                        0      0         0      0      0      1      0
   LV                        0      0         0      0      0      0    399
   LVT                       0      0         0      0      0      0  10773
-  None                    882    996         2  21606      0 971540  99206
+  Other                   882    996         2  21606      0 971540  99206
   Prepend                   0      0         0      9     10      0      0
   RegionalIndicator         0     26         0      0      0      0      0
   SpacingMark               0      0         0    348      0      0      0
