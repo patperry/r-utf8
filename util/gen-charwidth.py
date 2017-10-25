@@ -92,18 +92,18 @@ default_ignorable = derived_core_properties['Default_Ignorable_Code_Point']
 
 
 # unassigned: not assigned, other, surrogate
-other_cats = set(['Cc', 'Cn', 'Co', 'Cs', 'Zl', 'Zp'])
-none_cats = set(['Cf', 'Me', 'Mn'])
-other = set([0xFFF9, 0xFFFA, 0xFFFB]) # interlinear annotation markers
-none = set()
+none_cats = set(['Cc', 'Cn', 'Co', 'Cs', 'Zl', 'Zp'])
+mark_cats = set(['Cf', 'Me', 'Mn'])
+none = set([0xFFF9, 0xFFFA, 0xFFFB]) # interlinear annotation markers
+mark = set()
 for code in range(len(unicode_data.uchars)):
     u = unicode_data.uchars[code]
-    if code in other or code in none:
+    if code in none or code in mark:
         pass
-    elif u is None or u.category in other_cats:
-        other.add(code)
-    elif u.category in none_cats:
+    elif u is None or u.category in none_cats:
         none.add(code)
+    elif u.category in mark_cats:
+        mark.add(code)
 
 
 code_props = [None] * len(east_asian_width)
@@ -111,12 +111,12 @@ for code in range(len(code_props)):
     eaw = east_asian_width[code]
     if code in default_ignorable: # default ingorable overrides
         code_props[code] = 'Ignorable'
-    elif code in emoji: # emoji overrides east_asian_width
+    elif code in emoji: # emoji overrides
         code_props[code] = 'Emoji'
+    elif code in mark: # mark overrides
+        code_props[code] = 'Mark'
     elif code in none: # none overrides
         code_props[code] = 'None'
-    elif code in other: # other overrides east_asian_width
-        code_props[code] = 'Other'
     elif eaw == 'F' or eaw == 'W':
         code_props[code] = 'Wide'
     elif eaw == 'H' or eaw == 'Na' or eaw == 'N':
@@ -128,11 +128,11 @@ for code in range(len(code_props)):
 
 
 prop_names = [
-        'Other', 'Emoji', 'Ambiguous', 'Ignorable', 'None', 'Narrow', 'Wide'
+        'None', 'Ignorable', 'Mark', 'Narrow', 'Ambiguous', 'Wide', 'Emoji'
         ]
 prop_vals = {}
 for p in prop_names:
-    prop_vals[p] = len(prop_vals) - 3
+    prop_vals[p] = len(prop_vals)
 
 
 def compute_tables(block_size):
@@ -232,8 +232,7 @@ for prop in prop_names:
         print(",\n", end="")
     else:
         first = False
-    print("\tCHARWIDTH_" + prop.upper() + " = " + str(prop_vals[prop]),
-          end="")
+    print("\tCHARWIDTH_" + prop.upper() + " = " + str(prop_vals[prop]), end="")
 print("\n};")
 print("")
 print("static const " + type1 + " charwidth_stage1[] = {")

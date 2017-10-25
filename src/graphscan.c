@@ -21,7 +21,7 @@
 
 /*
                    width
-graph               Ambiguous  Emoji Ignorable Narrow   None  Other   Wide
+graph               Ambiguous  Emoji Ignorable Narrow   Mark   None   Wide
   Control                   0      0      3809      0      0   2116      0
   CR                        0      0         0      0      0      1      0
   EBase                     0     98         0      0      0      0      0
