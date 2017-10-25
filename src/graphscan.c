@@ -136,7 +136,6 @@ Start:
 	}
 
 	assert(0 && "unhandled grapheme break property");
-	return 0;
 
 CR:
 	// GB3: Do not break within CRLF
