@@ -403,6 +403,23 @@ START_TEST(test_width_backslash)
 END_TEST
 
 
+START_TEST(test_width_ascii)
+{
+	utf8lite_render_set_flags(&render, 0);
+	ck_assert_int_eq(width(S(" ")), 1);
+	ck_assert_int_eq(width(S("~")), 1);
+
+	utf8lite_render_set_flags(&render, UTF8LITE_ESCAPE_UTF8);
+	ck_assert_int_eq(width(S(" ")), 1);
+	ck_assert_int_eq(width(S("~")), 1);
+
+	utf8lite_render_set_flags(&render, UTF8LITE_ESCAPE_EXTENDED);
+	ck_assert_int_eq(width(S(" ")), 1);
+	ck_assert_int_eq(width(S("~")), 1);
+}
+END_TEST
+
+
 Suite *render_suite(void)
 {
         Suite *s;
@@ -434,6 +451,7 @@ Suite *render_suite(void)
         tcase_add_test(tc, test_width_dquote);
         tcase_add_test(tc, test_width_squote);
         tcase_add_test(tc, test_width_backslash);
+        tcase_add_test(tc, test_width_ascii);
         suite_add_tcase(s, tc);
 
 	return s;
