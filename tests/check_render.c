@@ -363,6 +363,9 @@ START_TEST(test_width_ignorable_rm)
 
 		utf8lite_render_set_flags(&render, UTF8LITE_ENCODE_RMDI);
 		ck_assert_int_eq(width(S(buffer)), 0);
+
+		utf8lite_render_set_flags(&render, UTF8LITE_ESCAPE_CONTROL);
+		ck_assert_int_eq(width(S(buffer)), 0);
 	}
 }
 END_TEST
@@ -420,6 +423,64 @@ START_TEST(test_width_ascii)
 END_TEST
 
 
+START_TEST(test_width_narrow)
+{
+	utf8lite_render_set_flags(&render, 0);
+	ck_assert_int_eq(width(JS("\\u00a0")), 1);
+	ck_assert_int_eq(width(JS("\\u00ff")), 1);
+	ck_assert_int_eq(width(JS("\\u0100")), 1);
+	ck_assert_int_eq(width(JS("\\u0101")), 1);
+	ck_assert_int_eq(width(JS("\\u010b")), 1);
+}
+END_TEST
+
+
+START_TEST(test_width_ambiguous)
+{
+	utf8lite_render_set_flags(&render, 0);
+	ck_assert_int_eq(width(JS("\\u00a1")), 1);
+	ck_assert_int_eq(width(JS("\\u016b")), 1);
+	ck_assert_int_eq(width(JS("\\ufffd")), 1);
+	ck_assert_int_eq(width(JS("\\ud83c\\udd00")), 1); // U+1F100
+
+	utf8lite_render_set_flags(&render, UTF8LITE_ENCODE_AMBIGWIDE);
+	ck_assert_int_eq(width(JS("\\u00a1")), 2);
+	ck_assert_int_eq(width(JS("\\u016b")), 2);
+	ck_assert_int_eq(width(JS("\\ufffd")), 2);
+	ck_assert_int_eq(width(JS("\\ud83c\\udd00")), 2); // U+1F100
+}
+END_TEST
+
+
+START_TEST(test_width_wide)
+{
+	utf8lite_render_set_flags(&render, 0);
+
+	ck_assert_int_eq(width(JS("\\uff01")), 2);
+	ck_assert_int_eq(width(JS("\\uff02")), 2);
+	ck_assert_int_eq(width(JS("\\uff03")), 2);
+	ck_assert_int_eq(width(JS("\\uff04")), 2);
+}
+END_TEST
+
+
+START_TEST(test_width_mark)
+{
+	utf8lite_render_set_flags(&render, 0);
+
+	ck_assert_int_eq(width(JS("a\\u0300")), 1);
+	ck_assert_int_eq(width(JS("a\\u030b")), 1);
+	ck_assert_int_eq(width(JS("\\u0600a")), 1); // in theory, not practice
+
+	// isolated mark
+	// (not sure what the right behavior is here)
+	ck_assert_int_eq(width(JS("\\u0300")), 0);
+	ck_assert_int_eq(width(JS("\\u030b")), 0);
+	ck_assert_int_eq(width(JS("\\u0600")), 0);
+}
+END_TEST
+
+
 Suite *render_suite(void)
 {
         Suite *s;
@@ -452,6 +513,10 @@ Suite *render_suite(void)
         tcase_add_test(tc, test_width_squote);
         tcase_add_test(tc, test_width_backslash);
         tcase_add_test(tc, test_width_ascii);
+        tcase_add_test(tc, test_width_narrow);
+        tcase_add_test(tc, test_width_ambiguous);
+        tcase_add_test(tc, test_width_wide);
+        tcase_add_test(tc, test_width_mark);
         suite_add_tcase(s, tc);
 
 	return s;
