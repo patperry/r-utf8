@@ -487,6 +487,14 @@ START_TEST(test_width_emoji)
 
 	ck_assert_int_eq(width(JS("\\uD83D\\uDCF8")), 2); // U+1F4F8
 	ck_assert_int_eq(width(JS("\\uD83D\\uDCF8\\u20E0")), 2);
+	// family of 4
+	ck_assert_int_eq(width(JS("\\ud83d\\udc68"
+				  "\\u200d\\ud83d\\udc69"
+				  "\\u200d\\ud83d\\udc66"
+				  "\\u200d\\ud83d\\udc66")), 2);
+	// rainbow flag
+	ck_assert_int_eq(width(JS("\\ud83c\\udff3\\ufe0f"
+				  "\\u200d\\ud83c\\udf08")), 2);
 }
 END_TEST
 

@@ -16,6 +16,7 @@
 
 #include <assert.h>
 #include <inttypes.h>
+#include <limits.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -550,11 +551,14 @@ int utf8lite_render_measure(const struct utf8lite_render *r,
 {
 	struct utf8lite_text_iter it;
 	int32_t ch;
-	int cw, w, width = 0;
+	int err = 0, cw, w, width;
 
+	width = 0;
 	utf8lite_text_iter_make(&it, &g->text);
+
 	while (utf8lite_text_iter_advance(&it)) {
 		ch = it.current;
+
 		if (ch <= 0x7F) {
 			w = ascii_width(ch, r->flags);
 		} else if (r->flags & UTF8LITE_ESCAPE_UTF8) {
@@ -564,15 +568,25 @@ int utf8lite_render_measure(const struct utf8lite_render *r,
 			w = utf8_escape_width(ch, r->flags);
 		} else {
 			cw = utf8lite_charwidth(ch);
+			if (cw == UTF8LITE_CHARWIDTH_EMOJI) {
+				width = 2;
+				goto exit;
+			}
 			w = utf8_width(ch, cw, r->flags);
 		}
 
-		// TODO check for overflow
+		if (w > INT_MAX - width) {
+			width = -1;
+			err = UTF8LITE_ERROR_OVERFLOW;
+			goto exit;
+		}
+
 		width += w;
 	}
 
+exit:
 	if (widthptr) {
 		*widthptr = width;
 	}
-	return 0;
+	return err;
 }
