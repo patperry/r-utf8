@@ -368,6 +368,41 @@ START_TEST(test_width_ignorable_rm)
 END_TEST
 
 
+START_TEST(test_width_dquote)
+{
+	utf8lite_render_set_flags(&render, 0);
+	ck_assert_int_eq(width(S("\"")), 1);
+
+	utf8lite_render_set_flags(&render, UTF8LITE_ESCAPE_DQUOTE);
+	ck_assert_int_eq(width(S("\"")), 2);
+}
+END_TEST
+
+
+START_TEST(test_width_squote)
+{
+	utf8lite_render_set_flags(&render, 0);
+	ck_assert_int_eq(width(S("'")), 1);
+
+	utf8lite_render_set_flags(&render, UTF8LITE_ESCAPE_SQUOTE);
+	ck_assert_int_eq(width(S("'")), 2);
+}
+END_TEST
+
+
+START_TEST(test_width_backslash)
+{
+	utf8lite_render_set_flags(&render, 0);
+	ck_assert_int_eq(width(S("\\")), 1);
+	ck_assert_int_eq(width(JS("\\\\")), 1);
+
+	utf8lite_render_set_flags(&render, UTF8LITE_ESCAPE_UTF8);
+	ck_assert_int_eq(width(S("\\")), 2);
+	ck_assert_int_eq(width(JS("\\\\")), 2);
+}
+END_TEST
+
+
 Suite *render_suite(void)
 {
         Suite *s;
@@ -396,6 +431,9 @@ Suite *render_suite(void)
         tcase_add_test(tc, test_width_control_esc);
         tcase_add_test(tc, test_width_ignorable_raw);
         tcase_add_test(tc, test_width_ignorable_rm);
+        tcase_add_test(tc, test_width_dquote);
+        tcase_add_test(tc, test_width_squote);
+        tcase_add_test(tc, test_width_backslash);
         suite_add_tcase(s, tc);
 
 	return s;
