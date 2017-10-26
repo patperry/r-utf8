@@ -481,6 +481,16 @@ START_TEST(test_width_mark)
 END_TEST
 
 
+START_TEST(test_width_emoji)
+{
+	utf8lite_render_set_flags(&render, 0);
+
+	ck_assert_int_eq(width(JS("\\uD83D\\uDCF8")), 2); // U+1F4F8
+	ck_assert_int_eq(width(JS("\\uD83D\\uDCF8\\u20E0")), 2);
+}
+END_TEST
+
+
 Suite *render_suite(void)
 {
         Suite *s;
@@ -517,6 +527,7 @@ Suite *render_suite(void)
         tcase_add_test(tc, test_width_ambiguous);
         tcase_add_test(tc, test_width_wide);
         tcase_add_test(tc, test_width_mark);
+        tcase_add_test(tc, test_width_emoji);
         suite_add_tcase(s, tc);
 
 	return s;
