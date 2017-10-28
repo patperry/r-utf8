@@ -68,7 +68,6 @@ void utf8lite_graphscan_reset(struct utf8lite_graphscan *scan)
 	utf8lite_text_iter_reset(&scan->iter);
 	scan->current.text.ptr = (uint8_t *)scan->iter.ptr;
 	scan->current.text.attr = 0;
-	scan->current.type = UTF8LITE_GRAPH_NONE;
 	NEXT();
 }
 
@@ -77,7 +76,6 @@ int utf8lite_graphscan_advance(struct utf8lite_graphscan *scan)
 {
 	scan->current.text.ptr = (uint8_t *)scan->ptr;
 	scan->current.text.attr = 0;
-	scan->current.type = UTF8LITE_GRAPH_NONE;
 
 Start:
 	// GB2: Break at the end of text
@@ -87,7 +85,6 @@ Start:
 
 	switch ((enum graph_break_prop)scan->prop) {
 	case GRAPH_BREAK_CR:
-		scan->current.type = UTF8LITE_GRAPH_NONE;
 		NEXT();
 		goto CR;
 
@@ -95,72 +92,48 @@ Start:
 	case GRAPH_BREAK_LF:
 		// Break after controls
 		// GB4: (Newline | LF) +
-		scan->current.type = UTF8LITE_GRAPH_NONE;
 		NEXT();
 		goto Break;
 
 	case GRAPH_BREAK_L:
-		scan->current.type = UTF8LITE_GRAPH_TEXT;
 		NEXT();
 		goto L;
 
 	case GRAPH_BREAK_LV:
 	case GRAPH_BREAK_V:
-		scan->current.type = UTF8LITE_GRAPH_TEXT;
 		NEXT();
 		goto V;
 
 	case GRAPH_BREAK_LVT:
 	case GRAPH_BREAK_T:
-		scan->current.type = UTF8LITE_GRAPH_TEXT;
 		NEXT();
 		goto T;
 
 	case GRAPH_BREAK_PREPEND:
-		scan->current.type = UTF8LITE_GRAPH_TEXT;
 		NEXT();
 		goto Prepend;
 
 	case GRAPH_BREAK_E_BASE:
 	case GRAPH_BREAK_E_BASE_GAZ:
-		scan->current.type = UTF8LITE_GRAPH_EMOJI;
 		NEXT();
 		goto E_Base;
 
 	case GRAPH_BREAK_ZWJ:
-		scan->current.type = UTF8LITE_GRAPH_TEXT;
 		NEXT();
 		goto ZWJ;
 
 	case GRAPH_BREAK_REGIONAL_INDICATOR:
-		scan->current.type = UTF8LITE_GRAPH_EMOJI;
 		NEXT();
 		goto Regional_Indicator;
 
 	case GRAPH_BREAK_E_MODIFIER:
 	case GRAPH_BREAK_GLUE_AFTER_ZWJ:
-		scan->current.type = UTF8LITE_GRAPH_EMOJI;
 		NEXT();
 		goto MaybeBreak;
 
 	case GRAPH_BREAK_EXTEND:
 	case GRAPH_BREAK_SPACINGMARK:
-		scan->current.type = UTF8LITE_GRAPH_TEXT;
-		NEXT();
-		goto MaybeBreak;
-
 	case GRAPH_BREAK_OTHER:
-		switch (utf8lite_charwidth(scan->iter.current)) {
-		case UTF8LITE_CHARWIDTH_NONE:
-			scan->current.type = UTF8LITE_GRAPH_NONE;
-			break;
-		case UTF8LITE_CHARWIDTH_EMOJI:
-			scan->current.type = UTF8LITE_GRAPH_EMOJI;
-			break;
-		default:
-			scan->current.type = UTF8LITE_GRAPH_TEXT;
-			break;
-		}
 		NEXT();
 		goto MaybeBreak;
 	}
@@ -250,12 +223,10 @@ ZWJ:
 	// GB11: ZWJ * (Glue_After_Zwj | EBG)
 	switch (scan->prop) {
 	case GRAPH_BREAK_GLUE_AFTER_ZWJ:
-		scan->current.type = UTF8LITE_GRAPH_EMOJI;
 		NEXT();
 		goto MaybeBreak;
 
 	case GRAPH_BREAK_E_BASE_GAZ:
-		scan->current.type = UTF8LITE_GRAPH_EMOJI;
 		NEXT();
 		goto E_Base;
 
