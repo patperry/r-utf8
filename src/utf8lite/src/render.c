@@ -473,7 +473,7 @@ static int is_emoji_extened(const struct utf8lite_graph *g)
 	utf8lite_text_iter_make(&it, &g->text);
 	while (utf8lite_text_iter_advance(&it)) {
 		ch = it.current;
-		if (ch < 0xFFF) {
+		if (ch <= 0xFFFF) {
 			continue;
 		}
 		cw = utf8lite_charwidth(ch);
