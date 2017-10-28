@@ -434,6 +434,64 @@ START_TEST(test_encode_rmdi)
 END_TEST
 
 
+START_TEST(test_encode_emoji_plain)
+{
+	set_flags(0);
+
+	ck_assert(!utf8lite_render_text(&render, JS("\\uD83D\\uDCF8")));
+	ck_assert_str_eq(render.string, "\xf0\x9f\x93\xb8"); // U+1F4F8
+	clear();
+
+	ck_assert(!utf8lite_render_text(&render, JS("\\uD83D\\uDCF8\\u20E0")));
+	ck_assert_str_eq(render.string, "\xf0\x9f\x93\xb8\xe2\x83\xa0");
+	clear();
+
+	set_flags(UTF8LITE_ESCAPE_UTF8);
+	ck_assert(!utf8lite_render_text(&render, JS("\\uD83D\\uDCF8")));
+	ck_assert_str_eq(render.string, "\\U0001f4f8");
+	clear();
+
+	ck_assert(!utf8lite_render_text(&render, JS("\\uD83D\\uDCF8\\u20E0")));
+	ck_assert_str_eq(render.string, "\\U0001f4f8\\u20e0");
+	clear();
+}
+END_TEST
+
+
+START_TEST(test_encode_emoji_zwsp)
+{
+	set_flags(UTF8LITE_ENCODE_EMOJI);
+
+	ck_assert(!utf8lite_render_text(&render, JS("\\uD83D\\uDCF8")));
+	ck_assert_str_eq(render.string, "\xf0\x9f\x93\xb8\xe2\x80\x8b");
+	clear();
+
+	ck_assert(!utf8lite_render_text(&render, JS("\\uD83D\\uDCF8\\u20E0")));
+	ck_assert_str_eq(render.string,
+			"\xf0\x9f\x93\xb8\xe2\x83\xa0\xe2\x80\x8b");
+	clear();
+
+	set_flags(UTF8LITE_ENCODE_EMOJI | UTF8LITE_ESCAPE_UTF8);
+	ck_assert(!utf8lite_render_text(&render, JS("\\uD83D\\uDCF8")));
+	ck_assert_str_eq(render.string, "\\U0001f4f8");
+	clear();
+
+	ck_assert(!utf8lite_render_text(&render, JS("\\uD83D\\uDCF8\\u20E0")));
+	ck_assert_str_eq(render.string, "\\U0001f4f8\\u20e0");
+	clear();
+
+	set_flags(UTF8LITE_ENCODE_EMOJI | UTF8LITE_ESCAPE_EXTENDED);
+	ck_assert(!utf8lite_render_text(&render, JS("\\uD83D\\uDCF8")));
+	ck_assert_str_eq(render.string, "\\U0001f4f8");
+	clear();
+
+	ck_assert(!utf8lite_render_text(&render, JS("\\uD83D\\uDCF8\\u20E0")));
+	ck_assert_str_eq(render.string, "\\U0001f4f8\xe2\x83\xa0");
+	clear();
+}
+END_TEST
+
+
 START_TEST(test_width_control_raw)
 {
 	set_flags(0);
@@ -695,6 +753,8 @@ Suite *render_suite(void)
 	tc = tcase_create("encode");
         tcase_add_checked_fixture(tc, setup_render, teardown_render);
         tcase_add_test(tc, test_encode_rmdi);
+        tcase_add_test(tc, test_encode_emoji_plain);
+        tcase_add_test(tc, test_encode_emoji_zwsp);
         suite_add_tcase(s, tc);
 
 	tc = tcase_create("width");

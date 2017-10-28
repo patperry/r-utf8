@@ -145,8 +145,22 @@ Start:
 
 	case GRAPH_BREAK_EXTEND:
 	case GRAPH_BREAK_SPACINGMARK:
-	case GRAPH_BREAK_OTHER:
 		scan->current.type = UTF8LITE_GRAPH_TEXT;
+		NEXT();
+		goto MaybeBreak;
+
+	case GRAPH_BREAK_OTHER:
+		switch (utf8lite_charwidth(scan->iter.current)) {
+		case UTF8LITE_CHARWIDTH_NONE:
+			scan->current.type = UTF8LITE_GRAPH_NONE;
+			break;
+		case UTF8LITE_CHARWIDTH_EMOJI:
+			scan->current.type = UTF8LITE_GRAPH_EMOJI;
+			break;
+		default:
+			scan->current.type = UTF8LITE_GRAPH_TEXT;
+			break;
+		}
 		NEXT();
 		goto MaybeBreak;
 	}
