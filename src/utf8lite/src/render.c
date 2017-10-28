@@ -464,6 +464,28 @@ int utf8lite_render_text(struct utf8lite_render *r,
 }
 
 
+static int is_emoji_extened(const struct utf8lite_graph *g)
+{
+	struct utf8lite_text_iter it;
+	int32_t ch;
+	int cw;
+
+	utf8lite_text_iter_make(&it, &g->text);
+	while (utf8lite_text_iter_advance(&it)) {
+		ch = it.current;
+		if (ch < 0xFFF) {
+			continue;
+		}
+		cw = utf8lite_charwidth(ch);
+		if (cw == UTF8LITE_CHARWIDTH_EMOJI) {
+			return 1;
+		}
+	}
+
+	return 0;
+}
+
+
 int utf8lite_render_graph(struct utf8lite_render *r,
 			 const struct utf8lite_graph *g)
 {
@@ -475,6 +497,20 @@ int utf8lite_render_graph(struct utf8lite_render *r,
 	while (utf8lite_text_iter_advance(&it)) {
 		utf8lite_render_char(r, it.current);
 		CHECK_ERROR(r);
+	}
+
+	if (g->type == UTF8LITE_GRAPH_EMOJI
+			&& (r->flags & UTF8LITE_ENCODE_EMOJI)
+			&& (!(r->flags & UTF8LITE_ESCAPE_UTF8))) {
+		if (r->flags & UTF8LITE_ESCAPE_EXTENDED) {
+			if (!is_emoji_extened(g)) {
+				utf8lite_render_char(r, 0x200B); // ZWSP;
+				CHECK_ERROR(r);
+			}
+		} else {
+			utf8lite_render_char(r, 0x200B); // ZWSP;
+			CHECK_ERROR(r);
+		}
 	}
 
 	return 0;
