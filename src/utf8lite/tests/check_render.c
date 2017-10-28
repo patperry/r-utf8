@@ -202,6 +202,28 @@ START_TEST(test_format_indent_custom)
 END_TEST
 
 
+START_TEST(test_format_printf)
+{
+	ck_assert(!utf8lite_render_printf(&render, "%s", ""));
+	ck_assert_str_eq(render.string, "");
+	clear();
+
+	ck_assert(!utf8lite_render_printf(&render, "%s %d", "hello", 99));
+	ck_assert_str_eq(render.string, "hello 99");
+	clear();
+
+	ck_assert(!utf8lite_render_printf(&render, "%s", "\n"));
+	ck_assert_str_eq(render.string, "\n");
+	clear();
+
+	set_flags(UTF8LITE_ESCAPE_CONTROL);
+	ck_assert(!utf8lite_render_printf(&render, "%s", "\n"));
+	ck_assert_str_eq(render.string, "\\n");
+	clear();
+}
+END_TEST
+
+
 struct escape_test {
 	const char *raw;
 	const char *c;
@@ -657,6 +679,7 @@ Suite *render_suite(void)
         tcase_add_test(tc, test_format_newlines_custom);
         tcase_add_test(tc, test_format_indent);
         tcase_add_test(tc, test_format_indent_custom);
+	tcase_add_test(tc, test_format_printf);
         suite_add_tcase(s, tc);
 
 	tc = tcase_create("escape");
