@@ -404,6 +404,7 @@ int utf8lite_render_string(struct utf8lite_render *r, const char *str)
 
 int utf8lite_render_printf(struct utf8lite_render *r, const char *format, ...)
 {
+	char *buffer;
 	va_list ap, ap2;
 	int len;
 
@@ -419,13 +420,14 @@ int utf8lite_render_printf(struct utf8lite_render *r, const char *format, ...)
 		goto exit;
 	}
 
-	utf8lite_render_grow(r, len);
-	if (r->error) {
+	if (!(buffer = malloc((size_t)len + 1))) {
+		r->error = UTF8LITE_ERROR_NOMEM;
 		goto exit;
 	}
 
-	vsprintf(r->string + r->length, format, ap2);
-	r->length += len;
+	vsprintf(buffer, format, ap2);
+	utf8lite_render_string(r, buffer);
+	free(buffer);
 
 exit:
 	va_end(ap);
