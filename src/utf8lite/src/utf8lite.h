@@ -925,19 +925,20 @@ int utf8lite_render_measure(const struct utf8lite_render *r,
 			    int *widthptr);
 
 /**
- * Render a single character. If any render escape flags are set, filter
- * the character through the appropriate escaping.
+ * Render a character grapheme. If any render escape flags are set, filter
+ * the grapheme through the appropriate escaping and encoding.
  *
  * \param r the render object
- * \param ch the character (UTF-32)
+ * \param g the grapheme
  *
  * \returns 0 on success
  */
-int utf8lite_render_char(struct utf8lite_render *r, int32_t ch);
+int utf8lite_render_graph(struct utf8lite_render *r,
+			  const struct utf8lite_graph *g);
 
 /**
  * Render a string. If any render escape flags are set, filter
- * all text characters through the appropriate escaping.
+ * all character graphemes through the appropriate escaping.
  *
  * \param r the render object
  * \param str the string, valid UTF-8
@@ -948,7 +949,7 @@ int utf8lite_render_string(struct utf8lite_render *r, const char *str);
 
 /**
  * Render formatted text. If any render escape flags are set, filter
- * all text characters through the appropriate escaping.
+ * all character graphemes through the appropriate escaping.
  *
  * \param r the render object
  * \param format the format string
@@ -962,7 +963,7 @@ int utf8lite_render_printf(struct utf8lite_render *r, const char *format, ...)
 
 /**
  * Render a text object. If any render escape flags are set, filter
- * all text characters through the appropriate escaping.
+ * all character graphemes through the appropriate escaping.
  *
  * \param r the render object
  * \param text the text object
