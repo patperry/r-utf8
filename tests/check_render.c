@@ -275,12 +275,12 @@ END_TEST
 START_TEST(test_escape_dquote)
 {
 	set_flags(0);
-	ck_assert(!utf8lite_render_char(&render, '\"'));
+	ck_assert(!utf8lite_render_string(&render, "\""));
 	ck_assert_str_eq(render.string, "\"");
 	utf8lite_render_clear(&render);
 
 	set_flags(UTF8LITE_ESCAPE_DQUOTE);
-	ck_assert(!utf8lite_render_char(&render, '\"'));
+	ck_assert(!utf8lite_render_string(&render, "\""));
 	ck_assert_str_eq(render.string, "\\\"");
 	utf8lite_render_clear(&render);
 }
@@ -290,12 +290,12 @@ END_TEST
 START_TEST(test_escape_squote)
 {
 	set_flags(0);
-	ck_assert(!utf8lite_render_char(&render, '\''));
+	ck_assert(!utf8lite_render_string(&render, "\'"));
 	ck_assert_str_eq(render.string, "\'");
 	utf8lite_render_clear(&render);
 
 	set_flags(UTF8LITE_ESCAPE_SQUOTE);
-	ck_assert(!utf8lite_render_char(&render, '\''));
+	ck_assert(!utf8lite_render_string(&render, "\'"));
 	ck_assert_str_eq(render.string, "\\\'");
 	utf8lite_render_clear(&render);
 }
@@ -314,13 +314,13 @@ START_TEST(test_escape_backslash)
 	int i, n = sizeof(flags) / sizeof(flags[0]);
 
 	set_flags(0);
-	ck_assert(!utf8lite_render_char(&render, '\\'));
+	ck_assert(!utf8lite_render_string(&render, "\\"));
 	ck_assert_str_eq(render.string, "\\");
 	utf8lite_render_clear(&render);
 
 	for (i = 0; i < n; i++) {
 		set_flags(flags[i]);
-		ck_assert(!utf8lite_render_char(&render, '\\'));
+		ck_assert(!utf8lite_render_string(&render, "\\"));
 		ck_assert_str_eq(render.string, "\\\\");
 		utf8lite_render_clear(&render);
 	}

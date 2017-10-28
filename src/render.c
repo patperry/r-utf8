@@ -29,6 +29,17 @@
 		return r->error; \
 	}
 
+/**
+ * Render a single character. If any render escape flags are set, filter
+ * the character through the appropriate escaping.
+ *
+ * \param r the render object
+ * \param ch the character (UTF-32)
+ *
+ * \returns 0 on success
+ */
+static int utf8lite_render_char(struct utf8lite_render *r, int32_t ch);
+
 static int utf8lite_render_grow(struct utf8lite_render *r, int nadd)
 {
 	void *base = r->string;
@@ -439,11 +450,28 @@ exit:
 int utf8lite_render_text(struct utf8lite_render *r,
 			 const struct utf8lite_text *text)
 {
+	struct utf8lite_graphscan scan;
+
+	CHECK_ERROR(r);
+
+	utf8lite_graphscan_make(&scan, text);
+	while (utf8lite_graphscan_advance(&scan)) {
+		utf8lite_render_graph(r, &scan.current);
+		CHECK_ERROR(r);
+	}
+
+	return 0;
+}
+
+
+int utf8lite_render_graph(struct utf8lite_render *r,
+			 const struct utf8lite_graph *g)
+{
 	struct utf8lite_text_iter it;
 
 	CHECK_ERROR(r);
 
-	utf8lite_text_iter_make(&it, text);
+	utf8lite_text_iter_make(&it, &g->text);
 	while (utf8lite_text_iter_advance(&it)) {
 		utf8lite_render_char(r, it.current);
 		CHECK_ERROR(r);
