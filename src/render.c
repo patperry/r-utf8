@@ -29,16 +29,25 @@
 		return r->error; \
 	}
 
+enum code_type {
+	CODE_ASCII = 0,
+	CODE_UTF8 = (1 << 0),
+	CODE_EXTENDED = (1 << 1),
+	CODE_EMOJI = (1 << 2)
+};
+
 /**
- * Render a single character. If any render escape flags are set, filter
+ * Render a single code. If any render escape flags are set, filter
  * the character through the appropriate escaping.
  *
  * \param r the render object
  * \param ch the character (UTF-32)
+ * \param attrptr on exit, a bit mask of #code_type flags
  *
  * \returns 0 on success
  */
-static int utf8lite_render_char(struct utf8lite_render *r, int32_t ch);
+static int utf8lite_render_code(struct utf8lite_render *r, int32_t ch,
+				int *attrptr);
 
 static int utf8lite_render_grow(struct utf8lite_render *r, int nadd)
 {
@@ -348,7 +357,7 @@ exit:
 }
 
 
-int utf8lite_render_char(struct utf8lite_render *r, int32_t ch)
+int utf8lite_render_code(struct utf8lite_render *r, int32_t ch, int *attrptr)
 {
 	char *end;
 	uint8_t *uend;
@@ -368,9 +377,16 @@ int utf8lite_render_char(struct utf8lite_render *r, int32_t ch)
 		return utf8lite_render_ascii(r, ch);
 	} else if (r->flags & UTF8LITE_ESCAPE_UTF8) {
 		return utf8lite_escape_utf8(r, ch);
-	} else if (ch > 0xFFFF && (r->flags & UTF8LITE_ESCAPE_EXTENDED)) {
-		return utf8lite_escape_utf8(r, ch);
 	}
+
+	if (ch > 0xFFFF) {
+		if (r->flags & UTF8LITE_ESCAPE_EXTENDED) {
+			return utf8lite_escape_utf8(r, ch);
+		} else {
+			*attrptr |= CODE_EXTENDED;
+		}
+	}
+	*attrptr |= CODE_UTF8;
 
 	type = utf8lite_charwidth(ch);
 	switch (type) {
@@ -379,11 +395,17 @@ int utf8lite_render_char(struct utf8lite_render *r, int32_t ch)
 			return utf8lite_escape_utf8(r, ch);
 		}
 		break;
+
 	case UTF8LITE_CHARWIDTH_IGNORABLE:
 		if (r->flags & UTF8LITE_ENCODE_RMDI) {
 			return 0;
 		}
 		break;
+
+	case UTF8LITE_CHARWIDTH_EMOJI:
+		*attrptr |= CODE_EMOJI;
+		break;
+
 	default:
 		break;
 	}
@@ -464,53 +486,23 @@ int utf8lite_render_text(struct utf8lite_render *r,
 }
 
 
-static int is_emoji_extened(const struct utf8lite_graph *g)
-{
-	struct utf8lite_text_iter it;
-	int32_t ch;
-	int cw;
-
-	utf8lite_text_iter_make(&it, &g->text);
-	while (utf8lite_text_iter_advance(&it)) {
-		ch = it.current;
-		if (ch <= 0xFFFF) {
-			continue;
-		}
-		cw = utf8lite_charwidth(ch);
-		if (cw == UTF8LITE_CHARWIDTH_EMOJI) {
-			return 1;
-		}
-	}
-
-	return 0;
-}
-
-
 int utf8lite_render_graph(struct utf8lite_render *r,
 			 const struct utf8lite_graph *g)
 {
 	struct utf8lite_text_iter it;
+	int attr = CODE_ASCII;
 
 	CHECK_ERROR(r);
 
 	utf8lite_text_iter_make(&it, &g->text);
 	while (utf8lite_text_iter_advance(&it)) {
-		utf8lite_render_char(r, it.current);
+		utf8lite_render_code(r, it.current, &attr);
 		CHECK_ERROR(r);
 	}
 
-	if (g->type == UTF8LITE_GRAPH_EMOJI
-			&& (r->flags & UTF8LITE_ENCODE_EMOJI)
-			&& (!(r->flags & UTF8LITE_ESCAPE_UTF8))) {
-		if (r->flags & UTF8LITE_ESCAPE_EXTENDED) {
-			if (!is_emoji_extened(g)) {
-				utf8lite_render_char(r, 0x200B); // ZWSP;
-				CHECK_ERROR(r);
-			}
-		} else {
-			utf8lite_render_char(r, 0x200B); // ZWSP;
-			CHECK_ERROR(r);
-		}
+	if (attr & CODE_EMOJI && (r->flags & UTF8LITE_ENCODE_EMOJI)) {
+		utf8lite_render_code(r, 0x200B, &attr); // ZWSP;
+		CHECK_ERROR(r);
 	}
 
 	return 0;

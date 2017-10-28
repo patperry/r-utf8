@@ -709,20 +709,10 @@ int utf8lite_textmap_set(struct utf8lite_textmap *map,
  */
 
 /**
- * Grapheme cluster type.
- */
-enum utf8lite_graph_type {
-	UTF8LITE_GRAPH_NONE = 0,/**< control sequence or empty */
-	UTF8LITE_GRAPH_TEXT,	/**< text presentation */
-	UTF8LITE_GRAPH_EMOJI,	/**< emoji presentation */
-};
-
-/**
  * Grapheme cluster.
  */
 struct utf8lite_graph {
 	struct utf8lite_text text;	/**< grapheme code sequence */
-	enum utf8lite_graph_type type;	/**< grapheme type */
 };
 
 /**
