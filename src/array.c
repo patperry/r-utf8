@@ -128,6 +128,7 @@ int utf8lite_array_grow(void **baseptr, int *sizeptr, size_t width, int count,
 
 	assert(0 <= count);
 	assert(count <= size);
+	assert(width > 0);
 
 	if (nadd <= size - count) {
 		return 0;
@@ -156,6 +157,7 @@ int utf8lite_bigarray_grow(void **baseptr, size_t *sizeptr, size_t width,
 	int err;
 
 	assert(count <= size);
+	assert(width > 0);
 
 	if (nadd <= size - count) {
 		return 0;
