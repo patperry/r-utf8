@@ -272,6 +272,7 @@ START_TEST(test_unicode_backward)
 		}
 		//fprintf(stderr, "Start\n");
 		ck_assert(!utf8lite_graphscan_retreat(&scan));
+		ck_assert(!utf8lite_graphscan_retreat(&scan));
 	}
 }
 END_TEST
