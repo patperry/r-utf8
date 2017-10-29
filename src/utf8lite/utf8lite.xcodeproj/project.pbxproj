@@ -440,10 +440,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				OTHER_CFLAGS = (
 					"-D_THREAD_SAFE",
-					"-I/usr/local/Cellar/check/0.11.0/include",
+					"-I/usr/local/Cellar/check/0.12.0/include",
 				);
 				OTHER_LDFLAGS = (
-					"-L/usr/local/Cellar/check/0.11.0/lib",
+					"-L/usr/local/Cellar/check/0.12.0/lib",
 					"-lcheck",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -457,10 +457,10 @@
 				CODE_SIGN_STYLE = Automatic;
 				OTHER_CFLAGS = (
 					"-D_THREAD_SAFE",
-					"-I/usr/local/Cellar/check/0.11.0/include",
+					"-I/usr/local/Cellar/check/0.12.0/include",
 				);
 				OTHER_LDFLAGS = (
-					"-L/usr/local/Cellar/check/0.11.0/lib",
+					"-L/usr/local/Cellar/check/0.12.0/lib",
 					"-lcheck",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
