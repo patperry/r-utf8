@@ -276,17 +276,61 @@ Break:
 	return (scan->ptr == scan->current.text.ptr) ? 0 : 1;
 }
 
+#define PREV() \
+	do { \
+		scan->current.text.attr |= prev.attr; \
+		if (utf8lite_text_iter_retreat(&prev)) { \
+			prop = graph_break(prev.current); \
+		} else { \
+			prop = -1; \
+		} \
+	} while (0)
+
+
+static int regional_indicator_odd(const struct utf8lite_text_iter *prev)
+{
+	struct utf8lite_text_iter it = *prev;
+	int odd = 1, prop;
+
+	while (utf8lite_text_iter_retreat(&it)) {
+		prop = graph_break(it.current);
+		if (prop == GRAPH_BREAK_REGIONAL_INDICATOR) {
+			odd = odd ? 0 : 1;
+		} else {
+			return odd;
+		}
+	}
+
+	return odd;
+}
+
+
+static int follows_e_base(const struct utf8lite_text_iter *prev)
+{
+	struct utf8lite_text_iter it = *prev;
+	int prop;
+
+	while (utf8lite_text_iter_retreat(&it)) {
+		prop = graph_break(it.current);
+		switch (prop) {
+		case GRAPH_BREAK_E_BASE:
+		case GRAPH_BREAK_E_BASE_GAZ:
+			return 1;
+		case GRAPH_BREAK_EXTEND:
+			break;
+		default:
+			return 0;
+		}
+	}
+
+	return 0;
+}
+
 
 int utf8lite_graphscan_retreat(struct utf8lite_graphscan *scan)
 {
 	struct utf8lite_text_iter prev;
 	int prop;
-
-	// clear current attributes
-	scan->current.text.attr = 0;
-
-	// start of current grapheme becomes is end of previous
-	scan->ptr = scan->current.text.ptr;
 
 	// see if there is a previous character
 	prev = scan->iter;
@@ -295,20 +339,208 @@ int utf8lite_graphscan_retreat(struct utf8lite_graphscan *scan)
 		return 0;
 	}
 
-	// position iter after the last character
+	// if so, start of current grapheme becomes end of previous
+	scan->current.text.attr = 0;
+	scan->ptr = scan->current.text.ptr;
+
+	// position iter after the last character, prev before
 	while (prev.ptr != scan->ptr) {
 		scan->iter = prev;
 		utf8lite_text_iter_retreat(&prev);
 	}
 
 	// update iterator property
-	scan->prop = graph_break(scan->iter.current);
+	if (scan->iter.current < 0) {
+		scan->prop = -1;
+	} else {
+		scan->prop = graph_break(scan->iter.current);
+	}
 
-	scan->current.text.attr |= prev.attr;
-	prop = graph_break(prev.current);
+	if (prev.current < 0) {
+		prop = -1;
+	} else {
+		prop = graph_break(prev.current);
+	}
 
-	utf8lite_text_iter_retreat(&prev);
+Start:
+	// at the start of the text
+	if (prop < 0) {
+		goto Break;
+	}
+
+	switch (prop) {
+	// GB4: Break after controls
+	case GRAPH_BREAK_CONTROL:
+	case GRAPH_BREAK_CR:
+		PREV();
+		goto Break;
+
+	case GRAPH_BREAK_LF:
+		PREV();
+		goto LF;
+
+	case GRAPH_BREAK_L:
+	case GRAPH_BREAK_LV:
+	case GRAPH_BREAK_LVT:
+		PREV();
+		goto L;
+
+	case GRAPH_BREAK_V:
+		PREV();
+		goto V;
+
+	case GRAPH_BREAK_T:
+		PREV();
+		goto T;
+
+	case GRAPH_BREAK_EXTEND:
+	case GRAPH_BREAK_SPACINGMARK:
+	case GRAPH_BREAK_ZWJ:
+		PREV();
+		goto Extend;
+
+	case GRAPH_BREAK_E_MODIFIER:
+		PREV();
+		goto E_Modifier;
+
+	case GRAPH_BREAK_GLUE_AFTER_ZWJ:
+	case GRAPH_BREAK_E_BASE_GAZ:
+		PREV();
+		goto Glue_After_ZWJ;
+
+	case GRAPH_BREAK_REGIONAL_INDICATOR:
+		PREV();
+		goto Regional_Indicator;
+
+	default:
+		PREV();
+		goto MaybeBreak;
+	}
+
+LF:
+	// GB3: Do not break between a CR and LF
+	// GB4: Otherwise, break after controls.
+	if (prop == GRAPH_BREAK_CR) {
+		PREV();
+	}
+	goto Break;
+
+L:
+	// GB6: Do not break Hangul syllable sequences
+	switch (prop) {
+	case GRAPH_BREAK_L:
+		PREV();
+		goto L;
+
+	default:
+		goto MaybeBreak;
+	}
+
+V:
+	// GB6, GB7: Do not break Hangul syllable sequences
+	switch (prop) {
+	case GRAPH_BREAK_V:
+		PREV();
+		goto V;
+
+	case GRAPH_BREAK_L:
+	case GRAPH_BREAK_LV:
+		PREV();
+		goto L;
+
+	default:
+		goto MaybeBreak;
+	}
+
+T:
+	// GB6, GB7, GB8: Do not break Hangul syllable sequences
+	switch (prop) {
+	case GRAPH_BREAK_LV:
+	case GRAPH_BREAK_LVT:
+		PREV();
+		goto L;
+
+	case GRAPH_BREAK_V:
+		PREV();
+		goto V;
+
+	case GRAPH_BREAK_T:
+		PREV();
+		goto T;
+
+	default:
+		goto MaybeBreak;
+	}
+
+Extend:
+	switch (prop) {
+	// GB4: Break after controls
+	case GRAPH_BREAK_CONTROL:
+	case GRAPH_BREAK_CR:
+	case GRAPH_BREAK_LF:
+		goto Break;
+
+	// GB9: Do not break before extending characters or ZWJ.
+	// GB9a: Do not break before SpacingMarks
+	default:
+		goto Start;
+	}
+
+E_Modifier:
+	// GB10: Do not break within emoji modifier sequences
+	if (prop == GRAPH_BREAK_EXTEND) {
+		if (follows_e_base(&prev)) {
+			while (prop == GRAPH_BREAK_EXTEND) {
+				PREV();
+			}
+		} else {
+			goto MaybeBreak;
+		}
+	}
+
+	switch (prop) {
+	case GRAPH_BREAK_E_BASE:
+		PREV();
+		goto MaybeBreak;
+
+	case GRAPH_BREAK_E_BASE_GAZ:
+		PREV();
+		goto Glue_After_ZWJ;
+
+	default:
+		goto MaybeBreak;
+	}
+
+Glue_After_ZWJ:
+	// GB11 Dro not break within emoji zwj sequences
+	if (prop == GRAPH_BREAK_ZWJ) {
+		PREV();
+		goto Extend;
+	}
+	goto MaybeBreak;
+
+Regional_Indicator:
+	// GB12, GB13: Do not break within emoji flag sequences
+	if (prop == GRAPH_BREAK_REGIONAL_INDICATOR) {
+		if (regional_indicator_odd(&prev)) {
+			PREV();
+		}
+	}
+	goto MaybeBreak;
+
+MaybeBreak:
+	switch (prop) {
+	// GB9b: Do not break after Prepend characters
+	case GRAPH_BREAK_PREPEND:
+		PREV();
+		goto MaybeBreak;
+
+	default:
+		goto Break;
+	}
+
+Break:
 	scan->current.text.ptr = (uint8_t *)prev.ptr;
 	scan->current.text.attr |= (size_t)(scan->ptr - scan->current.text.ptr);
-	return 1;
+	return (scan->ptr == scan->current.text.ptr) ? 0 : 1;
 }
