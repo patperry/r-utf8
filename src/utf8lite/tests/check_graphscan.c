@@ -54,11 +54,25 @@ const struct utf8lite_text *next(void)
 }
 
 
+const struct utf8lite_text *prev(void)
+{
+	struct utf8lite_text *graph;
+	if (!utf8lite_graphscan_retreat(&scan)) {
+		return NULL;
+	}
+	graph = alloc(sizeof(*graph));
+	*graph = scan.current.text;
+	return graph;
+}
+
+
 START_TEST(test_empty)
 {
 	start(S(""));
 	ck_assert(next() == NULL);
 	ck_assert(next() == NULL);
+	ck_assert(prev() == NULL);
+	ck_assert(prev() == NULL);
 }
 END_TEST
 
