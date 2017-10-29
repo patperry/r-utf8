@@ -77,6 +77,22 @@ START_TEST(test_empty)
 END_TEST
 
 
+START_TEST(test_single)
+{
+	start(S("x"));
+	ck_assert(prev() == NULL);
+	assert_text_eq(next(), S("x"));
+	ck_assert(prev() == NULL);
+	assert_text_eq(next(), S("x"));
+	ck_assert(next() == NULL);
+	ck_assert(next() == NULL);
+	assert_text_eq(prev(), S("x"));
+	ck_assert(prev() == NULL);
+	ck_assert(prev() == NULL);
+}
+END_TEST
+
+
 // Unicode Grapheme Break Test
 // http://www.unicode.org/Public/UCD/latest/ucd/auxiliary/GraphemeBreakTest.txt
 struct unitest {
@@ -301,6 +317,7 @@ Suite *graphscan_suite(void)
 	tc = tcase_create("core");
         tcase_add_checked_fixture(tc, setup_scan, teardown_scan);
         tcase_add_test(tc, test_empty);
+        tcase_add_test(tc, test_single);
         suite_add_tcase(s, tc);
 
         tc = tcase_create("Unicode GraphemeBreakTest.txt");
