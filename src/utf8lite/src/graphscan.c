@@ -368,10 +368,10 @@ Start:
 		goto Break;
 	}
 
-	switch (prop) {
-	// GB4: Break after controls
+	switch ((enum graph_break_prop)prop) {
 	case GRAPH_BREAK_CONTROL:
 	case GRAPH_BREAK_CR:
+		// GB4: Break after controls
 		PREV();
 		goto Break;
 
@@ -412,10 +412,13 @@ Start:
 		PREV();
 		goto Regional_Indicator;
 
-	default:
+	case GRAPH_BREAK_E_BASE:
+	case GRAPH_BREAK_PREPEND:
+	case GRAPH_BREAK_OTHER:
 		PREV();
 		goto MaybeBreak;
 	}
+	assert(0 && "unhandled graph break property");
 
 LF:
 	// GB3: Do not break between a CR and LF
@@ -488,13 +491,9 @@ Extend:
 
 E_Modifier:
 	// GB10: Do not break within emoji modifier sequences
-	if (prop == GRAPH_BREAK_EXTEND) {
-		if (follows_e_base(&prev)) {
-			while (prop == GRAPH_BREAK_EXTEND) {
-				PREV();
-			}
-		} else {
-			goto MaybeBreak;
+	if (prop == GRAPH_BREAK_EXTEND && follows_e_base(&prev)) {
+		while (prop == GRAPH_BREAK_EXTEND) {
+			PREV();
 		}
 	}
 
