@@ -20,7 +20,7 @@
 #include "../src/utf8lite.h"
 #include "testutil.h"
 
-#define GRAPH_BREAK_TEST "data/ucd/auxiliary/GraphemeBreakTest.txt"
+#define GRAPH_BREAK_TEST "/Users/ptrck/Projects/utf8lite/data/ucd/auxiliary/GraphemeBreakTest.txt"
 struct utf8lite_graphscan scan;
 
 
@@ -157,7 +157,6 @@ void setup_unicode(void)
 				is_ascii = 1;
 				nunitest++;
 				test = &unitests[nunitest];
-				comment = &test->comment[0];
 				test->text.ptr = &test->buf[0];
 				test->comment[0] = '\0';
 				dst = test->text.ptr;
@@ -204,19 +203,21 @@ void setup_unicode(void)
 
 	}
 eof:
+	fclose(file);
 	return;
 inval:
 	fprintf(stderr, "invalid character on line %d\n", line);
-
 	fclose(file);
 }
+
 
 void teardown_unicode(void)
 {
 	teardown_scan();
 }
 
-START_TEST(test_unicode)
+
+START_TEST(test_unicode_forward)
 {
 	struct unitest *test;
 	unsigned i, j;
@@ -243,6 +244,35 @@ START_TEST(test_unicode)
 END_TEST
 
 
+START_TEST(test_unicode_backward)
+{
+	struct unitest *test;
+	unsigned i, j;
+
+	for (i = 0; i < nunitest; i++) {
+		test = &unitests[i];
+
+		//fprintf(stderr, "[%u]: ", i);
+		//write_unitest(stderr, test);
+		utf8lite_graphscan_make(&scan, &test->text);
+		utf8lite_graphscan_skip(&scan);
+
+		j = test->nbreak;
+		while (j-- > 0) {
+			//fprintf(stderr, "Break %u\n", j);
+			ck_assert(utf8lite_graphscan_retreat(&scan));
+			ck_assert(scan.current.text.ptr == test->break_begin[j]);
+			ck_assert(scan.current.text.ptr
+					+
+					UTF8LITE_TEXT_SIZE(&scan.current.text)
+					== test->break_end[j]);
+		}
+		ck_assert(!utf8lite_graphscan_retreat(&scan));
+	}
+}
+END_TEST
+
+
 Suite *graphscan_suite(void)
 {
         Suite *s;
@@ -256,7 +286,8 @@ Suite *graphscan_suite(void)
 
         tc = tcase_create("Unicode GraphemeBreakTest.txt");
         tcase_add_checked_fixture(tc, setup_unicode, teardown_unicode);
-        tcase_add_test(tc, test_unicode);
+        tcase_add_test(tc, test_unicode_forward);
+        tcase_add_test(tc, test_unicode_backward);
         suite_add_tcase(s, tc);
 
 	return s;

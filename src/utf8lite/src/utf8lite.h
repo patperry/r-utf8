@@ -749,11 +749,27 @@ void utf8lite_graphscan_make(struct utf8lite_graphscan *scan,
 int utf8lite_graphscan_advance(struct utf8lite_graphscan *scan);
 
 /**
+ * Retreat a scanner to the previous grapheme.
+ *
+ * \param scan the scanner
+ *
+ * \returns non-zero on success, zero if at the start of the text
+ */
+int utf8lite_graphscan_retreat(struct utf8lite_graphscan *scan);
+
+/**
  * Reset a scanner to the beginning of the text.
  *
  * \param scan the scanner
  */
 void utf8lite_graphscan_reset(struct utf8lite_graphscan *scan);
+
+/**
+ * Skip a scanner at the end of the text.
+ *
+ * \param scan the scanner
+ */
+void utf8lite_graphscan_skip(struct utf8lite_graphscan *scan);
 
 /**@}*/
 
