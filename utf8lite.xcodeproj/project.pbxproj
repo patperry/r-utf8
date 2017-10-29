@@ -7,9 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		880244831FA14699000AEC71 /* graphscan.c in Sources */ = {isa = PBXBuildFile; fileRef = 880244821FA14699000AEC71 /* graphscan.c */; };
 		880244841FA1469F000AEC71 /* graphscan.c in Sources */ = {isa = PBXBuildFile; fileRef = 880244821FA14699000AEC71 /* graphscan.c */; };
 		880244861FA146AA000AEC71 /* graphbreak.h in Headers */ = {isa = PBXBuildFile; fileRef = 880244851FA146AA000AEC71 /* graphbreak.h */; };
+		888FDA131FA5368800E2FD27 /* check_graphscan.c in Sources */ = {isa = PBXBuildFile; fileRef = 888FDA111FA5367600E2FD27 /* check_graphscan.c */; };
+		88B6BB601FA60A5100BFF06E /* graphscan.c in Sources */ = {isa = PBXBuildFile; fileRef = 880244821FA14699000AEC71 /* graphscan.c */; };
 		88BAFA031F97AC75006A5A78 /* encode.c in Sources */ = {isa = PBXBuildFile; fileRef = 88BAF9FB1F97AC74006A5A78 /* encode.c */; };
 		88BAFA041F97AC75006A5A78 /* text.c in Sources */ = {isa = PBXBuildFile; fileRef = 88BAF9FC1F97AC74006A5A78 /* text.c */; };
 		88BAFA051F97AC75006A5A78 /* char.c in Sources */ = {isa = PBXBuildFile; fileRef = 88BAF9FD1F97AC74006A5A78 /* char.c */; };
@@ -23,7 +24,6 @@
 		88BAFA131F97AC94006A5A78 /* casefold.h in Headers */ = {isa = PBXBuildFile; fileRef = 88BAFA0E1F97AC94006A5A78 /* casefold.h */; };
 		88BAFA141F97AC94006A5A78 /* compose.h in Headers */ = {isa = PBXBuildFile; fileRef = 88BAFA0F1F97AC94006A5A78 /* compose.h */; };
 		88BAFA151F97AC94006A5A78 /* decompose.h in Headers */ = {isa = PBXBuildFile; fileRef = 88BAFA101F97AC94006A5A78 /* decompose.h */; };
-		88BAFA1C1F97ACE8006A5A78 /* testutil.h in Headers */ = {isa = PBXBuildFile; fileRef = 88BAFA181F97ACE8006A5A78 /* testutil.h */; };
 		88BAFA2A1F97AD32006A5A78 /* char.c in Sources */ = {isa = PBXBuildFile; fileRef = 88BAF9FD1F97AC74006A5A78 /* char.c */; };
 		88BAFA2B1F97AD32006A5A78 /* encode.c in Sources */ = {isa = PBXBuildFile; fileRef = 88BAF9FB1F97AC74006A5A78 /* encode.c */; };
 		88BAFA2C1F97AD32006A5A78 /* error.c in Sources */ = {isa = PBXBuildFile; fileRef = 88BAFA001F97AC75006A5A78 /* error.c */; };
@@ -37,7 +37,6 @@
 		88CF04961F9D54EA00AA3475 /* array.h in Headers */ = {isa = PBXBuildFile; fileRef = 88CF04951F9D54EA00AA3475 /* array.h */; };
 		88CF04971F9D54EE00AA3475 /* array.c in Sources */ = {isa = PBXBuildFile; fileRef = 88CF04911F9D54CE00AA3475 /* array.c */; };
 		88CF04981F9D54F500AA3475 /* render.c in Sources */ = {isa = PBXBuildFile; fileRef = 88CF04921F9D54CE00AA3475 /* render.c */; };
-		88CF049B1F9D551900AA3475 /* check_render.c in Sources */ = {isa = PBXBuildFile; fileRef = 88CF04991F9D551300AA3475 /* check_render.c */; };
 		88DA8D671F97F59700125B42 /* textiter.c in Sources */ = {isa = PBXBuildFile; fileRef = 88DA8D661F97F59700125B42 /* textiter.c */; };
 		88DA8D681F97F59E00125B42 /* textiter.c in Sources */ = {isa = PBXBuildFile; fileRef = 88DA8D661F97F59700125B42 /* textiter.c */; };
 		88E5EB1F1F982D3F00E98123 /* textmap.c in Sources */ = {isa = PBXBuildFile; fileRef = 88E5EB1E1F982D3F00E98123 /* textmap.c */; };
@@ -60,6 +59,7 @@
 		880244821FA14699000AEC71 /* graphscan.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = graphscan.c; path = src/graphscan.c; sourceTree = "<group>"; };
 		880244851FA146AA000AEC71 /* graphbreak.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = graphbreak.h; path = src/private/graphbreak.h; sourceTree = "<group>"; };
 		885E0CEF1F97AC280002F6CB /* libutf8lite.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = libutf8lite.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
+		888FDA111FA5367600E2FD27 /* check_graphscan.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = check_graphscan.c; path = tests/check_graphscan.c; sourceTree = "<group>"; };
 		88BAF9FB1F97AC74006A5A78 /* encode.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = encode.c; path = src/encode.c; sourceTree = "<group>"; };
 		88BAF9FC1F97AC74006A5A78 /* text.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = text.c; path = src/text.c; sourceTree = "<group>"; };
 		88BAF9FD1F97AC74006A5A78 /* char.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = char.c; path = src/char.c; sourceTree = "<group>"; };
@@ -161,6 +161,7 @@
 		88BAFA161F97ACBF006A5A78 /* tests */ = {
 			isa = PBXGroup;
 			children = (
+				888FDA111FA5367600E2FD27 /* check_graphscan.c */,
 				88CF04991F9D551300AA3475 /* check_render.c */,
 				88BAFA171F97ACE8006A5A78 /* check_text.c */,
 				88E5EB211F982D5D00E98123 /* check_textmap.c */,
@@ -178,7 +179,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				88BAFA1C1F97ACE8006A5A78 /* testutil.h in Headers */,
 				88BAFA0A1F97AC75006A5A78 /* utf8lite.h in Headers */,
 				88BAFA141F97AC94006A5A78 /* compose.h in Headers */,
 				88BAFA151F97AC94006A5A78 /* decompose.h in Headers */,
@@ -276,7 +276,7 @@
 				88DA8D671F97F59700125B42 /* textiter.c in Sources */,
 				88BAFA041F97AC75006A5A78 /* text.c in Sources */,
 				88BAFA031F97AC75006A5A78 /* encode.c in Sources */,
-				880244831FA14699000AEC71 /* graphscan.c in Sources */,
+				88B6BB601FA60A5100BFF06E /* graphscan.c in Sources */,
 				88CF04941F9D54CE00AA3475 /* render.c in Sources */,
 				88BAFA061F97AC75006A5A78 /* textassign.c in Sources */,
 				88E5EB1F1F982D3F00E98123 /* textmap.c in Sources */,
@@ -290,6 +290,7 @@
 			files = (
 				88BAFA2D1F97AD32006A5A78 /* escape.c in Sources */,
 				88BAFA2B1F97AD32006A5A78 /* encode.c in Sources */,
+				888FDA131FA5368800E2FD27 /* check_graphscan.c in Sources */,
 				88BAFA311F97AD36006A5A78 /* testutil.c in Sources */,
 				88CF04971F9D54EE00AA3475 /* array.c in Sources */,
 				88BAFA2C1F97AD32006A5A78 /* error.c in Sources */,
@@ -299,7 +300,6 @@
 				88BAFA2E1F97AD32006A5A78 /* normalize.c in Sources */,
 				88DA8D681F97F59E00125B42 /* textiter.c in Sources */,
 				88BAFA301F97AD32006A5A78 /* textassign.c in Sources */,
-				88CF049B1F9D551900AA3475 /* check_render.c in Sources */,
 				88CF04981F9D54F500AA3475 /* render.c in Sources */,
 				880244841FA1469F000AEC71 /* graphscan.c in Sources */,
 			);

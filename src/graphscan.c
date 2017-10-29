@@ -72,6 +72,15 @@ void utf8lite_graphscan_reset(struct utf8lite_graphscan *scan)
 }
 
 
+void utf8lite_graphscan_skip(struct utf8lite_graphscan *scan)
+{
+	utf8lite_text_iter_skip(&scan->iter);
+	scan->current.text.ptr = (uint8_t *)scan->iter.ptr;
+	scan->current.text.attr = 0;
+	scan->prop = -1;
+}
+
+
 int utf8lite_graphscan_advance(struct utf8lite_graphscan *scan)
 {
 	scan->current.text.ptr = (uint8_t *)scan->ptr;
@@ -265,4 +274,41 @@ MaybeBreak:
 Break:
 	scan->current.text.attr |= (size_t)(scan->ptr - scan->current.text.ptr);
 	return (scan->ptr == scan->current.text.ptr) ? 0 : 1;
+}
+
+
+int utf8lite_graphscan_retreat(struct utf8lite_graphscan *scan)
+{
+	struct utf8lite_text_iter prev;
+	int prop;
+
+	// clear current attributes
+	scan->current.text.attr = 0;
+
+	// start of current grapheme becomes is end of previous
+	scan->ptr = scan->current.text.ptr;
+
+	// see if there is a previous character
+	prev = scan->iter;
+	if (!utf8lite_text_iter_retreat(&prev)) {
+		// already at the start
+		return 0;
+	}
+
+	// position iter after the last character
+	while (prev.ptr != scan->ptr) {
+		scan->iter = prev;
+		utf8lite_text_iter_retreat(&prev);
+	}
+
+	// update iterator property
+	scan->prop = graph_break(scan->iter.current);
+
+	scan->current.text.attr |= prev.attr;
+	prop = graph_break(prev.current);
+
+	utf8lite_text_iter_retreat(&prev);
+	scan->current.text.ptr = (uint8_t *)prev.ptr;
+	scan->current.text.attr |= (size_t)(scan->ptr - scan->current.text.ptr);
+	return 1;
 }
