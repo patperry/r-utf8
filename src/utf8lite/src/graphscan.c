@@ -19,29 +19,6 @@
 #include "private/graphbreak.h"
 #include "utf8lite.h"
 
-/*
-                   width
-graph               Ambiguous  Emoji Ignorable Narrow   Mark   None   Wide
-  Control                   0      0      3809      0      0   2116      0
-  CR                        0      0         0      0      0      1      0
-  EBase                     0     98         0      0      0      0      0
-  EBaseGAZ                  0      4         0      0      0      0      0
-  EModifier                 0      5         0      0      0      0      0
-  Extend                    0      0       359     26   1514      0      2
-  GlueAfterZWJ              2     20         0      0      0      0      0
-  L                         0      0         1      0      0      0    124
-  LF                        0      0         0      0      0      1      0
-  LV                        0      0         0      0      0      0    399
-  LVT                       0      0         0      0      0      0  10773
-  Other                   882    996         2  21606      0 971540  99206
-  Prepend                   0      0         0      9     10      0      0
-  RegionalIndicator         0     26         0      0      0      0      0
-  SpacingMark               0      0         0    348      0      0      0
-  T                         0      0         0    137      0      0      0
-  V                         0      0         1     94      0      0      0
-  ZWJ                       0      0         1      0      0      0      0
-*/
-
 
 #define NEXT() \
 	do { \

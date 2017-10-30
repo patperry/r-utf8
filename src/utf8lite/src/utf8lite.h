@@ -804,6 +804,20 @@ enum utf8lite_encode_type {
 };
 
 /**
+ * Get the width of a grapheme under the specified render settings.
+ *
+ * \param g the grapheme
+ * \param flags a bitmask of #utf8lite_escape_type and #utf8lite_encode_type
+ * 			values specifying the encoding settings
+ * \param widthptr if non-NULL, a pointer to store the width on exit
+ * 	(0 if the grapheme is empty or a non-escaped control)
+ *
+ * \returns 0 on success
+ */
+int utf8lite_graph_measure(const struct utf8lite_graph *g,
+			   int flags, int *widthptr);
+
+/**
  * Renderer, for printing objects as strings.
  */
 struct utf8lite_render {
@@ -915,20 +929,6 @@ int utf8lite_render_indent(struct utf8lite_render *r, int nlevel);
  * \returns 0 on success
  */
 int utf8lite_render_newlines(struct utf8lite_render *r, int nline);
-
-/**
- * Get the width of a grapheme under the current render settings.
- *
- * \param r the render object
- * \param g the grapheme
- * \param widthptr if non-NULL, a pointer to store the width on exit
- * 	(0 if the grapheme is empty or a non-escaped control)
- *
- * \returns 0 on success
- */
-int utf8lite_render_measure(const struct utf8lite_render *r,
-			    const struct utf8lite_graph *g,
-			    int *widthptr);
 
 /**
  * Render a character grapheme. If any render escape flags are set, filter
