@@ -83,7 +83,8 @@ static int width(const struct utf8lite_text *text)
 	width = 0;
 	utf8lite_graphscan_make(&scan, text);
 	while (utf8lite_graphscan_advance(&scan)) {
-		ck_assert(!utf8lite_render_measure(&render, &scan.current, &w));
+		ck_assert(!utf8lite_graph_measure(&scan.current,
+						  render.flags, &w));
 		ck_assert(w >= 0);
 		ck_assert(width <= INT_MAX - w);
 		width += w;
