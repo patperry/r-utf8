@@ -75,13 +75,16 @@ int utf8lite_graph_measure(const struct utf8lite_graph *g,
 			w = utf8_width(ch, cw, flags);
 		}
 
-		if (w > INT_MAX - width) {
+		if (w < 0) {
+			width = w;
+			goto exit;
+		} else if (w > INT_MAX - width) {
 			width = -1;
 			err = UTF8LITE_ERROR_OVERFLOW;
 			goto exit;
+		} else {
+			width += w;
 		}
-
-		width += w;
 	}
 
 exit:
@@ -97,7 +100,7 @@ int ascii_width(int32_t ch, int flags)
 	// handle control characters
 	if (ch <= 0x1F || ch == 0x7F) {
 		if (!(flags & UTF8LITE_ESCAPE_CONTROL)) {
-			return 0;
+			return -1;
 		}
 
 		switch (ch) {
@@ -147,7 +150,7 @@ int utf8_width(int32_t ch, int cw, int flags)
 		if (flags & UTF8LITE_ESCAPE_CONTROL) {
 			w = utf8_escape_width(ch, flags);
 		} else {
-			w = 0;
+			w = -1;
 		}
 		break;
 

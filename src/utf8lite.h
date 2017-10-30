@@ -804,7 +804,9 @@ enum utf8lite_encode_type {
 };
 
 /**
- * Get the width of a grapheme under the specified render settings.
+ * Get the width of a grapheme under the specified render settings. If
+ * the grapheme contains a non-escaped control character, report the width
+ * as -1.
  *
  * \param g the grapheme
  * \param flags a bitmask of #utf8lite_escape_type and #utf8lite_encode_type
@@ -814,8 +816,8 @@ enum utf8lite_encode_type {
  *
  * \returns 0 on success
  */
-int utf8lite_graph_measure(const struct utf8lite_graph *g,
-			   int flags, int *widthptr);
+int utf8lite_graph_measure(const struct utf8lite_graph *g, int flags,
+			   int *widthptr);
 
 /**
  * Renderer, for printing objects as strings.
