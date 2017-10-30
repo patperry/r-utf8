@@ -85,6 +85,9 @@ static int width(const struct utf8lite_text *text)
 	while (utf8lite_graphscan_advance(&scan)) {
 		ck_assert(!utf8lite_graph_measure(&scan.current,
 						  render.flags, &w));
+		if (w == -1) {
+			return w;
+		}
 		ck_assert(w >= 0);
 		ck_assert(width <= INT_MAX - w);
 		width += w;
@@ -518,15 +521,15 @@ END_TEST
 START_TEST(test_width_control_raw)
 {
 	set_flags(0);
-	ck_assert_int_eq(width(S("\x01")), 0);
-	ck_assert_int_eq(width(S("\a")), 0);
-	ck_assert_int_eq(width(S("\n")), 0);
-	ck_assert_int_eq(width(S("\r\n")), 0);
-	ck_assert_int_eq(width(S("\x7F")), 0);
-	ck_assert_int_eq(width(JS("\\u0e00")), 0);
-	ck_assert_int_eq(width(JS("\\u2029")), 0);
-	ck_assert_int_eq(width(JS("\\u2029")), 0);
-	ck_assert_int_eq(width(JS("\\udbff\\udfff")), 0); // U+0010FFFF
+	ck_assert_int_eq(width(S("\x01")), -1);
+	ck_assert_int_eq(width(S("\a")), -1);
+	ck_assert_int_eq(width(S("\n")), -1);
+	ck_assert_int_eq(width(S("\r\n")), -1);
+	ck_assert_int_eq(width(S("\x7F")), -1);
+	ck_assert_int_eq(width(JS("\\u0e00")), -1);
+	ck_assert_int_eq(width(JS("\\u2029")), -1);
+	ck_assert_int_eq(width(JS("\\u2029")), -1);
+	ck_assert_int_eq(width(JS("\\udbff\\udfff")), -1); // U+0010FFFF
 }
 END_TEST
 
