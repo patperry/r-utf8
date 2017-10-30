@@ -203,9 +203,9 @@ test_that("'format' can handle marks", {
   ctype <- switch_ctype("C")
   on.exit(Sys.setlocale("LC_CTYPE", ctype))
 
-  expect_equal(utf8_format(raw, chars = 6, justify = "left"), "\u1e0d...")
+  expect_equal(utf8_format(raw, chars = 6, justify = "left"), "...")
 
-  expect_equal(utf8_format(raw, chars = 6, justify = "centre"), "\u1e0d...")
+  expect_equal(utf8_format(raw, chars = 6, justify = "centre"), "...")
 
   expect_equal(utf8_format(raw, chars = 5, justify = "right"), "...")
 
