@@ -271,34 +271,17 @@ exit:
 }
 
 
-static void render_byte(struct utf8lite_render *r, uint8_t byte)
+static void render_byte(struct utf8lite_render *r, uint8_t byte, int quote)
 {
 	int err = 0;
+	char ch;
 
-	if (byte < 0x80) {
-		switch (byte) {
-		case '\a':
-		case '\b':
-		case '\f':
-		case '\n':
-		case '\r':
-		case '\t':
-		case '\v':
-		case '\\':
-		case '"':
-			TRY(utf8lite_render_printf(r, "%c", (char)byte));
-			goto exit;
-		default:
-			if (isprint((int)byte)) {
-				TRY(utf8lite_render_printf(r, "%c",
-							   (char)byte));
-				goto exit;
-			}
-			break;
-		}
+	if (byte == '"' && quote) {
+		TRY(utf8lite_render_bytes(r, "\\\"", 2));
+	} else {
+		ch = (char)byte;
+		TRY(utf8lite_render_bytes(r, &ch, 1));
 	}
-
-	TRY(utf8lite_render_printf(r, "\\x%02x", (unsigned)byte));
 exit:
 	CHECK_ERROR(err);
 }
@@ -307,7 +290,7 @@ exit:
 static SEXP bytes_format(struct utf8lite_render *r,
 			 const struct bytes *bytes,
 			 int trim, int chars, int width_max,
-			 int quote, int utf8, int centre)
+			 int quote, int utf8, int flags, int centre)
 {
 	SEXP ans = R_NilValue;
 	const uint8_t *ptr, *end;
@@ -321,7 +304,7 @@ static SEXP bytes_format(struct utf8lite_render *r,
 
 	bfill = 0;
 	if (centre && !trim) {
-		fullwidth = (bytes_width(bytes, chars, ellipsis, r->flags)
+		fullwidth = (bytes_width(bytes, chars, ellipsis, flags)
 			     + quotes);
 		bfill = centre_pad_begin(r, width_max, fullwidth);
 	}
@@ -337,14 +320,14 @@ static SEXP bytes_format(struct utf8lite_render *r,
 
 	while (!trunc && ptr < end) {
 		byte = *ptr++;
-		w = byte_width(byte, r->flags);
+		w = byte_width(byte, flags);
 
 		if (width > chars - w) {
 			w = ellipsis;
 			TRY(utf8lite_render_string(r, ellipsis_str));
 			trunc = 1;
 		} else {
-			render_byte(r, byte);
+			render_byte(r, byte, quote);
 		}
 
 		width += w;
@@ -358,8 +341,7 @@ static SEXP bytes_format(struct utf8lite_render *r,
 		pad_spaces(r, width_max - width - quotes - bfill);
 	}
 
-	ans = mkCharLenCE((char *)r->string, r->length,
-			  utf8 ? CE_UTF8 : CE_ANY);
+	ans = mkCharLenCE((char *)r->string, r->length, CE_UTF8);
 	utf8lite_render_clear(r);
 exit:
 	CHECK_ERROR(err);
@@ -370,7 +352,7 @@ exit:
 static SEXP utf8_format(struct utf8lite_render *r,
 			const struct utf8lite_text *text,
 			int trim, int chars, int width_max,
-			int quote, int utf8, int centre)
+			int quote, int utf8, int flags, int centre)
 {
 	SEXP ans = R_NilValue;
 	struct utf8lite_graphscan scan;
@@ -383,7 +365,7 @@ static SEXP utf8_format(struct utf8lite_render *r,
 
 	bfill = 0;
 	if (centre && !trim) {
-		fullwidth = (utf8_width(text, chars, ellipsis, r->flags)
+		fullwidth = (utf8_width(text, chars, ellipsis, flags)
 			     + quotes);
 		bfill = centre_pad_begin(r, width_max, fullwidth);
 	}
@@ -397,7 +379,7 @@ static SEXP utf8_format(struct utf8lite_render *r,
 	utf8lite_graphscan_make(&scan, text);
 
 	while (!trunc && utf8lite_graphscan_advance(&scan)) {
-		TRY(utf8lite_graph_measure(&scan.current, r->flags, &w));
+		TRY(utf8lite_graph_measure(&scan.current, flags, &w));
 
 		if (width > chars - w) {
 			w = ellipsis;
@@ -418,8 +400,7 @@ static SEXP utf8_format(struct utf8lite_render *r,
 		pad_spaces(r, width_max - width - quotes - bfill);
 	}
 
-	ans = mkCharLenCE((char *)r->string, r->length,
-			  utf8 ? CE_UTF8 : CE_ANY);
+	ans = mkCharLenCE((char *)r->string, r->length, CE_UTF8);
 	utf8lite_render_clear(r);
 exit:
 	CHECK_ERROR(err);
@@ -430,15 +411,15 @@ exit:
 static SEXP text_format(struct utf8lite_render *r,
 			const struct text *text,
 			int trim, int chars, int width_max,
-			int quote, int utf8, int centre)
+			int quote, int utf8, int flags, int centre)
 {
 	switch (text->type) {
 	case TEXT_UTF8:
 		return utf8_format(r, &text->value.utf8, trim, chars,
-				   width_max, quote, utf8, centre);
+				   width_max, quote, utf8, flags, centre);
 	case TEXT_BYTES:
 		return bytes_format(r, &text->value.bytes, trim, chars,
-				    width_max, quote, utf8, centre);
+				    width_max, quote, utf8, flags, centre);
 	default:
 		return NA_STRING;
 	}
@@ -447,7 +428,7 @@ static SEXP text_format(struct utf8lite_render *r,
 
 static SEXP bytes_rformat(struct utf8lite_render *r,
 			  const struct bytes *bytes, int trim, int chars,
-			  int width_max, int quote, int utf8)
+			  int width_max, int quote, int utf8, int flags)
 {
 	SEXP ans = R_NilValue;
 	const uint8_t *ptr, *end;
@@ -466,7 +447,7 @@ static SEXP bytes_rformat(struct utf8lite_render *r,
 
 	while (!trunc && ptr > bytes->ptr) {
 		byte = *--ptr;
-		w = byte_width(byte, r->flags);
+		w = byte_width(byte, flags);
 
 		if (width > chars - w) {
 			w = ellipsis;
@@ -490,15 +471,14 @@ static SEXP bytes_rformat(struct utf8lite_render *r,
 
 	while (ptr < end) {
 		byte = *ptr++;
-		render_byte(r, byte);
+		render_byte(r, byte, quote);
 	}
 
 	if (quote) {
 		TRY(utf8lite_render_string(r, "\""));
 	}
 
-	ans = mkCharLenCE((char *)r->string, r->length,
-			  utf8 ? CE_UTF8 : CE_ANY);
+	ans = mkCharLenCE((char *)r->string, r->length, CE_UTF8);
 	utf8lite_render_clear(r);
 exit:
 	CHECK_ERROR(err);
@@ -508,7 +488,7 @@ exit:
 
 static SEXP utf8_rformat(struct utf8lite_render *r,
 			 const struct utf8lite_text *text, int trim, int chars,
-			 int width_max, int quote, int utf8)
+			 int width_max, int quote, int utf8, int flags)
 {
 	SEXP ans = R_NilValue;
 	struct utf8lite_graphscan scan;
@@ -525,7 +505,7 @@ static SEXP utf8_rformat(struct utf8lite_render *r,
 	trunc = 0;
 
 	while (!trunc && utf8lite_graphscan_retreat(&scan)) {
-		TRY(utf8lite_graph_measure(&scan.current, r->flags, &w));
+		TRY(utf8lite_graph_measure(&scan.current, flags, &w));
 
 		if (width > chars - w) {
 			w = ellipsis;
@@ -555,8 +535,7 @@ static SEXP utf8_rformat(struct utf8lite_render *r,
 		TRY(utf8lite_render_string(r, "\""));
 	}
 
-	ans = mkCharLenCE((char *)r->string, r->length,
-			  utf8 ? CE_UTF8 : CE_ANY);
+	ans = mkCharLenCE((char *)r->string, r->length, CE_UTF8);
 	utf8lite_render_clear(r);
 exit:
 	CHECK_ERROR(err);
@@ -567,15 +546,15 @@ exit:
 static SEXP text_rformat(struct utf8lite_render *r,
 			 const struct text *text,
 			 int trim, int chars, int width_max,
-			 int quote, int utf8)
+			 int quote, int utf8, int flags)
 {
 	switch (text->type) {
 	case TEXT_UTF8:
 		return utf8_rformat(r, &text->value.utf8, trim, chars,
-				    width_max, quote, utf8);
+				    width_max, quote, utf8, flags);
 	case TEXT_BYTES:
 		return bytes_rformat(r, &text->value.bytes, trim, chars,
-				     width_max, quote, utf8);
+				     width_max, quote, utf8, flags);
 	default:
 		return NA_STRING;
 	}
@@ -612,11 +591,10 @@ SEXP rutf8_utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify,
 	struct context *ctx;
 	enum justify_type justify;
 	const char *justify_str;
-	uint8_t *buf;
 	struct utf8lite_text *text;
 	struct text elt, na;
 	R_xlen_t i, n;
-	int chars, chars_i, ellipsis, width, width_max, nbuf, trim, na_encode,
+	int chars, chars_i, ellipsis, width, width_max, trim, na_encode,
 	    quote, quote_i, quotes, na_width, utf8, nprot, flags;
 
 	nprot = 0;
@@ -729,9 +707,6 @@ SEXP rutf8_utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify,
 		}
 	}
 
-	nbuf = width_max;
-	buf = (void *)R_alloc(nbuf, sizeof(uint8_t));
-
 	for (i = 0; i < n; i++) {
 		CHECK_INTERRUPT(i);
 
@@ -756,19 +731,19 @@ SEXP rutf8_utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify,
 		case JUSTIFY_NONE:
 			ans_i = text_format(&ctx->render, &elt, trim,
 					    chars_i, width_max, quote_i,
-					    utf8, 0);
+					    utf8, flags, 0);
 			break;
 
 		case JUSTIFY_CENTRE:
 			ans_i = text_format(&ctx->render, &elt, trim,
 					    chars_i, width_max, quote_i,
-					    utf8, 1);
+					    utf8, flags, 1);
 			break;
 
 		case JUSTIFY_RIGHT:
 			ans_i = text_rformat(&ctx->render, &elt, trim,
 					     chars_i, width_max, quote_i,
-					     utf8);
+					     utf8, flags);
 			break;
 		}
 
