@@ -2,11 +2,15 @@ PKG_CFLAGS = -Iutf8lite/src
 PKG_LIBS = -L. -lcutf8lite
 
 LIBUTF8LITE = \
+    utf8lite/src/array.o \
     utf8lite/src/char.o \
     utf8lite/src/encode.o \
     utf8lite/src/error.o \
     utf8lite/src/escape.o \
+    utf8lite/src/graph.o \
+    utf8lite/src/graphscan.o \
     utf8lite/src/normalize.o \
+    utf8lite/src/render.o \
     utf8lite/src/text.o \
     utf8lite/src/textassign.o \
     utf8lite/src/textiter.o \

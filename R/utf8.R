@@ -15,7 +15,7 @@
 
 # converts a character vector from its declared encoding to UTF-8
 as_utf8 <- function(x, normalize = FALSE) {
-  ans <- .Call(C_utf8_coerce, x)
+  ans <- .Call(rutf8_utf8_coerce, x)
   if (normalize) {
     ans <- utf8_normalize(ans)
   }
@@ -26,7 +26,7 @@ as_utf8 <- function(x, normalize = FALSE) {
 # in the current locale (determined by LC_CTYPE)
 utf8_encode <- function(x, display = FALSE) {
   utf8 <- (Sys.getlocale("LC_CTYPE") != "C")
-  .Call(C_utf8_encode, x, display, utf8)
+  .Call(rutf8_utf8_encode, x, display, utf8)
 }
 
 
@@ -84,7 +84,7 @@ utf8_format <- function(x, trim = FALSE, chars = NULL, justify = "left",
   }
 
   .Call(
-    C_utf8_format, x, trim, chars, justify, width, na.encode,
+    rutf8_utf8_format, x, trim, chars, justify, width, na.encode,
     quote, na.print, utf8
   )
 }
@@ -202,7 +202,7 @@ utf8_print <- function(x, chars = NULL, quote = TRUE, na.print = NULL,
         )
 
         np <- .Call(
-          C_print_table, mat, print.gap, right,
+          rutf8_print_table, mat, print.gap, right,
           max - nprint, width, stdout
         )
         nprint <- nprint + np
@@ -216,7 +216,7 @@ utf8_print <- function(x, chars = NULL, quote = TRUE, na.print = NULL,
         colnames(last) <- names[ix]
 
         np <- .Call(
-          C_print_table, last, print.gap, right,
+          rutf8_print_table, last, print.gap, right,
           max - nprint, width, stdout
         )
         nprint <- nprint + np
@@ -231,7 +231,7 @@ utf8_print <- function(x, chars = NULL, quote = TRUE, na.print = NULL,
         length.out = nrow(mat)
       )]
       np <- .Call(
-        C_print_table, mat, print.gap, right, max, width,
+        rutf8_print_table, mat, print.gap, right, max, width,
         stdout
       )
       nprint <- nprint + np
@@ -240,7 +240,7 @@ utf8_print <- function(x, chars = NULL, quote = TRUE, na.print = NULL,
         last <- rbind(as.vector(fmt[n - extra + seq_len(extra)]))
         rownames(last) <- labels[n - extra + 1]
         np <- .Call(
-          C_print_table, last, print.gap, right,
+          rutf8_print_table, last, print.gap, right,
           max - nprint, width, stdout
         )
         nprint <- nprint + np
@@ -252,8 +252,8 @@ utf8_print <- function(x, chars = NULL, quote = TRUE, na.print = NULL,
       cat("<0 x 0 matrix>\n")
     } else {
       nprint <- .Call(
-        C_print_table, fmt, print.gap, right, max, width,
-        stdout
+        rutf8_print_table, fmt, print.gap, right, max,
+        width, stdout
       )
     }
   } else {
@@ -278,8 +278,8 @@ utf8_print <- function(x, chars = NULL, quote = TRUE, na.print = NULL,
         ix <- off + seq_len(nrow * ncol)
         mat <- matrix(fmt[ix], nrow, ncol, dimnames = dimnames[1:2])
         np <- .Call(
-          C_print_table, mat, print.gap, right, max - nprint,
-          width, stdout
+          rutf8_print_table, mat, print.gap, right,
+          max - nprint, width, stdout
         )
         nprint <- nprint + np
         off <- off + (nrow * ncol)
@@ -312,7 +312,7 @@ utf8_print <- function(x, chars = NULL, quote = TRUE, na.print = NULL,
 
 # test whether the elements can be converted to valid UTF-8
 utf8_valid <- function(x) {
-  .Call(C_utf8_valid, x)
+  .Call(rutf8_utf8_valid, x)
 }
 
 # gets the width; NA for invalid or nonprintable sequences
@@ -326,7 +326,7 @@ utf8_width <- function(x, encode = TRUE, quote = FALSE) {
     x <- utf8_encode(x)
   }
   utf8 <- (Sys.getlocale("LC_CTYPE") != "C")
-  .Call(C_utf8_width, x, quote, utf8)
+  .Call(rutf8_utf8_width, x, quote, utf8)
 }
 
 
@@ -341,7 +341,7 @@ utf8_normalize <- function(x, map_case = FALSE, map_compat = FALSE,
   })
 
   .Call(
-    C_utf8_normalize, x, map_case, map_compat, map_quote,
+    rutf8_utf8_normalize, x, map_case, map_compat, map_quote,
     remove_ignorable
   )
 }

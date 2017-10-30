@@ -61,7 +61,7 @@ SEXP alloc_context(size_t size, void (*destroy_func)(void *))
         R_SetExternalPtrAddr(ans, ctx);
 	ctx = NULL;
 	obj = NULL;
-out:
+exit:
 	free(ctx);
 	free(obj);
 	CHECK_ERROR(err);

@@ -23,13 +23,13 @@
 #define CALLDEF(name, n)  {#name, (DL_FUNC) &name, n}
 
 static const R_CallMethodDef CallEntries[] = {
-        CALLDEF(print_table, 6),
-	CALLDEF(utf8_coerce, 1),
-	CALLDEF(utf8_encode, 3),
-	CALLDEF(utf8_format, 9),
-	CALLDEF(utf8_normalize, 5),
-	CALLDEF(utf8_valid, 1),
-	CALLDEF(utf8_width, 3),
+        CALLDEF(rutf8_print_table, 6),
+	CALLDEF(rutf8_utf8_coerce, 1),
+	CALLDEF(rutf8_utf8_encode, 3),
+	CALLDEF(rutf8_utf8_format, 9),
+	CALLDEF(rutf8_utf8_normalize, 5),
+	CALLDEF(rutf8_utf8_valid, 1),
+	CALLDEF(rutf8_utf8_width, 3),
         {NULL, NULL, 0}
 };
 

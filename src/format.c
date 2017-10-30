@@ -23,8 +23,7 @@
 #include "rutf8.h"
 
 
-#define ELLIPSIS 0x2026
-#define ELLIPSIS_NBYTE 3
+#define ELLIPSIS "\xE2\x80\xA6" // U+2026, width 1
 
 enum justify_type {
 	JUSTIFY_NONE = 0,
@@ -33,241 +32,76 @@ enum justify_type {
 	JUSTIFY_RIGHT
 };
 
-enum text_type { TEXT_CORPUS, TEXT_RAW };
+
+struct bytes {
+	const uint8_t *ptr;
+	size_t size;
+};
+
+
+enum text_type { TEXT_NONE = 0, TEXT_BYTES, TEXT_UTF8 };
 
 struct text {
-	enum text_type type;
 	union {
-		struct utf8lite_text corpus;
-		struct {
-			const uint8_t *ptr;
-			size_t size;
-			cetype_t ce;
-		} raw;
-	} data;
-	cetype_t ce;
-	int na;
+		struct utf8lite_text utf8;
+		struct bytes bytes;
+	} value;
+	enum text_type type;
 };
 
-struct text_iter {
-	enum text_type type;
-	union {
-		struct utf8lite_text_iter corpus;
-		struct {
-			const uint8_t *begin;
-			const uint8_t *end;
-			const uint8_t *ptr;
-			cetype_t ce;
-		} raw;
-	} data;
-	int current;
-};
-
-
-static void text_init_corpus(struct text *text, struct utf8lite_text *corpus)
+static void bytes_init(struct bytes *bytes, SEXP charsxp)
 {
-	text->type = TEXT_CORPUS;
-	text->ce = CE_UTF8;
+	assert(charsxp != NA_STRING);
 
-	if (corpus->ptr == NULL) {
-		text->data.corpus.ptr = (uint8_t *)"NA";
-		text->data.corpus.attr = 2;
-		text->na = 1;
-	} else {
-		text->data.corpus = *corpus;
-		text->na = 0;
-	}
+	bytes->ptr = (const uint8_t *)CHAR(charsxp);
+	bytes->size = (size_t)XLENGTH(charsxp);
 }
 
 
-static void text_init_charsxp(struct text *text, SEXP charsxp)
-{
-	const uint8_t *ptr, *ptr2;
-	size_t size;
-	cetype_t ce;
-
-	text->type = TEXT_RAW;
-	if (charsxp == NA_STRING) {
-		text->data.raw.ptr = (const uint8_t *)"NA";
-		text->data.raw.size = 2;
-		text->ce = CE_UTF8;
-		text->na = 1;
-	} else {
-		ce = getCharCE(charsxp);
-		ptr = (const uint8_t *)CHAR(charsxp);
-		size = (size_t)XLENGTH(charsxp);
-
-		if (!encodes_utf8(ce)) {
-			ptr2 = (const uint8_t *)translate_utf8(charsxp);
-			if (ptr2 != ptr) {
-				ptr = ptr2;
-				size = strlen((const char *)ptr);
-			}
-			ce = CE_UTF8;
-		}
-		text->data.raw.ptr = ptr;
-		text->data.raw.size = size;
-		text->ce = (ce == CE_BYTES) ? CE_BYTES : CE_UTF8;
-		text->na = 0;
-	}
-}
-
-
-static void text_iter_make(struct text_iter *iter, const struct text *text)
+static int utf8_init(struct utf8lite_text *text, SEXP charsxp)
 {
 	const uint8_t *ptr;
 	size_t size;
-
-	iter->type = text->type;
-	iter->current = -1;
-
-	if (text->type == TEXT_CORPUS) {
-		utf8lite_text_iter_make(&iter->data.corpus, &text->data.corpus);
-		return;
-	}
-
-	ptr = text->data.raw.ptr;
-	size = text->data.raw.size;
-	iter->data.raw.begin = ptr;
-	iter->data.raw.ptr = ptr;
-	iter->data.raw.end = ptr + size;
-	iter->data.raw.ce = text->ce;
-}
-
-
-static void text_iter_skip(struct text_iter *iter)
-{
-	const uint8_t *end;
-
-	if (iter->type == TEXT_CORPUS) {
-		utf8lite_text_iter_skip(&iter->data.corpus);
-	} else {
-		end = iter->data.raw.end;
-		iter->data.raw.ptr = end;
-		iter->current = -1;
-	}
-}
-
-
-static int text_iter_advance(struct text_iter *iter)
-{
-	const uint8_t *start, *ptr, *end;
-	int32_t code;
 	cetype_t ce;
-	int err, ret;
+	int err = 0;
 
-	if (iter->type == TEXT_CORPUS) {
-		ret = utf8lite_text_iter_advance(&iter->data.corpus);
-		iter->current = iter->data.corpus.current;
-		return ret;
-	}
+	assert(charsxp != NA_STRING);
 
-	ptr = iter->data.raw.ptr;
-	end = iter->data.raw.end;
-	ce = iter->data.raw.ce;
-
-	if (ptr == end) {
-		ret = 0;
-		iter->current = -1;
+	ce = getCharCE(charsxp);
+	if (encodes_utf8(ce)) {
+		ptr = (const uint8_t *)CHAR(charsxp);
+		size = (size_t)XLENGTH(charsxp);
+	} else if (ce == CE_LATIN1 || ce == CE_NATIVE) {
+		ptr = (const uint8_t *)translate_utf8(charsxp);
+		size = strlen((const char *)ptr);
 	} else {
-		ret = 1;
-		start = ptr;
-		if (ce == CE_BYTES) {
-			code = *ptr++;
-			iter->current = (code < 0x80) ? (int)code : -(int)code;
-		} else if ((err = utf8lite_scan_utf8(&start, end, NULL))) {
-			iter->current = -(int)*ptr++;
-		} else {
-			utf8lite_decode_utf8(&ptr, &code);
-			iter->current = (int)code;
-		}
-		iter->data.raw.ptr = ptr;
+		err = UTF8LITE_ERROR_INVAL; // bytes or other encoding
+		goto exit;
 	}
 
-	return ret;
+	TRY(utf8lite_text_assign(text, ptr, size, 0, NULL));
+exit:
+	return err;
 }
 
 
-static int text_iter_retreat(struct text_iter *iter)
+static void text_init(struct text *text, SEXP charsxp)
 {
-	const uint8_t *start, *begin, *ptr;
-	int32_t code;
-	int nbyte, err, ret;
-
-	if (iter->type == TEXT_CORPUS) {
-		ret = utf8lite_text_iter_retreat(&iter->data.corpus);
-		iter->current = iter->data.corpus.current;
-		return ret;
-	}
-
-	begin = iter->data.raw.begin;
-	ptr = iter->data.raw.ptr;
-
-	// at SOT
-	if (ptr == begin) {
-		iter->current = -1;
-		return 0;
-	}
-
-	// if not at EOT, move the pointer to the end of
-	// the current character
-	if (iter->current != -1) {
-		if (iter->current < 0) {
-			ptr--; // invalid byte
-		} else {
-			code = (uint32_t)iter->current;
-			ptr -= UTF8LITE_UTF8_ENCODE_LEN(code);
-		}
-	}
-
-	// at this point, ptr is at the end of the code
-	iter->data.raw.ptr = ptr;
-
-	// if at SOT, we can't retreat
-	if (ptr == begin) {
-		iter->current = -1;
-		return 0;
-	}
-
-	// handle bytes encoding
-	if (iter->data.raw.ce == CE_BYTES) {
-		code = ptr[-1];
-		iter->current = (code < 0x80) ? (int)code : -(int)code;
-		return 1;
-	}
-
-	// search backwards for the first valid sequence
-	for (nbyte = 1; nbyte <= 4; nbyte++) {
-		start = ptr - nbyte;
-		if (start < begin) {
-			break;
-		}
-		if (!(err = utf8lite_scan_utf8(&start, ptr, NULL))) {
-			break;
-		}
-	}
-
-	// no valid sequence
-	if (err) {
-		iter->current = -(int)ptr[-1];
+	if (charsxp == NA_STRING) {
+		text->type = TEXT_NONE;
+	} else if (!utf8_init(&text->value.utf8, charsxp)) {
+		text->type = TEXT_UTF8;
 	} else {
-		start = ptr - nbyte;
-		utf8lite_decode_utf8(&start, &code);
-		iter->current = (int)code;
+		bytes_init(&text->value.bytes, charsxp);
+		text->type = TEXT_BYTES;
 	}
-
-	return 1;
 }
 
 
-static int char_width(int code, int type, int quote, int utf8)
+static int byte_width(uint8_t byte, int flags)
 {
-	if (code < 0) {
-		return 4; // \xXX invalid byte
-	}
-
-	if (code < 0x80) {
-		switch (code) {
+	if (byte < 0x80) {
+		switch (byte) {
 		case '\a':
 		case '\b':
 		case '\f':
@@ -275,50 +109,56 @@ static int char_width(int code, int type, int quote, int utf8)
 		case '\r':
 		case '\t':
 		case '\v':
+		case '\\':
 			return 2;
 		case '"':
-			return quote ? 2 : 1;
+			return (flags & UTF8LITE_ESCAPE_DQUOTE) ? 2 : 1;
 		default:
-			return isprint(code) ? 1 : 6; // \uXXXX
-		}
-	}
-
-	if (utf8) {
-		switch (type) {
-		case UTF8LITE_CHARWIDTH_NONE:
-		case UTF8LITE_CHARWIDTH_IGNORABLE:
-			return 0;
-
-		case UTF8LITE_CHARWIDTH_NARROW:
-		case UTF8LITE_CHARWIDTH_AMBIGUOUS:
-			return 1;
-
-		case UTF8LITE_CHARWIDTH_WIDE:
-		case UTF8LITE_CHARWIDTH_EMOJI:
-			return 2;
-
-		default:
+			if (isprint((int)byte)) {
+				return 1;
+			}
 			break;
 		}
 	}
 
-	return (code <= 0xFFFF) ? 6 : 10; // \uXXXX or \UXXXXYYYY
+	return 4; // \xXX non-ASCII or non-printable byte
 }
 
 
-static int text_width(const struct text *text, int limit, int quote, int utf8)
+static int utf8_width(const struct utf8lite_text *text, int limit,
+		      int ellipsis, int flags)
 {
-	struct text_iter it;
-	int32_t code;
-	int type, width, w;
-	int ellipsis = utf8 ? 1 : 3;
+	struct utf8lite_graphscan scan;
+	int err = 0, width, w;
 
-	text_iter_make(&it, text);
-	width = quote ? 2 : 0;
-	while (text_iter_advance(&it)) {
-		code = it.current;
-		type = code < 0 ? 0 : charwidth(code);
-		w = char_width(code, type, quote, utf8);
+	utf8lite_graphscan_make(&scan, text);
+	width = 0;
+	while (utf8lite_graphscan_advance(&scan)) {
+		TRY(utf8lite_graph_measure(&scan.current, flags, &w));
+		if (width > limit - w) {
+			return width + ellipsis;
+		}
+		width += w;
+	}
+
+exit:
+	CHECK_ERROR(err);
+	return width;
+}
+
+
+static int bytes_width(const struct bytes *bytes, int limit, int ellipsis,
+		       int flags)
+{
+	const uint8_t *ptr = bytes->ptr;
+	const uint8_t *end = ptr + bytes->size;
+	uint8_t byte;
+	int width, w;
+
+	width = 0;
+	while (ptr != end) {
+		byte = *ptr++;
+		w = byte_width(byte, flags);
 		if (width > limit - w) {
 			return width + ellipsis;
 		}
@@ -329,19 +169,40 @@ static int text_width(const struct text *text, int limit, int quote, int utf8)
 }
 
 
-static int text_rwidth(const struct text *text, int limit, int quote, int utf8)
+static int utf8_rwidth(const struct utf8lite_text *text, int limit,
+		       int ellipsis, int flags)
 {
-	struct text_iter it;
-	int code, type, width, w;
-	int ellipsis = utf8 ? 1 : 3;
+	struct utf8lite_graphscan scan;
+	int err = 0, width, w;
 
-	text_iter_make(&it, text);
-	text_iter_skip(&it);
-	width = quote ? 2 : 0;
-	while (text_iter_retreat(&it)) {
-		code = it.current;
-		type = code < 0 ? 0 : charwidth(code);
-		w = char_width(code, type, quote, utf8);
+	utf8lite_graphscan_make(&scan, text);
+	utf8lite_graphscan_skip(&scan);
+	width = 0;
+	while (utf8lite_graphscan_retreat(&scan)) {
+		TRY(utf8lite_graph_measure(&scan.current, flags, &w));
+		if (width > limit - w) {
+			return width + ellipsis;
+		}
+		width += w;
+	}
+
+exit:
+	return width;
+}
+
+
+static int bytes_rwidth(const struct bytes *bytes, int limit, int ellipsis,
+			int flags)
+{
+	const uint8_t *ptr = bytes->ptr;
+	const uint8_t *end = ptr + bytes->size;
+	uint8_t byte;
+	int width, w;
+
+	width = 0;
+	while (ptr != end) {
+		byte = *ptr++;
+		w = byte_width(byte, flags);
 		if (width > limit - w) {
 			return width + ellipsis;
 		}
@@ -352,238 +213,403 @@ static int text_rwidth(const struct text *text, int limit, int quote, int utf8)
 }
 
 
-static void grow_buffer(uint8_t **bufptr, int *nbufptr, int nadd)
+static int text_width(const struct text *text, int limit, int ellipsis,
+		      int flags)
 {
-	uint8_t *buf = *bufptr;
-	int nbuf0 = *nbufptr;
-	int nbuf = nbuf0;
-	int err;
-
-	if ((err = array_size_add(&nbuf, 1, nbuf0, nadd))) {
-		error("buffer size (%d + %d bytes)"
-		      " exceeds maximum (%d bytes)", nbuf0, nadd,
-		      INT_MAX);
+	switch (text->type) {
+	case TEXT_UTF8:
+		return utf8_width(&text->value.utf8, limit, ellipsis, flags);
+	case TEXT_BYTES:
+		return bytes_width(&text->value.bytes, limit, ellipsis, flags);
+	default:
+		return -1;
 	}
-
-	if (nbuf0 > 0) {
-		buf = (void *)S_realloc((char *)buf, nbuf, nbuf0, sizeof(uint8_t));
-	} else {
-		buf = (void *)R_alloc(nbuf, sizeof(uint8_t));
-	}
-
-	*bufptr = buf;
-	*nbufptr = nbuf;
 }
 
-#define ENSURE(nbyte) \
-	do { \
-		if (dst + (nbyte) > end) { \
-			off = (int)(dst - buf); \
-			grow_buffer(&buf, &nbuf, nbyte); \
-			dst = buf + off; \
-			end = buf + nbuf; \
-		} \
-	} while (0)
 
-static SEXP format_left(const struct text *text, int trim, int chars,
-			int width_max, int quote, int utf8, int centre,
-			uint8_t **bufptr, int *nbufptr)
+static int text_rwidth(const struct text *text, int limit, int ellipsis,
+		       int flags)
 {
-	uint8_t *buf = *bufptr;
-	int nbuf = *nbufptr;
-	uint8_t *end = buf + nbuf;
-	struct text_iter it;
-	uint8_t *dst;
-	int i, w, code, trunc, type, nbyte, bfill, fill, len, off,
-	    fullwidth, width, quotes;
+	switch (text->type) {
+	case TEXT_UTF8:
+		return utf8_rwidth(&text->value.utf8, limit, ellipsis, flags);
+	case TEXT_BYTES:
+		return bytes_rwidth(&text->value.bytes, limit, ellipsis, flags);
+	default:
+		return -1;
+	}
+}
 
-	dst = buf;
+
+static int centre_pad_begin(struct utf8lite_render *r, int width_max,
+			    int fullwidth)
+{
+	int i, fill, bfill = 0;
+	int err = 0;
+
+	if ((fill = width_max - fullwidth) > 0) {
+		bfill = fill / 2;
+
+		for (i = 0; i < bfill; i++) {
+			TRY(utf8lite_render_string(r, " "));
+		}
+	}
+exit:
+	CHECK_ERROR(err);
+	return bfill;
+}
+
+
+static void pad_spaces(struct utf8lite_render *r, int nspace)
+{
+	int err = 0;
+	while (nspace-- > 0) {
+		TRY(utf8lite_render_string(r, " "));
+	}
+exit:
+	CHECK_ERROR(err);
+}
+
+
+static void render_byte(struct utf8lite_render *r, uint8_t byte)
+{
+	int err = 0;
+
+	if (byte < 0x80) {
+		switch (byte) {
+		case '\a':
+		case '\b':
+		case '\f':
+		case '\n':
+		case '\r':
+		case '\t':
+		case '\v':
+		case '\\':
+		case '"':
+			TRY(utf8lite_render_printf(r, "%c", (char)byte));
+			goto exit;
+		default:
+			if (isprint((int)byte)) {
+				TRY(utf8lite_render_printf(r, "%c",
+							   (char)byte));
+				goto exit;
+			}
+			break;
+		}
+	}
+
+	TRY(utf8lite_render_printf(r, "\\x%02x", (unsigned)byte));
+exit:
+	CHECK_ERROR(err);
+}
+
+
+static SEXP bytes_format(struct utf8lite_render *r,
+			 const struct bytes *bytes,
+			 int trim, int chars, int width_max,
+			 int quote, int utf8, int centre)
+{
+	SEXP ans = R_NilValue;
+	const uint8_t *ptr, *end;
+	const char *ellipsis_str;
+	uint8_t byte;
+	int err = 0, w, trunc, bfill, fullwidth, width, quotes, ellipsis;
 
 	quotes = quote ? 2 : 0;
+	ellipsis = utf8 ? 1 : 3;
+	ellipsis_str = utf8 ? ELLIPSIS : "...";
+
 	bfill = 0;
 	if (centre && !trim) {
-		fullwidth = text_width(text, chars, quote, utf8);
-		if ((fill = width_max - fullwidth) > 0) {
-			bfill = fill / 2;
-
-			ENSURE(bfill);
-
-			for (i = 0; i < bfill; i++) {
-				*dst++ = ' ';
-			}
-		}
+		fullwidth = (bytes_width(bytes, chars, ellipsis, r->flags)
+			     + quotes);
+		bfill = centre_pad_begin(r, width_max, fullwidth);
 	}
 
-
 	if (quote) {
-		ENSURE(1);
-		*dst++ = '"';
+		TRY(utf8lite_render_string(r, "\""));
 	}
 
 	width = 0;
 	trunc = 0;
-	text_iter_make(&it, text);
+	ptr = bytes->ptr;
+	end = bytes->ptr + bytes->size;
 
-	while (!trunc && text_iter_advance(&it)) {
-		code = it.current;
-		type = code < 0 ? 0 : charwidth(code);
-		w = char_width(code, type, quote, utf8);
+	while (!trunc && ptr < end) {
+		byte = *ptr++;
+		w = byte_width(byte, r->flags);
 
 		if (width > chars - w) {
-			code = ELLIPSIS;
-			w = utf8 ? 1 : 3;
+			w = ellipsis;
+			TRY(utf8lite_render_string(r, ellipsis_str));
 			trunc = 1;
-		}
-
-		nbyte = code < 0 ? 1 : UTF8LITE_UTF8_ENCODE_LEN(code);
-		ENSURE(nbyte);
-
-		if (trunc) {
-			if (utf8) {
-				utf8lite_encode_utf8(ELLIPSIS, &dst);
-			} else {
-				*dst++ = '.';
-				*dst++ = '.';
-				*dst++ = '.';
-			}
-		} else if (code < 0) {
-			*dst++ = (uint8_t)(-code);
-		} else if (code == '"' && quote) {
-			ENSURE(2);
-			*dst++ = '\\';
-			*dst++ = '"';
 		} else {
-			utf8lite_encode_utf8(code, &dst);
+			render_byte(r, byte);
 		}
+
 		width += w;
 	}
 
 	if (quote) {
-		ENSURE(1);
-		*dst++ = '"';
+		TRY(utf8lite_render_string(r, "\""));
 	}
 
-	if (!trim && ((fill = width_max - width - quotes - bfill)) > 0) {
-		ENSURE(fill);
-
-		while (fill-- > 0) {
-			*dst++ = ' ';
-		}
+	if (!trim) {
+		pad_spaces(r, width_max - width - quotes - bfill);
 	}
 
-
-	*bufptr = buf;
-	*nbufptr = nbuf;
-
-	len = (int)(dst - buf);
-	return mkCharLenCE((char *)buf, len, text->ce);
+	ans = mkCharLenCE((char *)r->string, r->length,
+			  utf8 ? CE_UTF8 : CE_ANY);
+	utf8lite_render_clear(r);
+exit:
+	CHECK_ERROR(err);
+	return ans;
 }
 
-#undef ENSURE
-#define ENSURE(nbyte) \
-	do { \
-		if (dst < buf + nbyte) { \
-			off = dst - buf; \
-			len = nbuf - off; \
-			grow_buffer(&buf, &nbuf, nbyte); \
-			dst = buf + nbuf - len; \
-			memmove(dst, buf + off, len); \
-		} \
-	} while (0)
 
-static SEXP format_right(const struct text *text, int trim, int chars,
-			 int width_max, int quote, int utf8,
-			 uint8_t **bufptr, int *nbufptr)
+static SEXP utf8_format(struct utf8lite_render *r,
+			const struct utf8lite_text *text,
+			int trim, int chars, int width_max,
+			int quote, int utf8, int centre)
 {
-	uint8_t *buf = *bufptr;
-	int nbuf = *nbufptr;
-	struct text_iter it;
-	uint8_t *dst;
-	int w, code, fill, trunc, type, off, len, nbyte, width, quotes;
+	SEXP ans = R_NilValue;
+	struct utf8lite_graphscan scan;
+	const char *ellipsis_str;
+	int err = 0, w, trunc, bfill, fullwidth, width, quotes, ellipsis;
 
 	quotes = quote ? 2 : 0;
-	dst = buf + nbuf;
+	ellipsis = utf8 ? 1 : 3;
+	ellipsis_str = utf8 ? ELLIPSIS : "...";
+
+	bfill = 0;
+	if (centre && !trim) {
+		fullwidth = (utf8_width(text, chars, ellipsis, r->flags)
+			     + quotes);
+		bfill = centre_pad_begin(r, width_max, fullwidth);
+	}
 
 	if (quote) {
-		ENSURE(1);
-		*--dst = '"';
+		TRY(utf8lite_render_string(r, "\""));
 	}
 
 	width = 0;
 	trunc = 0;
-	text_iter_make(&it, text);
-	text_iter_skip(&it);
+	utf8lite_graphscan_make(&scan, text);
 
-	while (!trunc && text_iter_retreat(&it)) {
-		code = it.current;
-		type = code < 0 ? 0 : charwidth(code);
-		w = char_width(code, type, quote, utf8);
+	while (!trunc && utf8lite_graphscan_advance(&scan)) {
+		TRY(utf8lite_graph_measure(&scan.current, r->flags, &w));
 
 		if (width > chars - w) {
-			code = ELLIPSIS;
-			w = utf8 ? 1 : 3;
+			w = ellipsis;
+			TRY(utf8lite_render_string(r, ellipsis_str));
 			trunc = 1;
-		}
-
-		nbyte = code < 0 ? 1 : UTF8LITE_UTF8_ENCODE_LEN(code);
-		ENSURE(nbyte);
-
-		if (trunc) {
-			if (utf8) {
-				utf8lite_rencode_utf8(ELLIPSIS, &dst);
-			} else {
-				// nbyte(ELLIPSIS) == 3 so no need to reserve
-				*--dst = '.';
-				*--dst = '.';
-				*--dst = '.';
-			}
-		} else if (code < 0) {
-			*--dst = (uint8_t)(-code);
-		} else if (code == '"' && quote) {
-			ENSURE(2);
-			*--dst = '"';
-			*--dst = '\\';
 		} else {
-			utf8lite_rencode_utf8(code, &dst);
+			TRY(utf8lite_render_graph(r, &scan.current));
 		}
+
 		width += w;
 	}
 
 	if (quote) {
-		ENSURE(1);
-		*--dst = '"';
+		TRY(utf8lite_render_string(r, "\""));
 	}
 
-	if (!trim && ((fill = width_max - width - quotes)) > 0) {
-		ENSURE(fill);
+	if (!trim) {
+		pad_spaces(r, width_max - width - quotes - bfill);
+	}
 
-		while (fill-- > 0) {
-			*--dst = ' ';
+	ans = mkCharLenCE((char *)r->string, r->length,
+			  utf8 ? CE_UTF8 : CE_ANY);
+	utf8lite_render_clear(r);
+exit:
+	CHECK_ERROR(err);
+	return ans;
+}
+
+
+static SEXP text_format(struct utf8lite_render *r,
+			const struct text *text,
+			int trim, int chars, int width_max,
+			int quote, int utf8, int centre)
+{
+	switch (text->type) {
+	case TEXT_UTF8:
+		return utf8_format(r, &text->value.utf8, trim, chars,
+				   width_max, quote, utf8, centre);
+	case TEXT_BYTES:
+		return bytes_format(r, &text->value.bytes, trim, chars,
+				    width_max, quote, utf8, centre);
+	default:
+		return NA_STRING;
+	}
+}
+
+
+static SEXP bytes_rformat(struct utf8lite_render *r,
+			  const struct bytes *bytes, int trim, int chars,
+			  int width_max, int quote, int utf8)
+{
+	SEXP ans = R_NilValue;
+	const uint8_t *ptr, *end;
+	const char *ellipsis_str;
+	uint8_t byte;
+	int err = 0, w, width, quotes, ellipsis, trunc;
+
+	quotes = quote ? 2 : 0;
+	ellipsis = utf8 ? 1 : 3;
+	ellipsis_str = utf8 ? ELLIPSIS : "...";
+
+	end = bytes->ptr + bytes->size;
+	ptr = end;
+	width = 0;
+	trunc = 0;
+
+	while (!trunc && ptr > bytes->ptr) {
+		byte = *--ptr;
+		w = byte_width(byte, r->flags);
+
+		if (width > chars - w) {
+			w = ellipsis;
+			trunc = 1;
 		}
+
+		width += w;
 	}
 
-	*bufptr = buf;
-	*nbufptr = nbuf;
+	if (!trim) {
+		pad_spaces(r, width_max - width - quotes);
+	}
 
-	off = (int)(dst - buf);
-	len = nbuf - off;
-	return mkCharLenCE((char *)dst, len, text->ce);
+	if (quote) {
+		TRY(utf8lite_render_string(r, "\""));
+	}
+
+	if (trunc) {
+		TRY(utf8lite_render_string(r, ellipsis_str));
+	}
+
+	while (ptr < end) {
+		byte = *ptr++;
+		render_byte(r, byte);
+	}
+
+	if (quote) {
+		TRY(utf8lite_render_string(r, "\""));
+	}
+
+	ans = mkCharLenCE((char *)r->string, r->length,
+			  utf8 ? CE_UTF8 : CE_ANY);
+	utf8lite_render_clear(r);
+exit:
+	CHECK_ERROR(err);
+	return ans;
 }
 
 
-SEXP format_text(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify, SEXP swidth,
-		 SEXP sna_encode, SEXP squote, SEXP sna_print, SEXP sutf8)
+static SEXP utf8_rformat(struct utf8lite_render *r,
+			 const struct utf8lite_text *text, int trim, int chars,
+			 int width_max, int quote, int utf8)
 {
-	return utf8_format(sx, strim, schars, sjustify, swidth, sna_encode,
-			   squote, sna_print, sutf8);
+	SEXP ans = R_NilValue;
+	struct utf8lite_graphscan scan;
+	const char *ellipsis_str;
+	int err = 0, w, width, quotes, ellipsis, trunc;
+
+	quotes = quote ? 2 : 0;
+	ellipsis = utf8 ? 1 : 3;
+	ellipsis_str = utf8 ? ELLIPSIS : "...";
+
+	utf8lite_graphscan_make(&scan, text);
+	utf8lite_graphscan_skip(&scan);
+	width = 0;
+	trunc = 0;
+
+	while (!trunc && utf8lite_graphscan_retreat(&scan)) {
+		TRY(utf8lite_graph_measure(&scan.current, r->flags, &w));
+
+		if (width > chars - w) {
+			w = ellipsis;
+			trunc = 1;
+		}
+
+		width += w;
+	}
+
+	if (!trim) {
+		pad_spaces(r, width_max - width - quotes);
+	}
+
+	if (quote) {
+		TRY(utf8lite_render_string(r, "\""));
+	}
+
+	if (trunc) {
+		TRY(utf8lite_render_string(r, ellipsis_str));
+	}
+
+	while (utf8lite_graphscan_advance(&scan)) {
+		TRY(utf8lite_render_graph(r, &scan.current));
+	}
+
+	if (quote) {
+		TRY(utf8lite_render_string(r, "\""));
+	}
+
+	ans = mkCharLenCE((char *)r->string, r->length,
+			  utf8 ? CE_UTF8 : CE_ANY);
+	utf8lite_render_clear(r);
+exit:
+	CHECK_ERROR(err);
+	return ans;
 }
 
 
-SEXP utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify, SEXP swidth,
-		 SEXP sna_encode, SEXP squote, SEXP sna_print, SEXP sutf8)
+static SEXP text_rformat(struct utf8lite_render *r,
+			 const struct text *text,
+			 int trim, int chars, int width_max,
+			 int quote, int utf8)
 {
-	SEXP ans, na_print, ans_i;
-	enum text_type type;
+	switch (text->type) {
+	case TEXT_UTF8:
+		return utf8_rformat(r, &text->value.utf8, trim, chars,
+				    width_max, quote, utf8);
+	case TEXT_BYTES:
+		return bytes_rformat(r, &text->value.bytes, trim, chars,
+				     width_max, quote, utf8);
+	default:
+		return NA_STRING;
+	}
+}
+
+
+struct context {
+	struct utf8lite_render render;
+	int has_render;
+};
+
+static void context_init(struct context *ctx)
+{
+	int err = 0;
+	TRY(utf8lite_render_init(&ctx->render, 0));
+	ctx->has_render = 1;
+exit:
+	CHECK_ERROR(err);
+}
+
+static void context_destroy(void *obj)
+{
+	struct context *ctx = obj;
+	if (ctx->has_render) {
+		utf8lite_render_destroy(&ctx->render);
+	}
+}
+
+SEXP rutf8_utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify,
+		       SEXP swidth, SEXP sna_encode, SEXP squote,
+		       SEXP sna_print, SEXP sutf8)
+{
+	SEXP ans, sctx, na_print, ans_i;
+	struct context *ctx;
 	enum justify_type justify;
 	const char *justify_str;
 	uint8_t *buf;
@@ -591,7 +617,7 @@ SEXP utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify, SEXP swidth,
 	struct text elt, na;
 	R_xlen_t i, n;
 	int chars, chars_i, ellipsis, width, width_max, nbuf, trim, na_encode,
-	    quote, quote_i, quotes, na_width, utf8, nprot;
+	    quote, quote_i, quotes, na_width, utf8, nprot, flags;
 
 	nprot = 0;
 
@@ -602,7 +628,6 @@ SEXP utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify, SEXP swidth,
 	if (!isString(sx)) {
 		error("argument is not a character vector");
 	}
-	type = TEXT_RAW;
 	text = NULL;
 	PROTECT(ans = duplicate(sx)); nprot++;
 	n = XLENGTH(ans);
@@ -661,24 +686,37 @@ SEXP utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify, SEXP swidth,
 	} else {
 		na_print = STRING_ELT(sna_print, 0);
 	}
-	text_init_charsxp(&na, na_print);
+	text_init(&na, na_print);
 	na_width = text_width(&na, INT_MAX, 0, utf8);
+
+	flags = (UTF8LITE_ESCAPE_CONTROL | UTF8LITE_ENCODE_C);
+	if (quote) {
+		flags |= UTF8LITE_ESCAPE_DQUOTE;
+	}
+	if (!utf8) {
+		flags |= UTF8LITE_ESCAPE_UTF8;
+	}
+#if defined(_WIN32) || defined(_WIN64)
+	flags |= UTF8LITE_ESCAPE_EXTENDED;
+#endif
+
+        PROTECT(sctx = alloc_context(sizeof(*ctx), context_destroy)); nprot++;
+	ctx = as_context(sctx);
+	context_init(ctx);
 
 	for (i = 0; i < n; i++) {
 		CHECK_INTERRUPT(i);
 
-		if (type == TEXT_CORPUS) {
-			text_init_corpus(&elt, &text[i]);
-		} else {
-			text_init_charsxp(&elt, STRING_ELT(sx, i));
-		}
+		text_init(&elt, STRING_ELT(sx, i));
 
-		if (elt.na) {
+		if (elt.type == TEXT_NONE) {
 			width = na_encode ? na_width : 0;
 		} else if (justify == JUSTIFY_RIGHT) {
-			width = text_rwidth(&elt, chars, quote, utf8);
+			width = (text_rwidth(&elt, chars, ellipsis, flags)
+					+ quotes);
 		} else {
-			width = text_width(&elt, chars, quote, utf8);
+			width = (text_width(&elt, chars, ellipsis, flags)
+					+ quotes);
 		}
 
 		if (width > width_max) {
@@ -697,13 +735,9 @@ SEXP utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify, SEXP swidth,
 	for (i = 0; i < n; i++) {
 		CHECK_INTERRUPT(i);
 
-		if (type == TEXT_CORPUS) {
-			text_init_corpus(&elt, &text[i]);
-		} else {
-			text_init_charsxp(&elt, STRING_ELT(sx, i));
-		}
+		text_init(&elt, STRING_ELT(sx, i));
 
-		if (elt.na) {
+		if (elt.type == TEXT_NONE) {
 			if (na_encode) {
 				elt = na;
 				chars_i = na_width;
@@ -720,18 +754,21 @@ SEXP utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify, SEXP swidth,
 		switch (justify) {
 		case JUSTIFY_LEFT:
 		case JUSTIFY_NONE:
-			ans_i = format_left(&elt, trim, chars_i, width_max,
-					    quote_i, utf8, 0, &buf, &nbuf);
+			ans_i = text_format(&ctx->render, &elt, trim,
+					    chars_i, width_max, quote_i,
+					    utf8, 0);
 			break;
 
 		case JUSTIFY_CENTRE:
-			ans_i = format_left(&elt, trim, chars_i, width_max,
-					    quote_i, utf8, 1, &buf, &nbuf);
+			ans_i = text_format(&ctx->render, &elt, trim,
+					    chars_i, width_max, quote_i,
+					    utf8, 1);
 			break;
 
 		case JUSTIFY_RIGHT:
-			ans_i = format_right(&elt, trim, chars_i, width_max,
-					     quote_i, utf8, &buf, &nbuf);
+			ans_i = text_rformat(&ctx->render, &elt, trim,
+					     chars_i, width_max, quote_i,
+					     utf8);
 			break;
 		}
 
