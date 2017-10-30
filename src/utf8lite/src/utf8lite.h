@@ -981,6 +981,19 @@ int utf8lite_render_printf(struct utf8lite_render *r, const char *format, ...)
 int utf8lite_render_text(struct utf8lite_render *r,
 			 const struct utf8lite_text *text);
 
+/**
+ * Append a sequence of raw bytes to the render buffer. Ignore any special
+ * handling specified by the render flags.
+ *
+ * \param r the render object
+ * \param bytes the byte array
+ * \param size the number of bytes
+ *
+ * \returns 0 on success.
+ */
+int utf8lite_render_bytes(struct utf8lite_render *r, const char *bytes,
+			  size_t size);
+
 /**@}*/
 
 #endif /* UTF8LITE_H */

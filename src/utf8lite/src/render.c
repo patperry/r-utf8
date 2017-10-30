@@ -507,3 +507,20 @@ int utf8lite_render_graph(struct utf8lite_render *r,
 
 	return 0;
 }
+
+
+int utf8lite_render_bytes(struct utf8lite_render *r, const char *bytes,
+			  size_t size)
+{
+	if (size > INT_MAX) {
+		r->error = UTF8LITE_ERROR_OVERFLOW;
+		return r->error;
+	}
+	utf8lite_render_grow(r, (int)size);
+	CHECK_ERROR(r);
+
+	memcpy(r->string + r->length, bytes, size);
+	r->length += (int)size;
+	r->string[r->length] = '\0';
+	return 0;
+}
