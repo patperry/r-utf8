@@ -34,14 +34,14 @@
 #define TRY(x) \
 	do { \
 		if ((err = (x))) { \
-			goto out; \
+			goto exit; \
 		} \
 	} while (0)
 
 #define TRY_ALLOC(x) \
 	do { \
 		if ((err = (x) ? 0 : UTF8LITE_ERROR_NOMEM)) { \
-			goto out; \
+			goto exit; \
 		} \
 	} while (0)
 
@@ -95,18 +95,19 @@ void *as_context(SEXP x);
 int is_context(SEXP x);
 
 /* printing */
-SEXP print_table(SEXP x, SEXP print_gap, SEXP right, SEXP max, SEXP width,
-		 SEXP is_stdout);
+SEXP rutf8_print_table(SEXP x, SEXP print_gap, SEXP right, SEXP max,
+		       SEXP width, SEXP is_stdout);
 
 /* utf8 */
-SEXP utf8_coerce(SEXP x);
-SEXP utf8_encode(SEXP x, SEXP display, SEXP utf8);
-SEXP utf8_format(SEXP x, SEXP trim, SEXP chars, SEXP justify, SEXP width,
-		 SEXP na_encode, SEXP quote, SEXP na_print, SEXP utf8);
-SEXP utf8_normalize(SEXP x, SEXP map_case, SEXP map_compat, SEXP map_quote,
-		    SEXP remove_ignorable);
-SEXP utf8_valid(SEXP x);
-SEXP utf8_width(SEXP x, SEXP quote, SEXP utf8);
+SEXP rutf8_utf8_coerce(SEXP x);
+SEXP rutf8_utf8_encode(SEXP x, SEXP display, SEXP utf8);
+SEXP rutf8_utf8_format(SEXP x, SEXP trim, SEXP chars, SEXP justify,
+		       SEXP width, SEXP na_encode, SEXP quote,
+		       SEXP na_print, SEXP utf8);
+SEXP rutf8_utf8_normalize(SEXP x, SEXP map_case, SEXP map_compat,
+			  SEXP map_quote, SEXP remove_ignorable);
+SEXP rutf8_utf8_valid(SEXP x);
+SEXP rutf8_utf8_width(SEXP x, SEXP quote, SEXP utf8);
 
 /* internal utility functions */
 

@@ -239,8 +239,8 @@ out:
 }
 
 
-SEXP print_table(SEXP sx, SEXP sprint_gap, SEXP sright, SEXP smax,
-		SEXP swidth, SEXP sis_stdout)
+SEXP rutf8_print_table(SEXP sx, SEXP sprint_gap, SEXP sright, SEXP smax,
+		       SEXP swidth, SEXP sis_stdout)
 {
 	SEXP elt, dim_names, row_names, col_names;
 	R_xlen_t ix, nx;

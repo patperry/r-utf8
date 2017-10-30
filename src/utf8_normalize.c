@@ -51,7 +51,7 @@ static void context_init(struct context *ctx, SEXP map_case, SEXP map_compat,
 
 	TRY(utf8lite_textmap_init(&ctx->map, type));
 	ctx->has_map = 1;
-out:
+exit:
 	CHECK_ERROR(err);
 }
 
@@ -66,8 +66,8 @@ static void context_destroy(void *obj)
 }
 
 
-SEXP utf8_normalize(SEXP x, SEXP map_case, SEXP map_compat, SEXP map_quote,
-		    SEXP remove_ignorable)
+SEXP rutf8_utf8_normalize(SEXP x, SEXP map_case, SEXP map_compat,
+			  SEXP map_quote, SEXP remove_ignorable)
 {
 	SEXP ans, sctx, elt;
 	struct context *ctx;
@@ -109,7 +109,7 @@ SEXP utf8_normalize(SEXP x, SEXP map_case, SEXP map_compat, SEXP map_quote,
 		SET_STRING_ELT(ans, i, elt);
 	}
 
-out:
+exit:
 	CHECK_ERROR(err);
 	free_context(sctx);
 	UNPROTECT(nprot);

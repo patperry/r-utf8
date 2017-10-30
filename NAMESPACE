@@ -1,5 +1,5 @@
 ## Compiled
-useDynLib(utf8, .registration = TRUE, .fixes = "C_")
+useDynLib(utf8, .registration = TRUE)
 
 ## Exports
 export(as_utf8)

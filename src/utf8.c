@@ -125,7 +125,6 @@ int encodes_utf8(cetype_t ce)
 {
 	switch (ce) {
 	case CE_ANY:
-	case CE_BYTES:
 	case CE_UTF8:
 #if (!defined(_WIN32) && !defined(_WIN64))
 	case CE_NATIVE: // assume that 'native' is UTF-8 on non-Windows
@@ -219,7 +218,7 @@ static int needs_encode_chars(const uint8_t *str, size_t size0, int display,
 			if (utf8) {
 				cw = charwidth(code);
 				switch (cw) {
-				case UTF8LITE_CHARWIDTH_OTHER:
+				case UTF8LITE_CHARWIDTH_NONE:
 					// \uXXXX or \UXXXXYYYY
 					needs = 1;
 					nbyte = ((code <= 0xFFFF) ? 6 : 10);
@@ -333,7 +332,7 @@ static void encode_chars(uint8_t *dst, const uint8_t *str, size_t size,
 		utf8lite_decode_utf8(&ptr, &code);
 		cw = charwidth(code);
 
-		if (cw == UTF8LITE_CHARWIDTH_OTHER || !utf8) {
+		if (cw == UTF8LITE_CHARWIDTH_NONE || !utf8) {
 			if (code <= 0xFFFF) {
 				sprintf((char *)dst, "\\u%04x",
 					(unsigned)code);
@@ -515,7 +514,7 @@ static SEXP charsxp_encode(SEXP sx, int display, int utf8, char **bufptr,
 }
 
 
-SEXP utf8_coerce(SEXP sx)
+SEXP rutf8_utf8_coerce(SEXP sx)
 {
 	SEXP ans, sstr;
 	const uint8_t *str;
@@ -544,7 +543,7 @@ SEXP utf8_coerce(SEXP sx)
 		}
 
 		ce = getCharCE(sstr);
-		raw = encodes_utf8(ce);
+		raw = encodes_utf8(ce) || ce == CE_BYTES;
 
 		if (raw) {
 			str = (const uint8_t *)CHAR(sstr);
@@ -608,7 +607,7 @@ SEXP utf8_coerce(SEXP sx)
 }
 
 
-SEXP utf8_valid(SEXP sx)
+SEXP rutf8_utf8_valid(SEXP sx)
 {
 	SEXP ans, sstr;
 	const uint8_t *str;
@@ -641,7 +640,7 @@ SEXP utf8_valid(SEXP sx)
 		}
 
 		ce = getCharCE(sstr);
-		raw = encodes_utf8(ce);
+		raw = encodes_utf8(ce) || ce == CE_BYTES;
 
 		if (raw) {
 			str = (const uint8_t *)CHAR(sstr);
@@ -660,7 +659,7 @@ SEXP utf8_valid(SEXP sx)
 }
 
 
-SEXP utf8_width(SEXP sx, SEXP squote, SEXP sutf8)
+SEXP rutf8_utf8_width(SEXP sx, SEXP squote, SEXP sutf8)
 {
 	SEXP ans, elt;
 	R_xlen_t i, n;
@@ -698,7 +697,7 @@ SEXP utf8_width(SEXP sx, SEXP squote, SEXP sutf8)
 }
 
 
-SEXP utf8_encode(SEXP sx, SEXP sdisplay, SEXP sutf8)
+SEXP rutf8_utf8_encode(SEXP sx, SEXP sdisplay, SEXP sutf8)
 {
 	SEXP ans, elt, elt2;
 	char *buf;
@@ -761,13 +760,12 @@ const char *translate_utf8(SEXP x)
 	raw = CHAR(x);
 	n = LENGTH(x);
 
-	if (encodes_utf8(ce) || n == 0) {
+
+	if (ce == CE_ANY || ce == CE_UTF8 || n == 0) {
 		return raw;
 	}
 
-	if (ce != CE_NATIVE && ce != CE_LATIN1) {
-		return translateCharUTF8(x);
-	}
+	assert(ce == CE_NATIVE || ce == CE_LATIN1);
 
 	if (ce == CE_LATIN1) {
 		// R seems to mark native strings as "latin1" when the code page
