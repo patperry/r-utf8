@@ -517,6 +517,38 @@ START_TEST(test_encode_emoji_extended_zwsp)
 END_TEST
 
 
+START_TEST(test_byte_single)
+{
+	char byte;
+
+	set_flags(UTF8LITE_ESCAPE_CONTROL);
+
+	byte = 0x01;
+	ck_assert(!utf8lite_render_bytes(&render, &byte, 1));
+	ck_assert_int_eq(render.string[0], byte);
+
+	byte = (char)0xff;
+	ck_assert(!utf8lite_render_bytes(&render, &byte, 1));
+	ck_assert_int_eq(render.string[0], 0x01);
+	ck_assert_int_eq(render.string[1], (char)0xff);
+}
+END_TEST
+
+
+START_TEST(test_byte_multiple)
+{
+	char bytes[] = { 0x01, 0x02, 0x80, 0x00, 0x99, 0xfe };
+	size_t i;
+
+	set_flags(UTF8LITE_ESCAPE_CONTROL);
+
+	ck_assert(!utf8lite_render_bytes(&render, bytes, sizeof(bytes)));
+	for (i = 0; i < sizeof(bytes); i++) {
+		ck_assert_int_eq(render.string[i], bytes[i]);
+	}
+}
+END_TEST
+
 
 START_TEST(test_width_control_raw)
 {
@@ -782,6 +814,11 @@ Suite *render_suite(void)
         tcase_add_test(tc, test_encode_emoji_plain);
         tcase_add_test(tc, test_encode_emoji_zwsp);
         tcase_add_test(tc, test_encode_emoji_extended_zwsp);
+        suite_add_tcase(s, tc);
+
+	tc = tcase_create("bytes");
+        tcase_add_test(tc, test_byte_single);
+        tcase_add_test(tc, test_byte_multiple);
         suite_add_tcase(s, tc);
 
 	tc = tcase_create("width");
