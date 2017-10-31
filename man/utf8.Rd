@@ -3,13 +3,12 @@
 \alias{utf8}
 \alias{as_utf8}
 \alias{utf8_encode}
-\alias{utf8_format}
 \alias{utf8_normalize}
 \alias{utf8_print}
 \alias{utf8_valid}
 \alias{utf8_width}
 \description{
-    UTF-8 text validation, normalization, formatting, and printing.
+    UTF-8 text validation, normalization, and printing.
 }
 \usage{
 as_utf8(x, normalize = FALSE)
@@ -20,10 +19,6 @@ utf8_normalize(x, map_case = FALSE, map_compat = FALSE,
                map_quote = FALSE, remove_ignorable = FALSE)
 
 utf8_encode(x, display = FALSE)
-
-utf8_format(x, trim = FALSE, chars = NULL, justify = "left",
-            width = NULL, na.encode = TRUE, quote = FALSE,
-            na.print = NULL, print.gap = NULL, ...)
 
 utf8_print(x, chars = NULL, quote = TRUE, na.print = NULL,
            print.gap = NULL, right = FALSE, max = NULL,
@@ -56,9 +51,6 @@ utf8_width(x, encode = TRUE, quote = FALSE)
     \item{display}{logical scalar indicating whether to optimize the
         encoding for display, not byte-for-byte data transmission.}
 
-    \item{trim}{logical scalar indicating whether to suppress
-        padding spaces around elements.}
-
     \item{chars}{integer scalar indicating the maximum number of
         character units to display.  Wide characters like emoji take
         two character units; combining marks and default ignorables
@@ -66,15 +58,6 @@ utf8_width(x, encode = TRUE, quote = FALSE)
         with an ellipsis (\code{"..."} in C locale, \code{"\u2026"} in
         others). Set to \code{NULL} to limit output to the line width
         as determined by \code{getOption("width")}.}
-
-    \item{justify}{justification; one of \code{"left"}, \code{"right"},
-       \code{"centre"}, or \code{"none"}. Can be abbreviated.}
-
-    \item{width}{the minimum field width; set to \code{NULL} or
-        \code{0} for no restriction.}
-
-    \item{na.encode}{logical scalar indicating whether to encode
-        \code{NA} values as character strings.}
 
     \item{quote}{logical scalar indicating whether to put surrounding
         double-quotes (\code{'"'}) around character strings and escape
@@ -122,9 +105,6 @@ utf8_width(x, encode = TRUE, quote = FALSE)
     hyphens, zero-width spaces, etc.) and placing zero-width spaces after
     wide emoji. When \code{LC_CTYPE = "C"}, the function escapes all
     non-ASCII characters and gives the same results on all platforms.
-
-    \code{utf8_format} formats a character object for printing, optionally
-    truncating long character strings.
 
     \code{utf8_print} prints a character object after formatting it with
     \code{utf8_format}.
@@ -176,11 +156,6 @@ utf8_normalize(angstrom) == "\u00c5"
 
 # encoding
 utf8_encode(x)
-
-# formatting
-utf8_format(x, chars = 3)
-utf8_format(x, chars = 3, justify = "centre", width = 10)
-utf8_format(x, chars = 3, justify = "right")
 
 # get widths
 utf8_width(x)
