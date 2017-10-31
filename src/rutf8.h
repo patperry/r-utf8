@@ -22,6 +22,8 @@
 #include <Rdefines.h>
 #include "utf8lite/src/utf8lite.h"
 
+#define RUTF8_ELLIPSIS "\xE2\x80\xA6" // U+2026, width 1
+
 
 #define CHECK_EVERY 1000
 #define CHECK_INTERRUPT(i) \
@@ -88,11 +90,79 @@
 #define CHECK_ERROR(err) \
 	CHECK_ERROR_FORMAT_SEP(err, "", "%s", "")
 
+/**
+ * String type indicator.
+ */
+enum rutf8_string_type {
+	RUTF8_STRING_NONE = 0,	/**< missing value */
+	RUTF8_STRING_BYTES,	/**< unknown encoding, not valid UTF-8 */
+	RUTF8_STRING_TEXT	/**< valid UTF-8 */
+};
+
+/**
+ * Raw bytes
+ */
+struct rutf8_bytes {
+	const uint8_t *ptr; 	/**< data pointer */
+	size_t size;		/**< number of bytes */
+};
+
+/**
+ * String data, either UTF-8, bytes, or NA
+ */
+struct rutf8_string {
+	union {
+		struct utf8lite_text text;	/**< utf8 data */
+		struct rutf8_bytes bytes;	/**< raw bytes */
+	} value;				/**< string value */
+	enum rutf8_string_type type;		/**< type indicator */
+};
+
+void rutf8_string_init(struct rutf8_string *str, SEXP charsxp);
+int rutf8_string_width(const struct rutf8_string *str, int limit,
+		       int ellipsis, int flags);
+int rutf8_string_rwidth(const struct rutf8_string *str, int limit,
+		       int ellipsis, int flags);
+SEXP rutf8_string_format(struct utf8lite_render *r,
+			 const struct rutf8_string *str,
+			 int trim, int chars, int width_max,
+			 int quote, int utf8, int flags, int centre);
+SEXP rutf8_string_rformat(struct utf8lite_render *r,
+			  const struct rutf8_string *str,
+			  int trim, int chars, int width_max,
+			  int quote, int utf8, int flags);
+
+int rutf8_text_width(const struct utf8lite_text *text, int limit,
+		     int ellipsis, int flags);
+int rutf8_text_rwidth(const struct utf8lite_text *text, int limit,
+		      int ellipsis, int flags);
+SEXP rutf8_text_format(struct utf8lite_render *r,
+		       const struct utf8lite_text *text,
+		       int trim, int chars, int width_max,
+		       int quote, int utf8, int flags, int centre);
+SEXP rutf8_text_rformat(struct utf8lite_render *r,
+			const struct utf8lite_text *text, int trim,
+			int chars, int width_max, int quote,
+			int utf8, int flags);
+
+int rutf8_bytes_width(const struct rutf8_bytes *bytes, int limit,
+		      int ellipsis, int flags);
+int rutf8_bytes_rwidth(const struct rutf8_bytes *bytes, int limit,
+		       int ellipsis, int flags);
+SEXP rutf8_bytes_format(struct utf8lite_render *r,
+			const struct rutf8_bytes *bytes,
+			int trim, int chars, int width_max,
+			int quote, int utf8, int flags, int centre);
+SEXP rutf8_bytes_rformat(struct utf8lite_render *r,
+			 const struct rutf8_bytes *bytes,
+			 int trim, int chars, int width_max, int quote,
+			 int utf8, int flags);
+
 /* context */
-SEXP alloc_context(size_t size, void (*destroy_func)(void *));
-void free_context(SEXP x);
-void *as_context(SEXP x);
-int is_context(SEXP x);
+SEXP rutf8_alloc_context(size_t size, void (*destroy_func)(void *));
+void rutf8_free_context(SEXP x);
+void *rutf8_as_context(SEXP x);
+int rutf8_is_context(SEXP x);
 
 /* printing */
 SEXP rutf8_print_table(SEXP x, SEXP print_gap, SEXP right, SEXP max,
@@ -111,11 +181,12 @@ SEXP rutf8_utf8_valid(SEXP x);
 SEXP rutf8_utf8_width(SEXP x, SEXP quote, SEXP utf8);
 
 /* internal utility functions */
-
 int array_size_add(int *sizeptr, size_t width, int count, int nadd);
+int centre_pad_begin(struct utf8lite_render *r, int width_max, int fullwidth);
 int charwidth(uint32_t code);
 int charsxp_width(SEXP charsxp, int quote, int utf8);
 int encodes_utf8(cetype_t ce);
+void pad_spaces(struct utf8lite_render *r, int nspace);
 const char *translate_utf8(SEXP x);
 
 #endif /* RUTF8_H */
