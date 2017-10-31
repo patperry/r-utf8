@@ -366,26 +366,26 @@ test_that("'utf8_format' can handle latin1 text", {
 test_that("'utf8_format' can quote", {
   expect_equal(
     utf8_format(c("a", "abc"), quote = TRUE),
-    c('"a"  ', '"abc"')
+    c("a  ", "abc")
   )
 
   expect_equal(
     utf8_format(c("a", "abc"), quote = TRUE, justify = "centre"),
-    c(' "a" ', '"abc"')
+    c(" a ", "abc")
   )
 
   expect_equal(
     utf8_format(c("a", "abc"), quote = TRUE, justify = "right"),
-    c('  "a"', '"abc"')
+    c("  a", "abc")
   )
 })
 
 
 test_that("'utf8_format' can handle quotes", {
   expect_equal(utf8_format('"'), '"')
-  expect_equal(utf8_format('"', quote = TRUE), '"\\""')
+  expect_equal(utf8_format('"', quote = TRUE), '"')
   expect_equal(utf8_format('"', justify = "right"), '"')
-  expect_equal(utf8_format('"', justify = "right", quote = TRUE), '"\\""')
+  expect_equal(utf8_format('"', justify = "right", quote = TRUE), '"')
 })
 
 

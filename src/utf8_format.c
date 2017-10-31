@@ -271,17 +271,14 @@ exit:
 }
 
 
-static void render_byte(struct utf8lite_render *r, uint8_t byte, int quote)
+static void render_byte(struct utf8lite_render *r, uint8_t byte)
 {
 	int err = 0;
 	char ch;
 
-	if (byte == '"' && quote) {
-		TRY(utf8lite_render_bytes(r, "\\\"", 2));
-	} else {
-		ch = (char)byte;
-		TRY(utf8lite_render_bytes(r, &ch, 1));
-	}
+	ch = (char)byte;
+	TRY(utf8lite_render_bytes(r, &ch, 1));
+
 exit:
 	CHECK_ERROR(err);
 }
@@ -309,10 +306,6 @@ static SEXP bytes_format(struct utf8lite_render *r,
 		bfill = centre_pad_begin(r, width_max, fullwidth);
 	}
 
-	if (quote) {
-		TRY(utf8lite_render_string(r, "\""));
-	}
-
 	width = 0;
 	trunc = 0;
 	ptr = bytes->ptr;
@@ -327,14 +320,10 @@ static SEXP bytes_format(struct utf8lite_render *r,
 			TRY(utf8lite_render_string(r, ellipsis_str));
 			trunc = 1;
 		} else {
-			render_byte(r, byte, quote);
+			render_byte(r, byte);
 		}
 
 		width += w;
-	}
-
-	if (quote) {
-		TRY(utf8lite_render_string(r, "\""));
 	}
 
 	if (!trim) {
@@ -370,10 +359,6 @@ static SEXP utf8_format(struct utf8lite_render *r,
 		bfill = centre_pad_begin(r, width_max, fullwidth);
 	}
 
-	if (quote) {
-		TRY(utf8lite_render_bytes(r, "\"", 1));
-	}
-
 	width = 0;
 	trunc = 0;
 	utf8lite_graphscan_make(&scan, text);
@@ -390,10 +375,6 @@ static SEXP utf8_format(struct utf8lite_render *r,
 		}
 
 		width += w;
-	}
-
-	if (quote) {
-		TRY(utf8lite_render_bytes(r, "\"", 1));
 	}
 
 	if (!trim) {
@@ -461,21 +442,13 @@ static SEXP bytes_rformat(struct utf8lite_render *r,
 		pad_spaces(r, width_max - width - quotes);
 	}
 
-	if (quote) {
-		TRY(utf8lite_render_bytes(r, "\"", 1));
-	}
-
 	if (trunc) {
 		TRY(utf8lite_render_string(r, ellipsis_str));
 	}
 
 	while (ptr < end) {
 		byte = *ptr++;
-		render_byte(r, byte, quote);
-	}
-
-	if (quote) {
-		TRY(utf8lite_render_bytes(r, "\"", 1));
+		render_byte(r, byte);
 	}
 
 	ans = mkCharLenCE((char *)r->string, r->length, CE_BYTES);
@@ -519,20 +492,12 @@ static SEXP utf8_rformat(struct utf8lite_render *r,
 		pad_spaces(r, width_max - width - quotes);
 	}
 
-	if (quote) {
-		TRY(utf8lite_render_bytes(r, "\"", 1));
-	}
-
 	if (trunc) {
 		TRY(utf8lite_render_string(r, ellipsis_str));
 	}
 
 	while (utf8lite_graphscan_advance(&scan)) {
 		TRY(utf8lite_render_graph(r, &scan.current));
-	}
-
-	if (quote) {
-		TRY(utf8lite_render_bytes(r, "\"", 1));
 	}
 
 	ans = mkCharLenCE((char *)r->string, r->length, CE_UTF8);
@@ -681,11 +646,6 @@ SEXP rutf8_utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify,
         PROTECT(sctx = alloc_context(sizeof(*ctx), context_destroy)); nprot++;
 	ctx = as_context(sctx);
 	context_init(ctx);
-
-	if (quote) {
-		utf8lite_render_set_flags(&ctx->render,
-					  UTF8LITE_ESCAPE_DQUOTE);
-	}
 
 	for (i = 0; i < n; i++) {
 		CHECK_INTERRUPT(i);
