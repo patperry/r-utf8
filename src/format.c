@@ -341,7 +341,7 @@ static SEXP bytes_format(struct utf8lite_render *r,
 		pad_spaces(r, width_max - width - quotes - bfill);
 	}
 
-	ans = mkCharLenCE((char *)r->string, r->length, CE_UTF8);
+	ans = mkCharLenCE((char *)r->string, r->length, CE_BYTES);
 	utf8lite_render_clear(r);
 exit:
 	CHECK_ERROR(err);
@@ -478,7 +478,7 @@ static SEXP bytes_rformat(struct utf8lite_render *r,
 		TRY(utf8lite_render_bytes(r, "\"", 1));
 	}
 
-	ans = mkCharLenCE((char *)r->string, r->length, CE_UTF8);
+	ans = mkCharLenCE((char *)r->string, r->length, CE_BYTES);
 	utf8lite_render_clear(r);
 exit:
 	CHECK_ERROR(err);
