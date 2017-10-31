@@ -138,3 +138,17 @@ as_print_gap <- function(name, value) {
   }
   value
 }
+
+as_quote <- function(name, value) {
+  value <- as_character_scalar(name, value)
+  if (is.null(value) || is.na(value)) {
+    stop(sprintf("'%s' must be a non-missing character string", name))
+  }
+  if (nchar(value) > 1) {
+    warting(spprintf(
+      "only the first character of '%s' will be used",
+      name
+    ))
+  }
+  value
+}
