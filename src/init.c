@@ -15,7 +15,6 @@
  */
 
 #include <stddef.h>
-#include <stdint.h>
 #include <Rdefines.h>
 #include <R_ext/Rdynload.h>
 #include "rutf8.h"
@@ -25,14 +24,13 @@
 static const R_CallMethodDef CallEntries[] = {
         CALLDEF(rutf8_print_table, 6),
 	CALLDEF(rutf8_utf8_coerce, 1),
-	CALLDEF(rutf8_utf8_encode, 3),
+	CALLDEF(rutf8_utf8_encode, 7),
 	CALLDEF(rutf8_utf8_format, 9),
 	CALLDEF(rutf8_utf8_normalize, 5),
 	CALLDEF(rutf8_utf8_valid, 1),
 	CALLDEF(rutf8_utf8_width, 3),
         {NULL, NULL, 0}
 };
-
 
 void R_init_utf8(DllInfo *dll)
 {

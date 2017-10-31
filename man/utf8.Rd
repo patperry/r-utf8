@@ -2,7 +2,6 @@
 \title{UTF-8 Character Handling}
 \alias{utf8}
 \alias{as_utf8}
-\alias{utf8_encode}
 \alias{utf8_normalize}
 \alias{utf8_print}
 \alias{utf8_valid}
@@ -17,8 +16,6 @@ utf8_valid(x)
 
 utf8_normalize(x, map_case = FALSE, map_compat = FALSE,
                map_quote = FALSE, remove_ignorable = FALSE)
-
-utf8_encode(x, display = FALSE)
 
 utf8_print(x, chars = NULL, quote = TRUE, na.print = NULL,
            print.gap = NULL, right = FALSE, max = NULL,
@@ -122,9 +119,9 @@ utf8_width(x, encode = TRUE, quote = FALSE)
     quotes with \code{\"}).
 }
 \value{
-    For \code{as_utf8}, \code{utf8_normalize}, and \code{utf8_encode},
-    the result is a character object with the same attributes as
-    \code{x} but with \code{Encoding} set to \code{"UTF-8"}.
+    For \code{as_utf8} and \code{utf8_normalize}, the result is a
+    character object with the same attributes as \code{x} but with
+    \code{Encoding} set to \code{"UTF-8"}.
 
     For \code{utf8_print}, the function returns \code{x} invisibly.
 
@@ -153,9 +150,6 @@ utf8_valid(x)
 # normalize text
 angstrom <- c("\u00c5", "\u0041\u030a", "\u212b")
 utf8_normalize(angstrom) == "\u00c5"
-
-# encoding
-utf8_encode(x)
 
 # get widths
 utf8_width(x)

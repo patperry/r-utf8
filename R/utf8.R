@@ -22,16 +22,6 @@ as_utf8 <- function(x, normalize = FALSE)
     ans
 }
 
-# encode an R character string in a form suitable for display
-# in the current locale (determined by LC_CTYPE)
-utf8_encode <- function(x, display = FALSE)
-{
-    utf8 <- (Sys.getlocale("LC_CTYPE") != "C")
-    .Call(rutf8_utf8_encode, x, display, utf8)
-}
-
-
-
 utf8_print <- function(x, chars = NULL, quote = TRUE, na.print = NULL,
                        print.gap = NULL, right = FALSE, max = NULL,
                        display = TRUE, ...)
@@ -99,9 +89,9 @@ utf8_print <- function(x, chars = NULL, quote = TRUE, na.print = NULL,
         }
     }
 
-    fmt <- utf8_encode(fmt, display)
+    fmt <- utf8_encode(fmt, display = display)
     if (is.null(dim)) {
-        names <- utf8_encode(names, display)
+        names <- utf8_encode(names, display = display)
         names(fmt) <- names
     } else {
         dimnames <- lapply(dimnames, utf8_encode, display = display)
