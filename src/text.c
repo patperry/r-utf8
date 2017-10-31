@@ -17,8 +17,7 @@
 #include "rutf8.h"
 
 
-int rutf8_text_width(const struct utf8lite_text *text, int limit,
-		     int ellipsis, int flags)
+int rutf8_text_width(const struct utf8lite_text *text, int flags)
 {
 	struct utf8lite_graphscan scan;
 	int err = 0, width, w;
@@ -27,20 +26,46 @@ int rutf8_text_width(const struct utf8lite_text *text, int limit,
 	width = 0;
 	while (utf8lite_graphscan_advance(&scan)) {
 		TRY(utf8lite_graph_measure(&scan.current, flags, &w));
-		if (width > limit - w) {
-			return width + ellipsis;
+		if (w < 0) {
+			return -1;
+		}
+		if (width > INT_MAX - w) {
+			Rf_error("width exceeds maximum (%d)", INT_MAX);
 		}
 		width += w;
 	}
-
 exit:
 	CHECK_ERROR(err);
 	return width;
 }
 
 
-int rutf8_text_rwidth(const struct utf8lite_text *text, int limit,
-		      int ellipsis, int flags)
+int rutf8_text_lwidth(const struct utf8lite_text *text, int flags,
+		      int limit, int ellipsis)
+{
+	struct utf8lite_graphscan scan;
+	int err = 0, width, w;
+
+	utf8lite_graphscan_make(&scan, text);
+	width = 0;
+	while (utf8lite_graphscan_advance(&scan)) {
+		TRY(utf8lite_graph_measure(&scan.current, flags, &w));
+		if (w < 0) {
+			return -1;
+		}
+		if (width > limit - w) {
+			return width + ellipsis;
+		}
+		width += w;
+	}
+exit:
+	CHECK_ERROR(err);
+	return width;
+}
+
+
+int rutf8_text_rwidth(const struct utf8lite_text *text, int flags,
+		      int limit, int ellipsis)
 {
 	struct utf8lite_graphscan scan;
 	int err = 0, width, w;
@@ -50,21 +75,23 @@ int rutf8_text_rwidth(const struct utf8lite_text *text, int limit,
 	width = 0;
 	while (utf8lite_graphscan_retreat(&scan)) {
 		TRY(utf8lite_graph_measure(&scan.current, flags, &w));
+		if (w < 0) {
+			return -1;
+		}
 		if (width > limit - w) {
 			return width + ellipsis;
 		}
 		width += w;
 	}
-
 exit:
 	return width;
 }
 
 
-SEXP rutf8_text_format(struct utf8lite_render *r,
-		       const struct utf8lite_text *text,
-		       int trim, int chars, int width_max,
-		       int quote, int utf8, int flags, int centre)
+SEXP rutf8_text_lformat(struct utf8lite_render *r,
+			const struct utf8lite_text *text,
+			int trim, int chars, int width_max,
+			int quote, int utf8, int flags, int centre)
 {
 	SEXP ans = R_NilValue;
 	struct utf8lite_graphscan scan;
@@ -77,7 +104,7 @@ SEXP rutf8_text_format(struct utf8lite_render *r,
 
 	bfill = 0;
 	if (centre && !trim) {
-		fullwidth = (rutf8_text_width(text, chars, ellipsis, flags)
+		fullwidth = (rutf8_text_lwidth(text, flags, chars, ellipsis)
 			     + quotes);
 		bfill = centre_pad_begin(r, width_max, fullwidth);
 	}

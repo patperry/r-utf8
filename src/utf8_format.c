@@ -136,8 +136,6 @@ SEXP rutf8_utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify,
 	} else {
 		na_print = STRING_ELT(sna_print, 0);
 	}
-	rutf8_string_init(&na, na_print);
-	na_width = rutf8_string_width(&na, INT_MAX, 0, utf8);
 
 	flags = (UTF8LITE_ESCAPE_CONTROL | UTF8LITE_ENCODE_C);
 	if (quote) {
@@ -149,6 +147,9 @@ SEXP rutf8_utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify,
 #if defined(_WIN32) || defined(_WIN64)
 	flags |= UTF8LITE_ESCAPE_EXTENDED;
 #endif
+
+	rutf8_string_init(&na, na_print);
+	na_width = rutf8_string_width(&na, flags);
 
         PROTECT(sctx = rutf8_alloc_context(sizeof(*ctx), context_destroy));
 	nprot++;
@@ -163,12 +164,12 @@ SEXP rutf8_utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify,
 		if (elt.type == RUTF8_STRING_NONE) {
 			width = na_encode ? na_width : 0;
 		} else if (justify == JUSTIFY_RIGHT) {
-			width = (rutf8_string_rwidth(&elt, chars, ellipsis,
-						     flags)
+			width = (rutf8_string_rwidth(&elt, flags, chars,
+						     ellipsis)
 				 + quotes);
 		} else {
-			width = (rutf8_string_width(&elt, chars, ellipsis,
-						    flags)
+			width = (rutf8_string_lwidth(&elt, flags, chars,
+						     ellipsis)
 				 + quotes);
 		}
 
@@ -204,15 +205,15 @@ SEXP rutf8_utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify,
 		switch (justify) {
 		case JUSTIFY_LEFT:
 		case JUSTIFY_NONE:
-			ans_i = rutf8_string_format(&ctx->render, &elt,
-						    trim, chars_i, width_max,
-						    quote_i, utf8, flags, 0);
+			ans_i = rutf8_string_lformat(&ctx->render, &elt,
+						     trim, chars_i, width_max,
+						     quote_i, utf8, flags, 0);
 			break;
 
 		case JUSTIFY_CENTRE:
-			ans_i = rutf8_string_format(&ctx->render, &elt, trim,
-						    chars_i, width_max,
-						    quote_i, utf8, flags, 1);
+			ans_i = rutf8_string_lformat(&ctx->render, &elt, trim,
+						     chars_i, width_max,
+						     quote_i, utf8, flags, 1);
 			break;
 
 		case JUSTIFY_RIGHT:

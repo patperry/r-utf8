@@ -235,12 +235,8 @@ utf8_width <- function(x, encode = TRUE, quote = FALSE)
         encode <- as_option("encode", encode)
         quote <- as_option("quote", quote)
     })
-    
-    if (encode) {
-        x <- utf8_encode(x)
-    }
     utf8 <- (Sys.getlocale("LC_CTYPE") != "C")
-    .Call(rutf8_utf8_width, x, quote, utf8)
+    .Call(rutf8_utf8_width, x, encode, quote, utf8)
 }
 
 

@@ -5,7 +5,6 @@
 \alias{utf8_normalize}
 \alias{utf8_print}
 \alias{utf8_valid}
-\alias{utf8_width}
 \description{
     UTF-8 text validation, normalization, and printing.
 }
@@ -20,8 +19,6 @@ utf8_normalize(x, map_case = FALSE, map_compat = FALSE,
 utf8_print(x, chars = NULL, quote = TRUE, na.print = NULL,
            print.gap = NULL, right = FALSE, max = NULL,
            display = TRUE, ...)
-
-utf8_width(x, encode = TRUE, quote = FALSE)
 }
 \arguments{
     \item{x}{character object.}
@@ -150,12 +147,6 @@ utf8_valid(x)
 # normalize text
 angstrom <- c("\u00c5", "\u0041\u030a", "\u212b")
 utf8_normalize(angstrom) == "\u00c5"
-
-# get widths
-utf8_width(x)
-utf8_width(x, encode = FALSE)
-utf8_width('"')
-utf8_width('"', quote = TRUE)
 
 # printing (assumes that output is capable of displaying Unicode 10.0.0)
 print(intToUtf8(0x1F600 + 0:79)) # with default R print function

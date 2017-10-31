@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
+#include <assert.h>
 #include <ctype.h>
+#include <limits.h>
 #include "rutf8.h"
 
 static int byte_width(uint8_t byte, int flags);
 static void render_byte(struct utf8lite_render *r, uint8_t byte);
 
 
-int rutf8_bytes_width(const struct rutf8_bytes *bytes, int limit,
-		      int ellipsis, int flags)
+int rutf8_bytes_width(const struct rutf8_bytes *bytes, int flags)
 {
 	const uint8_t *ptr = bytes->ptr;
 	const uint8_t *end = ptr + bytes->size;
@@ -33,8 +34,11 @@ int rutf8_bytes_width(const struct rutf8_bytes *bytes, int limit,
 	while (ptr != end) {
 		byte = *ptr++;
 		w = byte_width(byte, flags);
-		if (width > limit - w) {
-			return width + ellipsis;
+		if (w < 0) {
+			return -1;
+		}
+		if (width > INT_MAX - w) {
+			Rf_error("width exceeds maximum (%d)", INT_MAX);
 		}
 		width += w;
 	}
@@ -43,8 +47,8 @@ int rutf8_bytes_width(const struct rutf8_bytes *bytes, int limit,
 }
 
 
-int rutf8_bytes_rwidth(const struct rutf8_bytes *bytes, int limit,
-		       int ellipsis, int flags)
+int rutf8_bytes_lwidth(const struct rutf8_bytes *bytes, int flags,
+		       int limit, int ellipsis)
 {
 	const uint8_t *ptr = bytes->ptr;
 	const uint8_t *end = ptr + bytes->size;
@@ -55,6 +59,7 @@ int rutf8_bytes_rwidth(const struct rutf8_bytes *bytes, int limit,
 	while (ptr != end) {
 		byte = *ptr++;
 		w = byte_width(byte, flags);
+		assert(w >= 0);
 		if (width > limit - w) {
 			return width + ellipsis;
 		}
@@ -65,10 +70,33 @@ int rutf8_bytes_rwidth(const struct rutf8_bytes *bytes, int limit,
 }
 
 
-SEXP rutf8_bytes_format(struct utf8lite_render *r,
-			const struct rutf8_bytes *bytes,
-			int trim, int chars, int width_max,
-			int quote, int utf8, int flags, int centre)
+int rutf8_bytes_rwidth(const struct rutf8_bytes *bytes, int flags,
+		       int limit, int ellipsis)
+{
+	const uint8_t *ptr = bytes->ptr;
+	const uint8_t *end = ptr + bytes->size;
+	uint8_t byte;
+	int width, w;
+
+	width = 0;
+	while (ptr != end) {
+		byte = *ptr++;
+		w = byte_width(byte, flags);
+		assert(w >= 0);
+		if (width > limit - w) {
+			return width + ellipsis;
+		}
+		width += w;
+	}
+
+	return width;
+}
+
+
+SEXP rutf8_bytes_lformat(struct utf8lite_render *r,
+			 const struct rutf8_bytes *bytes,
+			 int trim, int chars, int width_max,
+			 int quote, int utf8, int flags, int centre)
 {
 	SEXP ans = R_NilValue;
 	const uint8_t *ptr, *end;
@@ -82,7 +110,7 @@ SEXP rutf8_bytes_format(struct utf8lite_render *r,
 
 	bfill = 0;
 	if (centre && !trim) {
-		fullwidth = (rutf8_bytes_width(bytes, chars, ellipsis, flags)
+		fullwidth = (rutf8_bytes_lwidth(bytes, flags, chars, ellipsis)
 			     + quotes);
 		bfill = centre_pad_begin(r, width_max, fullwidth);
 	}
@@ -183,8 +211,11 @@ int byte_width(uint8_t byte, int flags)
 		case '\r':
 		case '\t':
 		case '\v':
+			return (flags & UTF8LITE_ESCAPE_CONTROL) ? 2 : -1;
 		case '\\':
-			return 2;
+			return (flags & (UTF8LITE_ESCAPE_CONTROL
+						| UTF8LITE_ESCAPE_DQUOTE)
+					? 2 : 1);
 		case '"':
 			return (flags & UTF8LITE_ESCAPE_DQUOTE) ? 2 : 1;
 		default:
@@ -195,7 +226,8 @@ int byte_width(uint8_t byte, int flags)
 		}
 	}
 
-	return 4; // \xXX non-ASCII or non-printable byte
+	// \xXX non-ASCII or non-printable byte
+	return (flags & UTF8LITE_ESCAPE_CONTROL) ? 4 : -1;
 }
 
 
