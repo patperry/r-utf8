@@ -342,14 +342,16 @@ test_that("'format' error for invalid integers", {
 
 
 test_that("'utf8_format' can handle invalid UTF-8", {
-  invalid <- "\xff\xfe"
-  Encoding(invalid) <- "UTF-8"
-  x <- c("a", invalid)
+  input <- "\xff\xfe"
+  Encoding(input) <- "UTF-8"
+  x <- c("a", input)
+  output <- input
+  Encoding(output) <- "bytes"
 
-  expect_equal(utf8_format(x, justify = "none"), x)
-  expect_equal(utf8_format(x, justify = "left"), c("a       ", invalid))
-  expect_equal(utf8_format(x, justify = "centre"), c("   a    ", invalid))
-  expect_equal(utf8_format(x, justify = "right"), c("       a", invalid))
+  expect_equal(utf8_format(x, justify = "none"), c("a", output))
+  expect_equal(utf8_format(x, justify = "left"), c("a       ", output))
+  expect_equal(utf8_format(x, justify = "centre"), c("   a    ", output))
+  expect_equal(utf8_format(x, justify = "right"), c("       a", output))
 })
 
 
