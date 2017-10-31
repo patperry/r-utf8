@@ -537,13 +537,13 @@ END_TEST
 
 START_TEST(test_byte_multiple)
 {
-	char bytes[] = { 0x01, 0x02, 0x80, 0x00, 0x99, 0xfe };
-	size_t i;
+	const char *bytes = "\x01\x02\x80\x00\x99\xfe";
+	size_t i, n = 6;
 
 	set_flags(UTF8LITE_ESCAPE_CONTROL);
 
 	ck_assert(!utf8lite_render_bytes(&render, bytes, sizeof(bytes)));
-	for (i = 0; i < sizeof(bytes); i++) {
+	for (i = 0; i < n; i++) {
 		ck_assert_int_eq(render.string[i], bytes[i]);
 	}
 }
