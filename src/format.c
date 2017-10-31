@@ -371,7 +371,7 @@ static SEXP utf8_format(struct utf8lite_render *r,
 	}
 
 	if (quote) {
-		TRY(utf8lite_render_string(r, "\""));
+		TRY(utf8lite_render_bytes(r, "\"", 1));
 	}
 
 	width = 0;
@@ -393,7 +393,7 @@ static SEXP utf8_format(struct utf8lite_render *r,
 	}
 
 	if (quote) {
-		TRY(utf8lite_render_string(r, "\""));
+		TRY(utf8lite_render_bytes(r, "\"", 1));
 	}
 
 	if (!trim) {
@@ -462,7 +462,7 @@ static SEXP bytes_rformat(struct utf8lite_render *r,
 	}
 
 	if (quote) {
-		TRY(utf8lite_render_string(r, "\""));
+		TRY(utf8lite_render_bytes(r, "\"", 1));
 	}
 
 	if (trunc) {
@@ -475,7 +475,7 @@ static SEXP bytes_rformat(struct utf8lite_render *r,
 	}
 
 	if (quote) {
-		TRY(utf8lite_render_string(r, "\""));
+		TRY(utf8lite_render_bytes(r, "\"", 1));
 	}
 
 	ans = mkCharLenCE((char *)r->string, r->length, CE_UTF8);
@@ -520,7 +520,7 @@ static SEXP utf8_rformat(struct utf8lite_render *r,
 	}
 
 	if (quote) {
-		TRY(utf8lite_render_string(r, "\""));
+		TRY(utf8lite_render_bytes(r, "\"", 1));
 	}
 
 	if (trunc) {
@@ -532,7 +532,7 @@ static SEXP utf8_rformat(struct utf8lite_render *r,
 	}
 
 	if (quote) {
-		TRY(utf8lite_render_string(r, "\""));
+		TRY(utf8lite_render_bytes(r, "\"", 1));
 	}
 
 	ans = mkCharLenCE((char *)r->string, r->length, CE_UTF8);
@@ -681,6 +681,11 @@ SEXP rutf8_utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify,
         PROTECT(sctx = alloc_context(sizeof(*ctx), context_destroy)); nprot++;
 	ctx = as_context(sctx);
 	context_init(ctx);
+
+	if (quote) {
+		utf8lite_render_set_flags(&ctx->render,
+					  UTF8LITE_ESCAPE_DQUOTE);
+	}
 
 	for (i = 0; i < n; i++) {
 		CHECK_INTERRUPT(i);
