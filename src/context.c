@@ -29,7 +29,7 @@ struct context {
 };
 
 
-void free_context(SEXP x)
+void rutf8_free_context(SEXP x)
 {
         struct context *ctx = R_ExternalPtrAddr(x);
         R_SetExternalPtrAddr(x, NULL);
@@ -43,7 +43,7 @@ void free_context(SEXP x)
 }
 
 
-SEXP alloc_context(size_t size, void (*destroy_func)(void *))
+SEXP rutf8_alloc_context(size_t size, void (*destroy_func)(void *))
 {
 	SEXP ans;
 	struct context *ctx = NULL;
@@ -51,7 +51,7 @@ SEXP alloc_context(size_t size, void (*destroy_func)(void *))
 	int err = 0;
 
 	PROTECT(ans = R_MakeExternalPtr(NULL, CONTEXT_TAG, R_NilValue));
-        R_RegisterCFinalizerEx(ans, free_context, TRUE);
+        R_RegisterCFinalizerEx(ans, rutf8_free_context, TRUE);
 
 	TRY_ALLOC(obj = calloc(1, size == 0 ? 1 : size));
 	TRY_ALLOC(ctx = calloc(1, sizeof(*ctx)));
@@ -70,18 +70,18 @@ exit:
 }
 
 
-int is_context(SEXP x)
+int rutf8_is_context(SEXP x)
 {
 	return ((TYPEOF(x) == EXTPTRSXP)
                 && (R_ExternalPtrTag(x) == CONTEXT_TAG));
 }
 
 
-void *as_context(SEXP x)
+void *rutf8_as_context(SEXP x)
 {
 	struct context *ctx;
 
-	if (!is_context(x)) {
+	if (!rutf8_is_context(x)) {
 		error("invalid context object");
 	}
 

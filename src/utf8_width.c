@@ -14,75 +14,7 @@
  * limitations under the License.
  */
 
-#include <ctype.h>
 #include "rutf8.h"
-
-
-int charsxp_width(SEXP charsxp, int quote, int utf8)
-{
-	const uint8_t *ptr = (const uint8_t *)CHAR(charsxp);
-	const uint8_t *start;
-	const uint8_t *end = ptr + XLENGTH(charsxp);
-	int32_t code;
-	int width, cw, err;
-
-	width = quote ? 2 : 0;
-
-	while (ptr != end) {
-		start = ptr;
-		if ((err = utf8lite_scan_utf8(&start, end, NULL))) {
-			return NA_INTEGER;
-		}
-
-		utf8lite_decode_utf8(&ptr, &code);
-		if (code < 0x80) {
-			switch (code) {
-			case '\a':
-			case '\b':
-			case '\f':
-			case '\n':
-			case '\r':
-			case '\t':
-			case '\v':
-				return NA_INTEGER;
-			case '"':
-				width += (quote ? 2 : 1);
-				continue;
-			default:
-				if (!isprint((int)code)) {
-					return NA_INTEGER;
-				}
-				width += 1;
-				continue;
-			}
-		} else if (!utf8) {
-			return NA_INTEGER;
-		}
-
-		cw = charwidth(code);
-
-		switch (cw) {
-		case UTF8LITE_CHARWIDTH_NONE:
-		case UTF8LITE_CHARWIDTH_IGNORABLE:
-			break;
-
-		case UTF8LITE_CHARWIDTH_NARROW:
-		case UTF8LITE_CHARWIDTH_AMBIGUOUS:
-			width += 1;
-			break;
-
-		case UTF8LITE_CHARWIDTH_WIDE:
-		case UTF8LITE_CHARWIDTH_EMOJI:
-			width += 2;
-			break;
-
-		default: // UTF8LITE_CHARWIDTH_OTHER
-			return NA_INTEGER;
-		}
-	}
-
-	return width;
-}
 
 
 SEXP rutf8_utf8_width(SEXP sx, SEXP squote, SEXP sutf8)

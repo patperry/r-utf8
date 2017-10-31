@@ -81,8 +81,9 @@ SEXP rutf8_utf8_normalize(SEXP x, SEXP map_case, SEXP map_compat,
 		return R_NilValue;
 	}
 
-	PROTECT(sctx = alloc_context(sizeof(*ctx), context_destroy)); nprot++;
-        ctx = as_context(sctx);
+	PROTECT(sctx = rutf8_alloc_context(sizeof(*ctx), context_destroy));
+	nprot++;
+        ctx = rutf8_as_context(sctx);
 	context_init(ctx, map_case, map_compat, map_quote, remove_ignorable);
 
 	PROTECT(ans = duplicate(x)); nprot++;
@@ -111,7 +112,7 @@ SEXP rutf8_utf8_normalize(SEXP x, SEXP map_case, SEXP map_compat,
 
 exit:
 	CHECK_ERROR(err);
-	free_context(sctx);
+	rutf8_free_context(sctx);
 	UNPROTECT(nprot);
 	return ans;
 }
