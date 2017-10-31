@@ -119,40 +119,43 @@ struct rutf8_string {
 };
 
 void rutf8_string_init(struct rutf8_string *str, SEXP charsxp);
-int rutf8_string_width(const struct rutf8_string *str, int limit,
-		       int ellipsis, int flags);
-int rutf8_string_rwidth(const struct rutf8_string *str, int limit,
-		       int ellipsis, int flags);
-SEXP rutf8_string_format(struct utf8lite_render *r,
-			 const struct rutf8_string *str,
-			 int trim, int chars, int width_max,
-			 int quote, int utf8, int flags, int centre);
+int rutf8_string_width(const struct rutf8_string *str, int flags);
+int rutf8_string_lwidth(const struct rutf8_string *str, int flags,
+			int limit, int ellipsis);
+int rutf8_string_rwidth(const struct rutf8_string *str, int flags,
+			int limit, int ellipsis);
+SEXP rutf8_string_lformat(struct utf8lite_render *r,
+			  const struct rutf8_string *str,
+			  int trim, int chars, int width_max,
+			  int quote, int utf8, int flags, int centre);
 SEXP rutf8_string_rformat(struct utf8lite_render *r,
 			  const struct rutf8_string *str,
 			  int trim, int chars, int width_max,
 			  int quote, int utf8, int flags);
 
-int rutf8_text_width(const struct utf8lite_text *text, int limit,
-		     int ellipsis, int flags);
-int rutf8_text_rwidth(const struct utf8lite_text *text, int limit,
-		      int ellipsis, int flags);
-SEXP rutf8_text_format(struct utf8lite_render *r,
-		       const struct utf8lite_text *text,
-		       int trim, int chars, int width_max,
-		       int quote, int utf8, int flags, int centre);
+int rutf8_text_width(const struct utf8lite_text *text, int flags);
+int rutf8_text_lwidth(const struct utf8lite_text *text, int flags,
+		      int limit, int ellipsis);
+int rutf8_text_rwidth(const struct utf8lite_text *text, int flags,
+		      int limit, int ellipsis);
+SEXP rutf8_text_lformat(struct utf8lite_render *r,
+			const struct utf8lite_text *text,
+			int trim, int chars, int width_max,
+			int quote, int utf8, int flags, int centre);
 SEXP rutf8_text_rformat(struct utf8lite_render *r,
 			const struct utf8lite_text *text, int trim,
 			int chars, int width_max, int quote,
 			int utf8, int flags);
 
-int rutf8_bytes_width(const struct rutf8_bytes *bytes, int limit,
-		      int ellipsis, int flags);
-int rutf8_bytes_rwidth(const struct rutf8_bytes *bytes, int limit,
-		       int ellipsis, int flags);
-SEXP rutf8_bytes_format(struct utf8lite_render *r,
-			const struct rutf8_bytes *bytes,
-			int trim, int chars, int width_max,
-			int quote, int utf8, int flags, int centre);
+int rutf8_bytes_width(const struct rutf8_bytes *bytes, int flags);
+int rutf8_bytes_lwidth(const struct rutf8_bytes *bytes, int flags,
+		       int limit, int ellipsis);
+int rutf8_bytes_rwidth(const struct rutf8_bytes *bytes, int flags,
+		       int limit, int ellipsis);
+SEXP rutf8_bytes_lformat(struct utf8lite_render *r,
+			 const struct rutf8_bytes *bytes,
+			 int trim, int chars, int width_max,
+			 int quote, int utf8, int flags, int centre);
 SEXP rutf8_bytes_rformat(struct utf8lite_render *r,
 			 const struct rutf8_bytes *bytes,
 			 int trim, int chars, int width_max, int quote,
@@ -178,7 +181,7 @@ SEXP rutf8_utf8_format(SEXP x, SEXP trim, SEXP chars, SEXP justify,
 SEXP rutf8_utf8_normalize(SEXP x, SEXP map_case, SEXP map_compat,
 			  SEXP map_quote, SEXP remove_ignorable);
 SEXP rutf8_utf8_valid(SEXP x);
-SEXP rutf8_utf8_width(SEXP x, SEXP quote, SEXP utf8);
+SEXP rutf8_utf8_width(SEXP x, SEXP encode, SEXP quote, SEXP utf8);
 
 /* internal utility functions */
 int array_size_add(int *sizeptr, size_t width, int count, int nadd);
