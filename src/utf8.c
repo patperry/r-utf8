@@ -476,7 +476,7 @@ static SEXP charsxp_encode(SEXP sx, int display, int utf8, char **bufptr,
 	conv = 0;
 
 	ce = getCharCE(sx);
-	if (!encodes_utf8(ce)) {
+	if (!encodes_utf8(ce) && ce != CE_BYTES) {
 		str2 = (const uint8_t *)translate_utf8(sx);
 		ce = CE_UTF8;
 		if (str2 != str) {
