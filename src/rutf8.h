@@ -91,6 +91,16 @@
 	CHECK_ERROR_FORMAT_SEP(err, "", "%s", "")
 
 /**
+ * Justification type.
+ */
+enum rutf8_justify_type {
+	RUTF8_JUSTIFY_NONE = 0,
+	RUTF8_JUSTIFY_LEFT,
+	RUTF8_JUSTIFY_CENTRE,
+	RUTF8_JUSTIFY_RIGHT
+};
+
+/**
  * String type indicator.
  */
 enum rutf8_string_type {
@@ -184,6 +194,8 @@ SEXP rutf8_utf8_valid(SEXP x);
 SEXP rutf8_utf8_width(SEXP x, SEXP encode, SEXP utf8);
 
 /* internal utility functions */
+int rutf8_as_justify(SEXP justify);
+
 int array_size_add(int *sizeptr, size_t width, int count, int nadd);
 int centre_pad_begin(struct utf8lite_render *r, int width_max, int fullwidth);
 int charwidth(uint32_t code);

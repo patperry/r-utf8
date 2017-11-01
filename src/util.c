@@ -15,7 +15,25 @@
  */
 
 #include <ctype.h>
+#include <string.h>
 #include "rutf8.h"
+
+
+int rutf8_as_justify(SEXP justify)
+{
+	const char *str;
+
+	str = CHAR(STRING_ELT(justify, 0));
+	if (strcmp(str, "left") == 0) {
+		return RUTF8_JUSTIFY_LEFT;
+	} else if (strcmp(str, "right") == 0) {
+		return RUTF8_JUSTIFY_RIGHT;
+	} else if (strcmp(str, "centre") == 0) {
+		return RUTF8_JUSTIFY_CENTRE;
+	} else {
+		return RUTF8_JUSTIFY_NONE;
+	}
+}
 
 
 int centre_pad_begin(struct utf8lite_render *r, int width_max, int fullwidth)
