@@ -51,7 +51,7 @@ int utf8lite_graph_measure(const struct utf8lite_graph *g,
 {
 	struct utf8lite_text_iter it;
 	int32_t ch;
-	int err = 0, cw, width, w = 0;
+	int err = 0, cw, w, width;
 
 	width = 0;
 	utf8lite_text_iter_make(&it, &g->text);
@@ -143,7 +143,7 @@ int ascii_width(int32_t ch, int flags)
 
 int utf8_width(int32_t ch, int cw, int flags)
 {
-	int w;
+	int w = -1;
 
 	switch ((enum utf8lite_charwidth_type)cw) {
 	case UTF8LITE_CHARWIDTH_NONE:
