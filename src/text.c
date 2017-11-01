@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <assert.h>
 #include "rutf8.h"
 
 
@@ -85,6 +86,106 @@ int rutf8_text_rwidth(const struct utf8lite_text *text, int flags,
 	}
 exit:
 	return width;
+}
+
+
+SEXP rutf8_text_lencode(struct utf8lite_render *r,
+			const struct utf8lite_text *text,
+			int width_min, int quote, int centre)
+{
+	SEXP ans = R_NilValue;
+	struct utf8lite_graphscan scan;
+	int err = 0, w, fullwidth, width, quotes;
+
+	assert(width_min >= 0);
+
+	quotes = quote ? 2 : 0;
+	width = 0;
+
+	if (centre && width_min > 0) {
+		fullwidth = rutf8_text_width(text, r->flags);
+		// ensure fullwidth + quotes doesn't overflow
+		if (fullwidth <= width_min - quotes) {
+			fullwidth += quotes;
+			width = centre_pad_begin(r, width_min, fullwidth);
+		}
+	}
+
+	if (quote) {
+		TRY(utf8lite_render_bytes(r, "\"", 1));
+		assert(width < INT_MAX); // width <= width_min / 2
+		width++;
+	}
+
+	utf8lite_graphscan_make(&scan, text);
+	while (utf8lite_graphscan_advance(&scan)) {
+		TRY(utf8lite_graph_measure(&scan.current, r->flags, &w));
+		TRY(utf8lite_render_graph(r, &scan.current));
+
+		assert(w >= 0);
+		if (width <= width_min - w) {
+			width += w;
+		} else {
+			width = width_min; // truncate to avoid overflow
+		}
+	}
+
+	if (quote) {
+		TRY(utf8lite_render_bytes(r, "\"", 1));
+		if (width < width_min) { // avoid overflow
+			width++;
+		}
+	}
+
+	if (width < width_min) {
+		pad_spaces(r, width_min - width);
+	}
+
+	ans = mkCharLenCE((char *)r->string, r->length, CE_UTF8);
+	utf8lite_render_clear(r);
+exit:
+	CHECK_ERROR(err);
+	return ans;
+}
+
+
+SEXP rutf8_text_rencode(struct utf8lite_render *r,
+			const struct utf8lite_text *text,
+			int width_min, int quote)
+{
+	SEXP ans = R_NilValue;
+	struct utf8lite_graphscan scan;
+	int err = 0, fullwidth, quotes;
+
+	quotes = quote ? 2 : 0;
+
+	if (width_min > 0) {
+		fullwidth = rutf8_text_width(text, r->flags);
+		// ensure fullwidth + quotes doesn't overflow
+		if (fullwidth <= width_min - quotes) {
+			fullwidth += quotes;
+			pad_spaces(r, width_min - fullwidth);
+		}
+	}
+
+	if (quote) {
+		TRY(utf8lite_render_bytes(r, "\"", 1));
+	}
+
+	utf8lite_graphscan_make(&scan, text);
+	while (utf8lite_graphscan_advance(&scan)) {
+		TRY(utf8lite_render_graph(r, &scan.current));
+	}
+
+	if (quote) {
+		TRY(utf8lite_render_bytes(r, "\"", 1));
+	}
+
+	ans = mkCharLenCE((char *)r->string, r->length, CE_UTF8);
+	utf8lite_render_clear(r);
+exit:
+	CHECK_ERROR(err);
+	return ans;
 }
 
 

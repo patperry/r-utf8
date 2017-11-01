@@ -93,6 +93,115 @@ int rutf8_bytes_rwidth(const struct rutf8_bytes *bytes, int flags,
 }
 
 
+SEXP rutf8_bytes_lencode(struct utf8lite_render *r,
+			 const struct rutf8_bytes *bytes,
+			 int width_min, int quote, int centre)
+{
+	SEXP ans = R_NilValue;
+	const uint8_t *ptr, *end;
+	uint8_t byte;
+	int err = 0, w, fullwidth, width, quotes;
+
+	assert(width_min >= 0);
+
+	quotes = quote ? 2 : 0;
+	width = 0;
+
+	if (centre && width_min > 0) {
+		fullwidth = rutf8_bytes_width(bytes, r->flags);
+		if (fullwidth <= width_min - quotes) {
+			width = centre_pad_begin(r, width_min, fullwidth);
+		}
+	}
+
+	if (quote) {
+		TRY(utf8lite_render_bytes(r, "\"", 1));
+		assert(width < INT_MAX);
+		width++;
+	}
+
+	ptr = bytes->ptr;
+	end = bytes->ptr + bytes->size;
+
+	while (ptr < end) {
+		byte = *ptr++;
+		w = byte_width(byte, r->flags);
+		render_byte(r, byte);
+
+		assert(w >= 0);
+		if (width <= width_min - w) {
+			width += w;
+		} else {
+			width = width_min; // truncate to avoid overflow
+		}
+	}
+
+	if (quote) {
+		TRY(utf8lite_render_bytes(r, "\"", 1));
+		if (width < width_min) { // avoid overflow
+			width++;
+		}
+	}
+
+	if (width < width_min) {
+		pad_spaces(r, width_min - width);
+	}
+
+	ans = mkCharLenCE((char *)r->string, r->length, CE_UTF8);
+	utf8lite_render_clear(r);
+exit:
+	CHECK_ERROR(err);
+	return ans;
+}
+
+
+SEXP rutf8_bytes_rencode(struct utf8lite_render *r,
+			 const struct rutf8_bytes *bytes,
+			 int width_min, int quote)
+{
+	SEXP ans = R_NilValue;
+	const uint8_t *ptr, *end;
+	uint8_t byte;
+	int err = 0, fullwidth, width, quotes;
+
+	assert(width_min >= 0);
+
+	quotes = quote ? 2 : 0;
+	width = 0;
+
+	if (width_min > 0) {
+		fullwidth = rutf8_bytes_width(bytes, r->flags);
+		// ensure fullwidth + quotes doesn't overflow
+		if (fullwidth <= width_min - quotes) {
+			fullwidth += quotes;
+			pad_spaces(r, width_min - fullwidth);
+		}
+	}
+
+	if (quote) {
+		TRY(utf8lite_render_bytes(r, "\"", 1));
+	}
+
+	ptr = bytes->ptr;
+	end = bytes->ptr + bytes->size;
+
+	while (ptr < end) {
+		byte = *ptr++;
+		render_byte(r, byte);
+	}
+
+	if (quote) {
+		TRY(utf8lite_render_bytes(r, "\"", 1));
+	}
+
+	ans = mkCharLenCE((char *)r->string, r->length, CE_UTF8);
+	utf8lite_render_clear(r);
+exit:
+	CHECK_ERROR(err);
+	return ans;
+}
+
+
 SEXP rutf8_bytes_lformat(struct utf8lite_render *r,
 			 const struct rutf8_bytes *bytes,
 			 int trim, int chars, int width_max,
@@ -233,12 +342,47 @@ int byte_width(uint8_t byte, int flags)
 
 void render_byte(struct utf8lite_render *r, uint8_t byte)
 {
+	char ch, buf[5];
 	int err = 0;
-	char ch;
 
-	ch = (char)byte;
-	TRY(utf8lite_render_bytes(r, &ch, 1));
-
+	if (byte <= 0x1f || byte >= 0x7f) {
+		if (r->flags & UTF8LITE_ESCAPE_CONTROL) {
+			switch (byte) {
+			case '\a':
+				TRY(utf8lite_render_bytes(r, "\\a", 2));
+				break;
+			case '\b':
+				TRY(utf8lite_render_bytes(r, "\\b", 2));
+				break;
+			case '\f':
+				TRY(utf8lite_render_bytes(r, "\\f", 2));
+				break;
+			case '\n':
+				TRY(utf8lite_render_bytes(r, "\\n", 2));
+				break;
+			case '\r':
+				TRY(utf8lite_render_bytes(r, "\\r", 2));
+				break;
+			case '\t':
+				TRY(utf8lite_render_bytes(r, "\\t", 2));
+				break;
+			case '\v':
+				TRY(utf8lite_render_bytes(r, "\\v", 2));
+				break;
+			default:
+				sprintf(buf, "\\x%02x", (unsigned)byte);
+				TRY(utf8lite_render_bytes(r, buf, 4));
+				break;
+			}
+		} else {
+			ch = (char)byte;
+			TRY(utf8lite_render_bytes(r, &ch, 1));
+		}
+	} else {
+		buf[0] = (char)byte;
+		buf[1] = '\0';
+		TRY(utf8lite_render_string(r, buf));
+	}
 exit:
 	CHECK_ERROR(err);
 }
