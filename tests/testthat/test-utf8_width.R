@@ -58,7 +58,7 @@ test_that("'utf8_width' gives NA for invalid data", {
 })
 
 
-test_that("'utf8_width' gives width 2 for quotes when quote = TRUE", {
-  expect_equal(utf8_width("\""), 1)
-  expect_equal(utf8_width("\"", quote = TRUE), 4)
+test_that("'utf8_width' gives width 1 for quotes", {
+  expect_equal(utf8_width("\"", encode = TRUE), 1)
+  expect_equal(utf8_width("\"", encode = FALSE), 1)
 })
