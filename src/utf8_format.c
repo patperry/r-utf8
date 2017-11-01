@@ -22,37 +22,13 @@
 #include <string.h>
 #include "rutf8.h"
 
-struct context {
-	struct utf8lite_render render;
-	int has_render;
-};
-
-
-static void context_init(struct context *ctx)
-{
-	int err = 0;
-	TRY(utf8lite_render_init(&ctx->render, 0));
-	ctx->has_render = 1;
-exit:
-	CHECK_ERROR(err);
-}
-
-
-static void context_destroy(void *obj)
-{
-	struct context *ctx = obj;
-	if (ctx->has_render) {
-		utf8lite_render_destroy(&ctx->render);
-	}
-}
-
 
 SEXP rutf8_utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify,
 		       SEXP swidth, SEXP sna_encode, SEXP squote,
 		       SEXP sna_print, SEXP sutf8)
 {
-	SEXP ans, sctx, na_print, ans_i;
-	struct context *ctx;
+	SEXP ans, srender, na_print, ans_i;
+	struct utf8lite_render *render;
 	enum rutf8_justify_type justify;
 	struct utf8lite_text *text;
 	struct rutf8_string elt, na;
@@ -135,10 +111,8 @@ SEXP rutf8_utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify,
 	rutf8_string_init(&na, na_print);
 	na_width = rutf8_string_width(&na, flags);
 
-        PROTECT(sctx = rutf8_alloc_context(sizeof(*ctx), context_destroy));
-	nprot++;
-	ctx = rutf8_as_context(sctx);
-	context_init(ctx);
+        PROTECT(srender = rutf8_alloc_render(0)); nprot++;
+	render = rutf8_as_render(srender);
 
 	for (i = 0; i < n; i++) {
 		CHECK_INTERRUPT(i);
@@ -189,19 +163,19 @@ SEXP rutf8_utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify,
 		switch (justify) {
 		case RUTF8_JUSTIFY_LEFT:
 		case RUTF8_JUSTIFY_NONE:
-			ans_i = rutf8_string_lformat(&ctx->render, &elt,
+			ans_i = rutf8_string_lformat(render, &elt,
 						     trim, chars_i, width_max,
 						     quote_i, utf8, flags, 0);
 			break;
 
 		case RUTF8_JUSTIFY_CENTRE:
-			ans_i = rutf8_string_lformat(&ctx->render, &elt, trim,
+			ans_i = rutf8_string_lformat(render, &elt, trim,
 						     chars_i, width_max,
 						     quote_i, utf8, flags, 1);
 			break;
 
 		case RUTF8_JUSTIFY_RIGHT:
-			ans_i = rutf8_string_rformat(&ctx->render, &elt, trim,
+			ans_i = rutf8_string_rformat(render, &elt, trim,
 						     chars_i, width_max,
 						     quote_i, utf8, flags);
 			break;
@@ -210,7 +184,7 @@ SEXP rutf8_utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify,
 		SET_STRING_ELT(ans, i, ans_i);
 	}
 
-	rutf8_free_context(sctx);
+	rutf8_free_render(srender);
 	UNPROTECT(nprot);
 	return ans;
 }

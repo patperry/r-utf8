@@ -177,6 +177,12 @@ void rutf8_free_context(SEXP x);
 void *rutf8_as_context(SEXP x);
 int rutf8_is_context(SEXP x);
 
+/* render object */
+SEXP rutf8_alloc_render(int flags);
+void rutf8_free_render(SEXP x);
+struct utf8lite_render *rutf8_as_render(SEXP x);
+int rutf8_is_render(SEXP x);
+
 /* printing */
 SEXP rutf8_print_table(SEXP x, SEXP print_gap, SEXP right, SEXP max,
 		       SEXP width, SEXP is_stdout);
