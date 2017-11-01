@@ -22,14 +22,6 @@
 #include <string.h>
 #include "rutf8.h"
 
-enum justify_type {
-	JUSTIFY_NONE = 0,
-	JUSTIFY_LEFT,
-	JUSTIFY_CENTRE,
-	JUSTIFY_RIGHT
-};
-
-
 struct context {
 	struct utf8lite_render render;
 	int has_render;
@@ -61,8 +53,7 @@ SEXP rutf8_utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify,
 {
 	SEXP ans, sctx, na_print, ans_i;
 	struct context *ctx;
-	enum justify_type justify;
-	const char *justify_str;
+	enum rutf8_justify_type justify;
 	struct utf8lite_text *text;
 	struct rutf8_string elt, na;
 	R_xlen_t i, n;
@@ -89,7 +80,7 @@ SEXP rutf8_utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify,
 	quote = (LOGICAL(squote)[0] == TRUE);
 	quotes = quote ? 2 : 0;
 
-	PROTECT(strim = coerceVector(sutf8, LGLSXP)); nprot++;
+	PROTECT(sutf8 = coerceVector(sutf8, LGLSXP)); nprot++;
 	utf8 = (LOGICAL(sutf8)[0] == TRUE);
 	ellipsis = utf8 ? 1 : 3;
 
@@ -106,15 +97,8 @@ SEXP rutf8_utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify,
 		chars = 0;
 	}
 
-	justify_str = CHAR(STRING_ELT(sjustify, 0));
-	if (strcmp(justify_str, "left") == 0) {
-		justify = JUSTIFY_LEFT;
-	} else if (strcmp(justify_str, "right") == 0) {
-		justify = JUSTIFY_RIGHT;
-	} else if (strcmp(justify_str, "centre") == 0) {
-		justify = JUSTIFY_CENTRE;
-	} else {
-		justify = JUSTIFY_NONE;
+	justify = rutf8_as_justify(sjustify);
+	if (justify == RUTF8_JUSTIFY_NONE) {
 		trim = 1;
 	}
 
@@ -163,7 +147,7 @@ SEXP rutf8_utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify,
 
 		if (elt.type == RUTF8_STRING_NONE) {
 			width = na_encode ? na_width : 0;
-		} else if (justify == JUSTIFY_RIGHT) {
+		} else if (justify == RUTF8_JUSTIFY_RIGHT) {
 			width = (rutf8_string_rwidth(&elt, flags, chars,
 						     ellipsis)
 				 + quotes);
@@ -203,20 +187,20 @@ SEXP rutf8_utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify,
 		}
 
 		switch (justify) {
-		case JUSTIFY_LEFT:
-		case JUSTIFY_NONE:
+		case RUTF8_JUSTIFY_LEFT:
+		case RUTF8_JUSTIFY_NONE:
 			ans_i = rutf8_string_lformat(&ctx->render, &elt,
 						     trim, chars_i, width_max,
 						     quote_i, utf8, flags, 0);
 			break;
 
-		case JUSTIFY_CENTRE:
+		case RUTF8_JUSTIFY_CENTRE:
 			ans_i = rutf8_string_lformat(&ctx->render, &elt, trim,
 						     chars_i, width_max,
 						     quote_i, utf8, flags, 1);
 			break;
 
-		case JUSTIFY_RIGHT:
+		case RUTF8_JUSTIFY_RIGHT:
 			ans_i = rutf8_string_rformat(&ctx->render, &elt, trim,
 						     chars_i, width_max,
 						     quote_i, utf8, flags);
