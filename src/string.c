@@ -114,6 +114,38 @@ int rutf8_string_rwidth(const struct rutf8_string *str, int flags,
 }
 
 
+SEXP rutf8_string_lencode(struct utf8lite_render *r,
+			  const struct rutf8_string *str,
+			  int width, int quote, int centre)
+{
+	switch (str->type) {
+	case RUTF8_STRING_TEXT:
+		return rutf8_text_lencode(r, &str->value.text, width,
+					  quote, centre);
+	case RUTF8_STRING_BYTES:
+		return rutf8_bytes_lencode(r, &str->value.bytes, width,
+					   quote, centre);
+	default:
+		return NA_STRING;
+	}
+}
+
+
+SEXP rutf8_string_rencode(struct utf8lite_render *r,
+			  const struct rutf8_string *str,
+			  int width, int quote)
+{
+	switch (str->type) {
+	case RUTF8_STRING_TEXT:
+		return rutf8_text_rencode(r, &str->value.text, width, quote);
+	case RUTF8_STRING_BYTES:
+		return rutf8_bytes_rencode(r, &str->value.bytes, width, quote);
+	default:
+		return NA_STRING;
+	}
+}
+
+
 SEXP rutf8_string_lformat(struct utf8lite_render *r,
 			  const struct rutf8_string *str,
 			  int trim, int chars, int width_max,
