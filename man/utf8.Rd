@@ -3,10 +3,9 @@
 \alias{utf8}
 \alias{as_utf8}
 \alias{utf8_normalize}
-\alias{utf8_print}
 \alias{utf8_valid}
 \description{
-    UTF-8 text validation, normalization, and printing.
+    UTF-8 text validation and normalization.
 }
 \usage{
 as_utf8(x, normalize = FALSE)
@@ -15,10 +14,6 @@ utf8_valid(x)
 
 utf8_normalize(x, map_case = FALSE, map_compat = FALSE,
                map_quote = FALSE, remove_ignorable = FALSE)
-
-utf8_print(x, chars = NULL, quote = TRUE, na.print = NULL,
-           print.gap = NULL, right = FALSE, max = NULL,
-           display = TRUE, ...)
 }
 \arguments{
     \item{x}{character object.}
@@ -41,41 +36,6 @@ utf8_print(x, chars = NULL, quote = TRUE, na.print = NULL,
     \item{remove_ignorable}{a logical value indicating whether to remove
         Unicode "default ignorable" characters like zero-width spaces
         and soft hyphens.}
-
-    \item{display}{logical scalar indicating whether to optimize the
-        encoding for display, not byte-for-byte data transmission.}
-
-    \item{chars}{integer scalar indicating the maximum number of
-        character units to display.  Wide characters like emoji take
-        two character units; combining marks and default ignorables
-        take none. Longer strings get truncated and suffixed or prefixed
-        with an ellipsis (\code{"..."} in C locale, \code{"\u2026"} in
-        others). Set to \code{NULL} to limit output to the line width
-        as determined by \code{getOption("width")}.}
-
-    \item{quote}{logical scalar indicating whether to put surrounding
-        double-quotes (\code{'"'}) around character strings and escape
-        internal double-quotes.}
-
-    \item{na.print}{character string (or \code{NULL}) indicating
-        the encoding for \code{NA} values. Ignored when
-        \code{na.encode} is \code{FALSE}.}
-
-    \item{print.gap}{non-negative integer (or \code{NULL}) giving the
-        number of spaces in gaps between columns; set to \code{NULL}
-        or \code{1} for a single space.}
-
-    \item{right}{logical scalar indicating whether to right-justify
-        character strings.}
-
-    \item{max}{non-negative integer (or \code{NULL}) indicating the
-        maximum number of elements to print; set to
-        \code{getOption("max.print")} if argument is \code{NULL}.}
-
-    \item{encode}{whether to encode the object before measuring its
-        width.}
-
-    \item{...}{further arguments passed from other methods. Ignored.}
 }
 \details{
     \code{as_utf8} converts a character object from its declared encoding
@@ -91,40 +51,14 @@ utf8_print(x, chars = NULL, quote = TRUE, na.print = NULL,
     Unicode normalized composed form (NFC) while applying the character
     maps specified by the \code{map_case}, \code{map_compat},
     \code{map_quote}, and \code{remove_ignorable} arguments.
-
-    \code{utf8_encode} encodes a character object for printing on a UTF-8
-    device by escaping controls characters and other non-printable
-    characters. When \code{display = TRUE}, the function optimizes the
-    encoding for display by removing default ignorable characters (soft
-    hyphens, zero-width spaces, etc.) and placing zero-width spaces after
-    wide emoji. When \code{LC_CTYPE = "C"}, the function escapes all
-    non-ASCII characters and gives the same results on all platforms.
-
-    \code{utf8_print} prints a character object after formatting it with
-    \code{utf8_format}.
-
-    \code{utf8_width} returns the printed widths of the elements of
-    a character object on a UTF-8 device or, when \code{LC_CTYPE = "C"},
-    on an ASCII device. If the string is not printable on the device,
-    for example if it contains a control code like \code{"\n"}, then
-    the result is \code{NA}. If \code{encode = TRUE}, the default,
-    then the function returns the widths of the encoded elements
-    (via \code{utf8_encode}); otherwise, the function returns the
-    widths of the original elements. If \code{quote = TRUE}, then
-    \code{utf8_width} returns the widths of the quoted values
-    (enclosing the argument in double quotes, and replacing internal
-    quotes with \code{\"}).
 }
 \value{
     For \code{as_utf8} and \code{utf8_normalize}, the result is a
     character object with the same attributes as \code{x} but with
     \code{Encoding} set to \code{"UTF-8"}.
 
-    For \code{utf8_print}, the function returns \code{x} invisibly.
-
-    For \code{utf8_valid} or \code{utf8_width}, a logical or integer
-    object, respectively, with the same \code{names}, \code{dim}, and
-    \code{dimnames} as \code{x}.
+    For \code{utf8_valid} a logical object with the same \code{names},
+    \code{dim}, and \code{dimnames} as \code{x}.
 }
 \seealso{
     \code{\link{iconv}}.
@@ -147,15 +81,4 @@ utf8_valid(x)
 # normalize text
 angstrom <- c("\u00c5", "\u0041\u030a", "\u212b")
 utf8_normalize(angstrom) == "\u00c5"
-
-# printing (assumes that output is capable of displaying Unicode 10.0.0)
-print(intToUtf8(0x1F600 + 0:79)) # with default R print function
-utf8_print(intToUtf8(0x1F600 + 0:79)) # with utf8_print, truncates line
-utf8_print(intToUtf8(0x1F600 + 0:79), chars = 1000) # higher character limit
-
-# in C locale, output ASCII (same results on all platforms)
-oldlocale <- Sys.getlocale("LC_CTYPE")
-invisible(Sys.setlocale("LC_CTYPE", "C")) # switch to C locale
-utf8_print(intToUtf8(0x1F600 + 0:79))
-invisible(Sys.setlocale("LC_CTYPE", oldlocale)) # switch back to old locale
 }
