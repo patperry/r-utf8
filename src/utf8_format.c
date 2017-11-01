@@ -27,10 +27,9 @@ SEXP rutf8_utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify,
 		       SEXP swidth, SEXP sna_encode, SEXP squote,
 		       SEXP sna_print, SEXP sutf8)
 {
-	SEXP ans, srender, na_print, ans_i;
+	SEXP ans, srender, na_print, ans_i = NA_STRING;
 	struct utf8lite_render *render;
 	enum rutf8_justify_type justify;
-	struct utf8lite_text *text;
 	struct rutf8_string elt, na;
 	R_xlen_t i, n;
 	int chars, chars_i, ellipsis, width, width_max, trim, na_encode,
@@ -45,7 +44,6 @@ SEXP rutf8_utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify,
 	if (!isString(sx)) {
 		error("argument is not a character vector");
 	}
-	text = NULL;
 	PROTECT(ans = duplicate(sx)); nprot++;
 	n = XLENGTH(ans);
 
