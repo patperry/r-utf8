@@ -15,6 +15,7 @@
  */
 
 #include <ctype.h>
+#include <stddef.h>
 #include "rutf8.h"
 
 /* Some displays will wrongly format emoji with one space instead of two.
@@ -370,13 +371,14 @@ static SEXP charsxp_encode(SEXP sx, int display, int utf8, char **bufptr,
 }
 
 
-SEXP rutf8_utf8_encode(SEXP sx, SEXP swidth, SEXP squote, SEXP sna_encode,
+SEXP rutf8_utf8_encode(SEXP sx, SEXP swidth, SEXP squote,
 		       SEXP sjustify, SEXP sdisplay, SEXP sutf8)
 {
 	SEXP ans, elt, elt2;
+	enum rutf8_justify_type justify;
 	char *buf;
 	R_xlen_t i, n;
-	int duped, nbuf, display, utf8;
+	int duped = 0, width, quote, display, utf8, nbuf;
 
 	if (sx == R_NilValue) {
 		return R_NilValue;
@@ -386,17 +388,19 @@ SEXP rutf8_utf8_encode(SEXP sx, SEXP swidth, SEXP squote, SEXP sna_encode,
 		error("argument is not a character object");
 	}
 
-	(void)swidth;
-	(void)squote;
-	(void)sna_encode;
-	(void)sjustify;
+	if (swidth == R_NilValue || INTEGER(swidth)[0] == NA_INTEGER) {
+		width = -1;
+	} else {
+		width = INTEGER(swidth)[0];
+	}
 
-	n = XLENGTH(sx);
+	quote = LOGICAL(squote)[0] == TRUE;
+	justify = rutf8_as_justify(sjustify);
 	display = LOGICAL(sdisplay)[0] == TRUE;
 	utf8 = LOGICAL(sutf8)[0] == TRUE;
 
+	n = XLENGTH(sx);
 	ans = sx;
-	duped = 0;
 	buf = NULL;
 	nbuf = 0;
 
@@ -418,6 +422,5 @@ SEXP rutf8_utf8_encode(SEXP sx, SEXP swidth, SEXP squote, SEXP sna_encode,
 	if (duped) {
 		UNPROTECT(2);
 	}
-
 	return ans;
 }

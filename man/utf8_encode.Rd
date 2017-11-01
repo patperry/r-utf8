@@ -6,8 +6,7 @@
     quotes or spaces, adjusting the width for display.
 }
 \usage{
-utf8_encode(x, width = 0, quote = "", na.encode = TRUE,
-            justify = "left", display = FALSE)
+utf8_encode(x, width = 0L, quote = FALSE, justify = "left", display = FALSE)
 }
 \arguments{
     \item{x}{character object.}
@@ -15,14 +14,11 @@ utf8_encode(x, width = 0, quote = "", na.encode = TRUE,
     \item{width}{integer giving the minimum field width; specify
         \code{NULL} or \code{NA} for no minimum.}
 
-    \item{quote}{length-1 character string giving the quoting character,
-        or the empty string for no quoting.}
-
-    \item{na.encode}{logical scalar indicating whether to encode
-        \code{NA} strings.}
+    \item{quote}{logical scalar indicating whether to surround results
+        with quotes (\code{"}) and escape internal double-quotes.}
 
     \item{justify}{justification; one of \code{"left"}, \code{"right"},
-    \code{"centre"}, or \code{"none"}. Can be abbreviated.}
+        \code{"centre"}, or \code{"none"}. Can be abbreviated.}
 
     \item{display}{logical scalar indicating whether to optimize the
         encoding for display, not byte-for-byte data transmission.}
