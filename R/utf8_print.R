@@ -49,7 +49,7 @@ utf8_print <- function(x, chars = NULL, quote = TRUE, na.print = NULL,
     vec <- is.null(dim(x)) || length(dim(x)) == 1
     justify <- if (right) "right" else "left"
 
-    fmt <- utf8_format(x, trim = !vec, chars = chars,
+    fmt <- utf8_format(x, trim = TRUE, chars = chars,
                        justify = justify, na.encode = TRUE,
                        quote = quote, na.print = na.print)
     names <- names(fmt)
@@ -80,7 +80,8 @@ utf8_print <- function(x, chars = NULL, quote = TRUE, na.print = NULL,
         }
     }
 
-    fmt <- utf8_encode(fmt, display = display)
+    fmt <- utf8_encode(fmt, width = if (vec) NULL else 0L,
+                       quote = quote, justify = justify, display = display)
     if (is.null(dim)) {
         names <- utf8_encode(names, display = display)
         names(fmt) <- names
