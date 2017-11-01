@@ -108,3 +108,55 @@ test_that("'utf8_encode escapes controls in UTF-8 text", {
   Encoding(y) <- "UTF-8"
   expect_equal(utf8_encode(x), y)
 })
+
+
+test_that("'utf8_encode' can quote", {
+  x <- c("abcde", "x", "123", "\"", "'")
+  expect_equal(utf8_encode(x, quote = ""), encodeString(x, quote = ""))
+  expect_equal(utf8_encode(x, quote = '"'), encodeString(x, quote = '"'))
+  expect_equal(utf8_encode(x, quote = "'"), encodeString(x, quote = "'"))
+  expect_equal(utf8_encode(x, quote = '"'), encodeString(x, quote = '"'))
+  expect_equal(utf8_encode(x, quote = "|"), encodeString(x, quote = "|"))
+})
+
+
+test_that("'utf8_encode' ignores justify if width = 0", {
+  x <- c("abcde", "x", "123", "\"", "'")
+  expect_equal(
+    utf8_encode(x, width = 0, justify = "none"),
+    encodeString(x, width = 0, justify = "none")
+  )
+  expect_equal(
+    utf8_encode(x, width = 0, justify = "left"),
+    encodeString(x, width = 0, justify = "left")
+  )
+  expect_equal(
+    utf8_encode(x, width = 0, justify = "centre"),
+    encodeString(x, width = 0, justify = "centre")
+  )
+  expect_equal(
+    utf8_encode(x, width = 0, justify = "right"),
+    encodeString(x, width = 0, justify = "right")
+  )
+})
+
+
+test_that("'utf8_encode' can justify", {
+  x <- c("abcde", "x", "123", "\"", "'")
+  expect_equal(
+    utf8_encode(x, width = NULL, justify = "none"),
+    encodeString(x, width = NULL, justify = "none")
+  )
+  expect_equal(
+    utf8_encode(x, width = NULL, justify = "left"),
+    encodeString(x, width = NULL, justify = "left")
+  )
+  expect_equal(
+    utf8_encode(x, width = NULL, justify = "centre"),
+    encodeString(x, width = NULL, justify = "centre")
+  )
+  expect_equal(
+    utf8_encode(x, width = NULL, justify = "right"),
+    encodeString(x, width = NULL, justify = "right")
+  )
+})
