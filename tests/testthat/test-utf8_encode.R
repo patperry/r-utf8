@@ -157,3 +157,11 @@ test_that("'utf8_encode' can justify", {
     encodeString(x, width = NULL, justify = "right")
   )
 })
+
+
+test_that("'utf8_encode' can justify and quote", {
+  expect_equal(
+    utf8_encode(c("1", "10", "100"), width = NULL, quote = TRUE),
+    encodeString(c("1", "10", "100"), width = NULL, quote = '"')
+  )
+})

@@ -84,6 +84,7 @@ SEXP rutf8_utf8_encode(SEXP sx, SEXP swidth, SEXP squote,
 				Rf_error("width exceeds maximum (%d)",
 					 INT_MAX);
 			}
+			w += quotes;
 
 			if (w > width) {
 				width = w;
