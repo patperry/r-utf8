@@ -17,6 +17,21 @@ before_install:
   - make NEWS
   - make README
 
+matrix:
+  include:
+    - os: linux
+      r: 3.1
+    - os: linux
+      r: 3.2
+    - os: linux
+      r: oldrel
+    - os: linux
+      dist: trusty
+      r: release
+      env: R_CODECOV=true
+    - os: linux
+      r: devel
+
 after_success:
   - export LC_ALL="C"
-  - Rscript -e 'covr::codecov(line_exclusions = c("R/deprecated.R", list.files("src/utf8lite", recursive = TRUE, full.names = TRUE)))'
+  - if [[ "${R_CODECOV}" ]]; then Rscript -e 'covr::codecov(line_exclusions = c("R/deprecated.R", list.files("src/utf8lite", recursive = TRUE, full.names = TRUE)))'; fi
