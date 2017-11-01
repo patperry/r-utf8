@@ -21,7 +21,7 @@
 SEXP rutf8_utf8_encode(SEXP sx, SEXP swidth, SEXP squote,
 		       SEXP sjustify, SEXP sdisplay, SEXP sutf8)
 {
-	SEXP ans, ans_i, srender;
+	SEXP ans, ans_i = NA_STRING, srender;
 	struct rutf8_string elt;
 	struct utf8lite_render *render;
 	enum rutf8_justify_type justify;
@@ -109,6 +109,7 @@ SEXP rutf8_utf8_encode(SEXP sx, SEXP swidth, SEXP squote,
 			ans_i = rutf8_string_lencode(render, &elt, width,
 						     quote, centre);
 			break;
+
 		case RUTF8_JUSTIFY_RIGHT:
 			ans_i = rutf8_string_rencode(render, &elt, width,
 						     quote);

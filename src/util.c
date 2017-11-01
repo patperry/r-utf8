@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <assert.h>
 #include <ctype.h>
 #include <string.h>
 #include "rutf8.h"
@@ -52,7 +53,7 @@ int charwidth(uint32_t code)
 {
 #if (defined(_WIN32) || defined(_WIN64))
 	if (code > 0xFFFF) {
-		return UTF8LITE_CHARWIDTH_OTHER;
+		return UTF8LITE_CHARWIDTH_NONE;
 	}
 #endif
 	return utf8lite_charwidth(code);
@@ -117,7 +118,7 @@ int charsxp_width(SEXP charsxp, int quote, int utf8)
 			width += 2;
 			break;
 
-		default: // UTF8LITE_CHARWIDTH_OTHER
+		default: // UTF8LITE_CHARWIDTH_NONE
 			return NA_INTEGER;
 		}
 	}

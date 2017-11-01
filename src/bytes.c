@@ -162,12 +162,11 @@ SEXP rutf8_bytes_rencode(struct utf8lite_render *r,
 	SEXP ans = R_NilValue;
 	const uint8_t *ptr, *end;
 	uint8_t byte;
-	int err = 0, fullwidth, width, quotes;
+	int err = 0, fullwidth, quotes;
 
 	assert(width_min >= 0);
 
 	quotes = quote ? 2 : 0;
-	width = 0;
 
 	if (width_min > 0) {
 		fullwidth = rutf8_bytes_width(bytes, r->flags);
