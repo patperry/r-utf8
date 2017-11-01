@@ -15,7 +15,7 @@ utf8_encode(x, width = 0L, quote = FALSE, justify = "left", display = FALSE)
         \code{NULL} or \code{NA} for no minimum.}
 
     \item{quote}{logical scalar indicating whether to surround results
-        with quotes (\code{"}) and escape internal double-quotes.}
+        with double-quotes and escape internal double-quotes.}
 
     \item{justify}{justification; one of \code{"left"}, \code{"right"},
         \code{"centre"}, or \code{"none"}. Can be abbreviated.}
