@@ -12,8 +12,8 @@
 #  See the License for the specific language governing permissions and
 #  limitations under the License.
 
-utf8_encode <- function(x, width = 0, quote = "", na.encode = TRUE,
-                        justify = "left", display = FALSE)
+utf8_encode <- function(x, width = 0L, quote = FALSE, justify = "left",
+                        display = FALSE)
 {
     if (is.null(x)) {
         return(NULL)
@@ -25,14 +25,12 @@ utf8_encode <- function(x, width = 0, quote = "", na.encode = TRUE,
 
     with_rethrow({
         width <- as_integer_scalar("width", width)
-        quote <- as_quote("quote", quote)
-        na.encode <- as_option("na.encode", na.encode)
+        quote <- as_option("quote", quote)
         justify <- as_justify("justify", justify)
         display <- as_option("display", display)
     })
 
     utf8 <- (Sys.getlocale("LC_CTYPE") != "C")
 
-    .Call(rutf8_utf8_encode, x, width, quote, na.encode, justify,
-          display, utf8)
+    .Call(rutf8_utf8_encode, x, width, quote, justify, display, utf8)
 }

@@ -108,11 +108,8 @@ test_that("'utf8_encode escapes controls in UTF-8 text", {
 
 test_that("'utf8_encode' can quote", {
     x <- c("abcde", "x", "123", "\"", "'")
-    expect_equal(utf8_encode(x, quote = ""), encodeString(x, quote = ""))
-    expect_equal(utf8_encode(x, quote = '"'), encodeString(x, quote = '"'))
-    expect_equal(utf8_encode(x, quote = "'"), encodeString(x, quote = "'"))
-    expect_equal(utf8_encode(x, quote = '"'), encodeString(x, quote = '"'))
-    expect_equal(utf8_encode(x, quote = "|"), encodeString(x, quote = "|"))
+    expect_equal(utf8_encode(x, quote = FALSE), encodeString(x, quote = ""))
+    expect_equal(utf8_encode(x, quote = TRUE), encodeString(x, quote = '"'))
 })
 
 
