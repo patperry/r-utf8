@@ -933,6 +933,16 @@ int utf8lite_render_indent(struct utf8lite_render *r, int nlevel);
 int utf8lite_render_newlines(struct utf8lite_render *r, int nline);
 
 /**
+ * Add spaces.
+ *
+ * \param r the render object
+ * \param nspace the number of spaces to add
+ *
+ * \returns 0 on success
+ */
+int utf8lite_render_spaces(struct utf8lite_render *r, int nspace);
+
+/**
  * Render a character grapheme. If any render escape flags are set, filter
  * the grapheme through the appropriate escaping and encoding.
  *
