@@ -166,3 +166,11 @@ test_that("'utf8_print' can print quotes", {
     expect_equal(capture_output(utf8_print('"', quote = FALSE)),
                  capture_output(print('"', quote = FALSE)))
 })
+
+
+test_that("'utf8_print' can handle NA", {
+    expect_equal(capture_output(utf8_print(NA_character_)),
+                 capture_output(print(NA_character_)))
+    expect_equal(capture_output(utf8_print(NA_character_, quote = FALSE)),
+                 capture_output(print(NA_character_, quote = FALSE)))
+})

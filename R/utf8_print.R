@@ -35,6 +35,10 @@ utf8_print <- function(x, chars = NULL, quote = TRUE, na.print = NULL,
         display <- as_option("display", display)
     })
 
+    if (is.null(na.print)) {
+        na.print <- if (quote) "NA" else "<NA>"
+    }
+
     if (is.null(print.gap)) {
         print.gap <- 1L
     }
@@ -44,23 +48,26 @@ utf8_print <- function(x, chars = NULL, quote = TRUE, na.print = NULL,
     width <- getOption("width")
     stdout <- as.integer(stdout()) == 1
     
-    # truncate character objects, replace NA by na.print
+    # truncate character objects
     justify <- if (right) "right" else "left"
     fmt <- utf8_format(x, trim = TRUE, chars = chars,
-                       justify = justify, na.encode = TRUE,
-                       quote = quote, na.print = na.print)
+                       justify = justify, na.encode = FALSE,
+                       quote = quote)
 
     dim <- dim(x)
     if (is.null(dim) || length(dim) == 1) {
-        nprint <- print_vector(fmt, quote = quote, print.gap = print.gap,
+        nprint <- print_vector(fmt, quote = quote, na.print = na.print,
+                               print.gap = print.gap,
                                right = right, max = max, display = display,
                                width = width, stdout = stdout)
     } else if (length(dim) == 2) {
-        nprint <- print_matrix(fmt, quote = quote, print.gap = print.gap,
+        nprint <- print_matrix(fmt, quote = quote, na.print = na.print,
+                               print.gap = print.gap,
                                right = right, max = max, display = display)
     } else {
-        nprint <- print_array(fmt, quote = quote, print.gap = print.gap,
-                              right = right, max = max, display = display)
+        nprint <- print_array(fmt, quote = quote, na.print = na.print,
+                              print.gap = print.gap, right = right,
+                              max = max, display = display)
     }
 
     n <- length(x)
@@ -74,9 +81,8 @@ utf8_print <- function(x, chars = NULL, quote = TRUE, na.print = NULL,
 }
 
 
-print_vector <- function(x, quote = TRUE, print.gap = NULL, right = FALSE,
-                         max = NULL, display = TRUE, width = NULL,
-                         stdout = TRUE)
+print_vector <- function(x, quote, na.print, print.gap, right, max, display,
+                         width, stdout)
 {
     if (length(x) == 0) {
         cat("character(0)\n")
@@ -89,24 +95,24 @@ print_vector <- function(x, quote = TRUE, print.gap = NULL, right = FALSE,
     }
 
     if (!is.null(names(x))) {
-        nprint <- print_vector_named(x, quote = quote, print.gap = print.gap,
+        nprint <- print_vector_named(x, quote = quote, na.print = na.print,
+                                     print.gap = print.gap,
                                      right = right, max = max,
                                      display = display, width = width,
                                      stdout = stdout)
     } else {
-        nprint <- print_vector_unnamed(x, quote = quote, print.gap = print.gap,
+        nprint <- print_vector_unnamed(x, quote = quote, na.print = na.print,
+                                       print.gap = print.gap,
                                        right = right, max = max,
-                                       display = display, width = width,
-                                       stdout = stdout)
+                                       display = display)
     }
 
     nprint
 }
 
 
-print_vector_named <- function(x, quote = TRUE, print.gap = NULL,
-                               right = FALSE, max = NULL, display = TRUE,
-                               width = NULL, stdout = TRUE)
+print_vector_named <- function(x, quote, na.print, print.gap, right, max,
+                               display, width, stdout)
 {
     justify <- if (right) "right" else "left"
     fmt <- utf8_encode(x, width = NULL, quote = quote, justify = justify,
@@ -148,33 +154,33 @@ print_vector_named <- function(x, quote = TRUE, print.gap = NULL,
 }
 
 
-print_vector_unnamed <- function(x, quote = TRUE, print.gap = NULL,
-                                 right = FALSE, max = NULL, display = TRUE,
-                                 width = NULL, stdout = TRUE)
+print_vector_unnamed <- function(x, quote, na.print, print.gap, right,
+                                 max, display)
 {
-    fmt <- utf8_encode(x, width = NULL, quote = quote)
-    elt <- max(0, utf8_width(fmt, encode = FALSE))
+    width <- element_width(x, quote = quote, na.print = na.print)
 
     n <- length(x)
     names <- utf8_format(paste0("[", seq_len(n), "]"), justify = "right")
     namewidth <- max(0, utf8_width(names, encode = FALSE))
 
-    ncol <- max(1, (width - namewidth) %/% (elt + print.gap))
+    linewidth <- getOption("width")
+    ncol <- max(1, (linewidth - namewidth) %/% (width + print.gap))
     extra <- n %% ncol
 
     mat <- matrix(x[seq_len(n - extra)], ncol = ncol, byrow = TRUE)
     rownames(mat) <- names[seq(from = 1, by = ncol, length.out = nrow(mat))]
 
-    nprint <- print_table(mat, width = elt, quote = quote,
-                          print.gap = print.gap, right = right, max = max,
-                          display = display)
+    nprint <- print_table(mat, width = width, quote = quote,
+                          na.print = na.print, print.gap = print.gap,
+                          right = right, max = max, display = display)
 
     if (extra > 0 && nprint < max) {
         last <- rbind(as.vector(x[n - extra  + seq_len(extra)]))
         rownames(last) <- names[n - extra + 1]
-        np <- print_table(last, width = elt, quote = quote,
-                          print.gap = print.gap, right = right,
-                          max = max - nprint, display = display)
+        np <- print_table(last, width = width, quote = quote,
+                          na.print = na.print, print.gap = print.gap,
+                          right = right, max = max - nprint,
+                          display = display)
         nprint <- nprint + np
     }
 
@@ -182,19 +188,31 @@ print_vector_unnamed <- function(x, quote = TRUE, print.gap = NULL,
 }
 
 
-print_matrix <- function(x, quote, print.gap, right, max, display)
+element_width <- function(x, quote, na.print)
+{
+    fmt <- utf8_encode(x, width = NULL, quote = quote)
+    width <- max(0L, utf8_width(fmt[!is.na(x)], encode = FALSE))
+    if (anyNA(x)) {
+        width <- max(width, utf8_width(na.print))
+    }
+    width
+}
+
+
+print_matrix <- function(x, quote, na.print, print.gap, right, max, display)
 {
     if (all(dim(x) == 0)) {
         cat("<0 x 0 matrix>\n")
         return(0L)
     }
     x <- set_dimnames(x)
-    print_table(x, width = 0L, quote = quote, print.gap = print.gap,
-                right = right, max = max, display = display)
+    print_table(x, width = 0L, quote = quote, na.print = na.print,
+                print.gap = print.gap, right = right, max = max,
+                display = display)
 }
 
 
-print_array <- function(x, quote, print.gap, right, max, display)
+print_array <- function(x, quote, na.print, print.gap, right, max, display)
 {
     n <- length(x)
     dim <- dim(x)
@@ -222,7 +240,7 @@ print_array <- function(x, quote, print.gap, right, max, display)
 
         ix <- off + seq_len(nrow * ncol)
         mat <- matrix(x[ix], nrow, ncol, dimnames = dimnames[1:2])
-        np <- print_table(mat, width = 0L, quote = quote,
+        np <- print_table(mat, width = 0L, quote = quote, na.print = na.print,
                           print.gap = print.gap, right = right,
                           max = max - nprint, display = display)
         nprint <- nprint + np
@@ -245,7 +263,8 @@ print_array <- function(x, quote, print.gap, right, max, display)
 }
 
 
-print_table <- function(x, width, quote, print.gap, right, max, display)
+print_table <- function(x, width, quote, na.print, print.gap, right, max,
+                        display)
 {
     linewidth <- getOption("width")
     stdout <- as.integer(stdout()) == 1
@@ -253,6 +272,7 @@ print_table <- function(x, width, quote, print.gap, right, max, display)
     justify <- if (right) "right" else "left"
     fmt <- utf8_encode(x, width = width, quote = quote, justify = justify,
                        display = display)
+    fmt[is.na(x)] <- na.print
     dimnames(fmt) <- lapply(dimnames(fmt), utf8_encode, display = display)
 
     nprint <- .Call(rutf8_print_table, fmt, print.gap, right, max,
