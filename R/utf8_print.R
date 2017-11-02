@@ -45,7 +45,6 @@ utf8_print <- function(x, chars = NULL, quote = TRUE, na.print = NULL,
 
   n <- length(x)
   dim <- dim(x)
-  vec <- is.null(dim(x)) || length(dim(x)) == 1
   justify <- if (right) "right" else "left"
 
   fmt <- utf8_format(x,
@@ -53,14 +52,17 @@ utf8_print <- function(x, chars = NULL, quote = TRUE, na.print = NULL,
     justify = justify, na.encode = TRUE,
     quote = quote, na.print = na.print
   )
-  names <- names(fmt)
-  dimnames <- dimnames(fmt)
 
-  if (is.null(dim) || length(dim) == 1) {
-    if (length(dim) == 1 && !is.null(dimnames)) {
-      names <- dimnames[[1]]
-    }
+  if (is.null(dim(x)) || length(dim(x)) == 1) {
+    nprint <- print_vector(fmt,
+      quote = quote, print.gap = print.gap,
+      right = right, max = max, display = display,
+      stdout = stdout
+    )
   } else {
+    names <- names(fmt)
+    dimnames <- dimnames(fmt)
+
     if (is.null(dimnames)) {
       dimnames <- vector("list", length(dim))
     }
@@ -80,147 +82,66 @@ utf8_print <- function(x, chars = NULL, quote = TRUE, na.print = NULL,
         }
       }
     }
-  }
 
-  fmt <- utf8_encode(fmt,
-    width = if (vec) NULL else 0L,
-    quote = quote, justify = justify, display = display
-  )
-  if (is.null(dim)) {
-    names <- utf8_encode(names, display = display)
-    names(fmt) <- names
-  } else {
+    fmt <- utf8_encode(fmt,
+      width = 0L, quote = quote, justify = justify,
+      display = display
+    )
     dimnames <- lapply(dimnames, utf8_encode, display = display)
     dimnames(fmt) <- dimnames
-  }
 
-  nprint <- 0L
+    nprint <- 0L
 
-  if (vec) {
-    # vector
-    if (n == 0) {
-      cat("character(0)\n")
-      return(invisible(x))
-    }
-
-    if (is.null(names) && n > 0) {
-      labels <- utf8_format(paste0("[", seq_len(n), "]"),
-        justify = "right"
-      )
-    } else {
-      labels <- names
-    }
-
-    width <- getOption("width")
-    namewidth <- max(0, utf8_width(labels))
-    elt <- max(0, utf8_width(fmt))
-
-    if (!is.null(names)) {
-      ncol <- max(1, width %/% (max(namewidth, elt) + print.gap))
-      extra <- n %% ncol
-
-      off <- 0
-      while (off + ncol <= n && nprint < max) {
-        ix <- (off + 1):(off + ncol)
-        mat <- matrix(fmt[ix],
-          ncol = ncol, byrow = TRUE,
-          dimnames = list(NULL, names[ix])
+    if (length(dim) == 2) {
+      # matrix
+      if (all(dim == 0)) {
+        cat("<0 x 0 matrix>\n")
+      } else {
+        nprint <- .Call(
+          rutf8_print_table, fmt, print.gap, right, max,
+          width, stdout
         )
-
-        np <- .Call(
-          rutf8_print_table, mat, print.gap, right,
-          max - nprint, width, stdout
-        )
-        nprint <- nprint + np
-        off <- off + ncol
-      }
-
-      if (extra > 0 && nprint < max) {
-        ix <- n - extra + seq_len(extra)
-        last <- rbind(as.vector(fmt[ix]))
-        rownames(last) <- NULL
-        colnames(last) <- names[ix]
-
-        np <- .Call(
-          rutf8_print_table, last, print.gap, right,
-          max - nprint, width, stdout
-        )
-        nprint <- nprint + np
       }
     } else {
-      ncol <- max(1, (width - namewidth) %/% (elt + print.gap))
-      extra <- n %% ncol
+      nrow <- dim[1]
+      ncol <- dim[2]
 
-      mat <- matrix(fmt[seq_len(n - extra)], ncol = ncol, byrow = TRUE)
-      rownames(mat) <- labels[seq(
-        from = 1, by = ncol,
-        length.out = nrow(mat)
-      )]
-      np <- .Call(
-        rutf8_print_table, mat, print.gap, right, max, width,
-        stdout
-      )
-      nprint <- nprint + np
+      # array
+      if (any(dim == 0)) {
+        cat(sprintf("<%s array>\n", paste(dim, collapse = " x ")))
+      } else {
+        off <- 0
 
-      if (extra > 0 && nprint < max) {
-        last <- rbind(as.vector(fmt[n - extra + seq_len(extra)]))
-        rownames(last) <- labels[n - extra + 1]
-        np <- .Call(
-          rutf8_print_table, last, print.gap, right,
-          max - nprint, width, stdout
-        )
-        nprint <- nprint + np
-      }
-    }
-  } else if (length(dim) == 2) {
-    # matrix
-    if (all(dim == 0)) {
-      cat("<0 x 0 matrix>\n")
-    } else {
-      nprint <- .Call(
-        rutf8_print_table, fmt, print.gap, right, max,
-        width, stdout
-      )
-    }
-  } else {
-    nrow <- dim[1]
-    ncol <- dim[2]
-
-    # array
-    if (any(dim == 0)) {
-      cat(sprintf("<%s array>\n", paste(dim, collapse = " x ")))
-    } else {
-      off <- 0
-
-      base <- c(NA, NA, rep(1, length(dim) - 2))
-      label <- vector("character", length(dim))
-      for (r in 3:length(dim)) {
-        label[[r]] <- dimnames[[r]][[1]]
-      }
-
-      while (off + nrow * ncol <= n && nprint < max) {
-        cat(paste(label, collapse = ", "), "\n\n", sep = "")
-
-        ix <- off + seq_len(nrow * ncol)
-        mat <- matrix(fmt[ix], nrow, ncol, dimnames = dimnames[1:2])
-        np <- .Call(
-          rutf8_print_table, mat, print.gap, right,
-          max - nprint, width, stdout
-        )
-        nprint <- nprint + np
-        off <- off + (nrow * ncol)
-
-        r <- 3L
-        while (r < length(dim) && base[r] == dim[r]) {
-          base[r] <- 1L
-          label[r] <- dimnames[[r]][[1]]
-          r <- r + 1L
+        base <- c(NA, NA, rep(1, length(dim) - 2))
+        label <- vector("character", length(dim))
+        for (r in 3:length(dim)) {
+          label[[r]] <- dimnames[[r]][[1]]
         }
-        if (base[r] < dim[r]) {
-          base[r] <- base[r] + 1L
-          label[r] <- dimnames[[r]][[base[r]]]
+
+        while (off + nrow * ncol <= n && nprint < max) {
+          cat(paste(label, collapse = ", "), "\n\n", sep = "")
+
+          ix <- off + seq_len(nrow * ncol)
+          mat <- matrix(fmt[ix], nrow, ncol, dimnames = dimnames[1:2])
+          np <- .Call(
+            rutf8_print_table, mat, print.gap, right,
+            max - nprint, width, stdout
+          )
+          nprint <- nprint + np
+          off <- off + (nrow * ncol)
+
+          r <- 3L
+          while (r < length(dim) && base[r] == dim[r]) {
+            base[r] <- 1L
+            label[r] <- dimnames[[r]][[1]]
+            r <- r + 1L
+          }
+          if (base[r] < dim[r]) {
+            base[r] <- base[r] + 1L
+            label[r] <- dimnames[[r]][[base[r]]]
+          }
+          cat("\n")
         }
-        cat("\n")
       }
     }
   }
@@ -233,4 +154,107 @@ utf8_print <- function(x, chars = NULL, quote = TRUE, na.print = NULL,
   }
 
   invisible(x)
+}
+
+
+print_vector <- function(x, quote = TRUE, print.gap = NULL, right = FALSE,
+                         max = NULL, display = TRUE, stdout = TRUE) {
+  n <- length(x)
+  dim <- dim(x)
+  names <- names(x)
+  dimnames <- dimnames(x)
+  justify <- if (right) "right" else "left"
+
+  if (length(dim) == 1 && !is.null(dimnames)) {
+    names <- dimnames[[1]]
+  }
+
+  fmt <- utf8_encode(x,
+    width = NULL, quote = quote, justify = justify,
+    display = display
+  )
+
+  if (is.null(dim)) {
+    names <- utf8_encode(names, display = display)
+    names(fmt) <- names
+  } else {
+    dimnames <- lapply(dimnames, utf8_encode, display = display)
+    dimnames(fmt) <- dimnames
+  }
+
+  if (n == 0) {
+    cat("character(0)\n")
+    return(0L)
+  }
+
+  if (is.null(names) && n > 0) {
+    labels <- utf8_format(paste0("[", seq_len(n), "]"), justify = "right")
+  } else {
+    labels <- names
+  }
+
+  width <- getOption("width")
+  namewidth <- max(0, utf8_width(labels))
+  elt <- max(0, utf8_width(fmt))
+
+  nprint <- 0L
+  if (!is.null(names)) {
+    ncol <- max(1, width %/% (max(namewidth, elt) + print.gap))
+    extra <- n %% ncol
+
+    off <- 0
+    while (off + ncol <= n && nprint < max) {
+      ix <- (off + 1):(off + ncol)
+      mat <- matrix(fmt[ix],
+        ncol = ncol, byrow = TRUE,
+        dimnames = list(NULL, names[ix])
+      )
+
+      np <- .Call(
+        rutf8_print_table, mat, print.gap, right,
+        max - nprint, width, stdout
+      )
+      nprint <- nprint + np
+      off <- off + ncol
+    }
+
+    if (extra > 0 && nprint < max) {
+      ix <- n - extra + seq_len(extra)
+      last <- rbind(as.vector(fmt[ix]))
+      rownames(last) <- NULL
+      colnames(last) <- names[ix]
+
+      np <- .Call(
+        rutf8_print_table, last, print.gap, right,
+        max - nprint, width, stdout
+      )
+      nprint <- nprint + np
+    }
+  } else {
+    ncol <- max(1, (width - namewidth) %/% (elt + print.gap))
+    extra <- n %% ncol
+
+    mat <- matrix(fmt[seq_len(n - extra)], ncol = ncol, byrow = TRUE)
+    rownames(mat) <- labels[seq(
+      from = 1, by = ncol,
+      length.out = nrow(mat)
+    )]
+    np <- .Call(
+      rutf8_print_table, mat, print.gap, right, max, width,
+      stdout
+    )
+    nprint <- nprint + np
+
+    if (extra > 0 && nprint < max) {
+      last <- rbind(as.vector(fmt[n - extra + seq_len(extra)]))
+      rownames(last) <- labels[n - extra + 1]
+      np <- .Call(
+        rutf8_print_table, last, print.gap, right,
+        max - nprint, width, stdout
+      )
+      nprint <- nprint + np
+    }
+  }
+
+  nprint
 }
