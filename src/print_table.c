@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#include <assert.h>
 #include <errno.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -164,15 +165,12 @@ static int print_range(SEXP sx, int begin, int end, int print_gap,
 
 		for (j = begin; j < end; j++) {
 			name = STRING_ELT(col_names, j);
-			if (name == NA_STRING) {
-				str = "NA";
-				w = 2;
-				n = 2;
-			} else {
-				str = translate(name, is_stdout);
-				w = charsxp_width(name, 0, utf8);
-				n = strlen(str);
-			}
+			assert(name != NA_STRING);
+
+			str = translate(name, is_stdout);
+			w = charsxp_width(name, 0, utf8);
+			n = strlen(str);
+
 			if (j > begin || row_names != R_NilValue) {
 				PRINT_SPACES(print_gap);
 			}
@@ -192,15 +190,11 @@ static int print_range(SEXP sx, int begin, int end, int print_gap,
 
 		if (row_names != R_NilValue) {
 			name = STRING_ELT(row_names, i);
-			if (name == NA_STRING) {
-				str = "NA";
-				w = 2;
-				n = 2;
-			} else {
-				str = translate(name, is_stdout);
-				w = charsxp_width(name, 0, utf8);
-				n = strlen(str);
-			}
+			assert(name != NA_STRING);
+
+			str = translate(name, is_stdout);
+			w = charsxp_width(name, 0, utf8);
+			n = strlen(str);
 
 			PRINT_STRING(str, n);
 			PRINT_SPACES(namewidth - w);
@@ -271,8 +265,9 @@ SEXP rutf8_print_table(SEXP sx, SEXP sprint_gap, SEXP sright, SEXP smax,
 			CHECK_INTERRUPT(i);
 
 			elt = STRING_ELT(row_names, i);
-			w = (elt == NA_STRING ? 2
-					      : charsxp_width(elt, 0, utf8));
+			assert(elt != NA_STRING);
+
+			w = charsxp_width(elt, 0, utf8);
 			if (w > namewidth) {
 				namewidth = w;
 			}
@@ -290,23 +285,17 @@ SEXP rutf8_print_table(SEXP sx, SEXP sprint_gap, SEXP sright, SEXP smax,
 	if (col_names != R_NilValue) {
 		for (j = 0; j < ncol; j++) {
 			elt = STRING_ELT(col_names, j);
-			if (elt == NA_STRING) {
-				colwidths[j] = 2;
-			} else {
-				colwidths[j] = charsxp_width(elt, 0, utf8);
-			}
+			assert(elt != NA_STRING);
+			colwidths[j] = charsxp_width(elt, 0, utf8);
 		}
 	}
 
 	j = 0;
 	for (ix = 0; ix < nx; ix++) {
 		elt = STRING_ELT(sx, ix);
-		if (elt == NA_STRING) {
-			w = 0;
-		} else {
-			w = charsxp_width(elt, 0, utf8);
-		}
+		assert(elt != NA_STRING);
 
+		w = charsxp_width(elt, 0, utf8);
 		if (w > colwidths[j]) {
 			colwidths[j] = w;
 		}

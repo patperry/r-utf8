@@ -182,7 +182,7 @@ print_vector_unnamed <- function(x, quote, na.print, print.gap, right,
 
 element_width <- function(x, quote, na.print)
 {
-    fmt <- utf8_encode(x, width = NULL, quote = quote)
+    fmt <- utf8_encode(x, quote = quote)
     width <- max(0L, utf8_width(fmt[!is.na(x)], encode = FALSE))
     if (anyNA(x)) {
         width <- max(width, utf8_width(na.print))
@@ -261,11 +261,17 @@ print_table <- function(x, width, quote, na.print, print.gap, right, max,
     linewidth <- getOption("width")
     stdout <- as.integer(stdout()) == 1L
 
-    fmt <- utf8_encode(x, width = width, quote = quote, display = display)
-    fmt[is.na(x)] <- utf8_encode(na.print, display = display)
-    dimnames(fmt) <- lapply(dimnames(fmt), utf8_encode, display = display)
+    x <- utf8_encode(x, width = width, quote = quote, display = display)
+    x[is.na(x)] <- utf8_encode(na.print, display = display)
+    dimnames(x) <- lapply(dimnames(x), utf8_encode, display = display)
+    if (!is.null(rownames(x))) {
+        rownames(x)[is.na(rownames(x))] <- "NA"
+    }
+    if (!is.null(colnames(x))) {
+        colnames(x)[is.na(colnames(x))] <- "NA"
+    }
 
-    nprint <- .Call(rutf8_print_table, fmt, print.gap, right, max,
+    nprint <- .Call(rutf8_print_table, x, print.gap, right, max,
                     linewidth, stdout)
     nprint
 
