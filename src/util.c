@@ -39,12 +39,14 @@ int rutf8_as_justify(SEXP justify)
 
 int centre_pad_begin(struct utf8lite_render *r, int width_max, int fullwidth)
 {
-	int fill, bfill = 0;
+	int err = 0, fill, bfill = 0;
 
 	if ((fill = width_max - fullwidth) > 0) {
 		bfill = fill / 2;
-		pad_spaces(r, bfill);
+		TRY(utf8lite_render_spaces(r, bfill));
 	}
+exit:
+	CHECK_ERROR(err);
 	return bfill;
 }
 
@@ -139,17 +141,6 @@ int encodes_utf8(cetype_t ce)
 	default:
 		return 0;
 	}
-}
-
-
-void pad_spaces(struct utf8lite_render *r, int nspace)
-{
-	int err = 0;
-	while (nspace-- > 0) {
-		TRY(utf8lite_render_string(r, " "));
-	}
-exit:
-	CHECK_ERROR(err);
 }
 
 

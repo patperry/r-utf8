@@ -144,7 +144,7 @@ SEXP rutf8_bytes_lencode(struct utf8lite_render *r,
 	}
 
 	if (width < width_min) {
-		pad_spaces(r, width_min - width);
+		TRY(utf8lite_render_spaces(r, width_min - width));
 	}
 
 	ans = mkCharLenCE((char *)r->string, r->length, CE_UTF8);
@@ -173,7 +173,7 @@ SEXP rutf8_bytes_rencode(struct utf8lite_render *r,
 		// ensure fullwidth + quotes doesn't overflow
 		if (fullwidth <= width_min - quotes) {
 			fullwidth += quotes;
-			pad_spaces(r, width_min - fullwidth);
+			TRY(utf8lite_render_spaces(r, width_min - fullwidth));
 		}
 	}
 
@@ -210,7 +210,7 @@ SEXP rutf8_bytes_lformat(struct utf8lite_render *r,
 	const uint8_t *ptr, *end;
 	const char *ellipsis_str;
 	uint8_t byte;
-	int err = 0, w, trunc, bfill, fullwidth, width, quotes, ellipsis;
+	int err = 0, w, trunc, bfill, efill, fullwidth, width, quotes, ellipsis;
 
 	quotes = quote ? 2 : 0;
 	ellipsis = utf8 ? 1 : 3;
@@ -244,7 +244,8 @@ SEXP rutf8_bytes_lformat(struct utf8lite_render *r,
 	}
 
 	if (!trim) {
-		pad_spaces(r, width_max - width - quotes - bfill);
+		efill = width_max - width - quotes - bfill;
+		TRY(utf8lite_render_spaces(r, efill));
 	}
 
 	ans = mkCharLenCE((char *)r->string, r->length, CE_BYTES);
@@ -288,7 +289,7 @@ SEXP rutf8_bytes_rformat(struct utf8lite_render *r,
 	}
 
 	if (!trim) {
-		pad_spaces(r, width_max - width - quotes);
+		TRY(utf8lite_render_spaces(r, width_max - width - quotes));
 	}
 
 	if (trunc) {

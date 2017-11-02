@@ -225,7 +225,6 @@ int centre_pad_begin(struct utf8lite_render *r, int width_max, int fullwidth);
 int charwidth(uint32_t code);
 int charsxp_width(SEXP charsxp, int quote, int utf8);
 int encodes_utf8(cetype_t ce);
-void pad_spaces(struct utf8lite_render *r, int nspace);
 const char *translate_utf8(SEXP x);
 
 #endif /* RUTF8_H */

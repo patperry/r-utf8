@@ -137,9 +137,7 @@ SEXP rutf8_text_lencode(struct utf8lite_render *r,
 		}
 	}
 
-	if (width < width_min) {
-		pad_spaces(r, width_min - width);
-	}
+	TRY(utf8lite_render_spaces(r, width_min - width));
 
 	ans = mkCharLenCE((char *)r->string, r->length, CE_UTF8);
 	utf8lite_render_clear(r);
@@ -164,7 +162,7 @@ SEXP rutf8_text_rencode(struct utf8lite_render *r,
 		// ensure fullwidth + quotes doesn't overflow
 		if (fullwidth <= width_min - quotes) {
 			fullwidth += quotes;
-			pad_spaces(r, width_min - fullwidth);
+			TRY(utf8lite_render_spaces(r, width_min - fullwidth));
 		}
 	}
 
@@ -197,7 +195,7 @@ SEXP rutf8_text_lformat(struct utf8lite_render *r,
 	SEXP ans = R_NilValue;
 	struct utf8lite_graphscan scan;
 	const char *ellipsis_str;
-	int err = 0, w, trunc, bfill, fullwidth, width, quotes, ellipsis;
+	int err = 0, w, trunc, bfill, efill, fullwidth, width, quotes, ellipsis;
 
 	quotes = quote ? 2 : 0;
 	ellipsis = utf8 ? 1 : 3;
@@ -229,7 +227,8 @@ SEXP rutf8_text_lformat(struct utf8lite_render *r,
 	}
 
 	if (!trim) {
-		pad_spaces(r, width_max - width - quotes - bfill);
+		efill = width_max - width - quotes - bfill;
+		TRY(utf8lite_render_spaces(r, efill));
 	}
 
 	ans = mkCharLenCE((char *)r->string, r->length, CE_UTF8);
@@ -271,7 +270,7 @@ SEXP rutf8_text_rformat(struct utf8lite_render *r,
 	}
 
 	if (!trim) {
-		pad_spaces(r, width_max - width - quotes);
+		TRY(utf8lite_render_spaces(r, width_max - width - quotes));
 	}
 
 	if (trunc) {
