@@ -196,6 +196,28 @@ int utf8lite_render_newlines(struct utf8lite_render *r, int nline)
 }
 
 
+int utf8lite_render_spaces(struct utf8lite_render *r, int nspace)
+{
+	char *end;
+
+	CHECK_ERROR(r);
+
+	if (nspace <= 0) {
+		return 0;
+	}
+
+	utf8lite_render_grow(r, nspace);
+	CHECK_ERROR(r);
+
+	end = r->string + r->length;
+	memset(end, ' ', nspace);
+	r->length += nspace;
+	r->string[r->length] = '\0';
+
+	return 0;
+}
+
+
 static int maybe_indent(struct utf8lite_render *r)
 {
 	int ntab = r->indent;

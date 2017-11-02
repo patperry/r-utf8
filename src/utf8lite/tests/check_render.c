@@ -45,6 +45,12 @@ static void clear(void)
 }
 
 
+static void spaces(int n)
+{
+	ck_assert(!utf8lite_render_spaces(&render, n));
+}
+
+
 static void newlines(int n)
 {
 	ck_assert(!utf8lite_render_newlines(&render, n));
@@ -95,6 +101,29 @@ static int width(const struct utf8lite_text *text)
 
 	return width;
 }
+
+
+START_TEST(test_format_spaces)
+{
+	spaces(-1);
+	ck_assert_str_eq(render.string, "");
+
+	spaces(0);
+	ck_assert_str_eq(render.string, "");
+
+	spaces(1);
+	ck_assert_str_eq(render.string, " ");
+	clear();
+
+	spaces(2);
+	ck_assert_str_eq(render.string, "  ");
+	clear();
+
+	spaces(3);
+	ck_assert_str_eq(render.string, "   ");
+	clear();
+}
+END_TEST
 
 
 START_TEST(test_format_newlines)
@@ -791,6 +820,7 @@ Suite *render_suite(void)
 
 	tc = tcase_create("format");
         tcase_add_checked_fixture(tc, setup_render, teardown_render);
+        tcase_add_test(tc, test_format_spaces);
         tcase_add_test(tc, test_format_newlines);
         tcase_add_test(tc, test_format_newlines_custom);
         tcase_add_test(tc, test_format_indent);
