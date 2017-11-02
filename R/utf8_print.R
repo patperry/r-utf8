@@ -65,9 +65,11 @@ utf8_print <- function(x, chars = NULL, quote = TRUE, na.print = NULL,
                               width = width, stdout = stdout)
     }
 
-    if (nprint < length(x)) {
-        cat(sprintf(" [ reached getOption(\"max.print\") -- omitted %d entries ]\n",
-                    length(x) - nprint))
+    n <- length(x)
+    if (nprint < n) {
+        cat(sprintf(
+            " [ reached getOption(\"max.print\") -- omitted %d entries ]\n",
+            n - nprint))
     }
 
     invisible(x)
