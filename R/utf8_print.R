@@ -274,7 +274,6 @@ print_table <- function(x, width, quote, na.print, print.gap, right, max,
     nprint <- .Call(rutf8_print_table, x, print.gap, right, max,
                     linewidth, stdout)
     nprint
-
 }
 
 
