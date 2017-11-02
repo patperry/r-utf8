@@ -57,12 +57,10 @@ utf8_print <- function(x, chars = NULL, quote = TRUE, na.print = NULL,
                                width = width, stdout = stdout)
     } else if (length(dim) == 2) {
         nprint <- print_matrix(fmt, quote = quote, print.gap = print.gap,
-                               right = right, max = max, display = display,
-                               width = width, stdout = stdout)
+                               right = right, max = max, display = display)
     } else {
         nprint <- print_array(fmt, quote = quote, print.gap = print.gap,
-                              right = right, max = max, display = display,
-                              width = width, stdout = stdout)
+                              right = right, max = max, display = display)
     }
 
     n <- length(x)
@@ -183,28 +181,19 @@ print_vector_unnamed <- function(x, quote = TRUE, print.gap = NULL,
 }
 
 
-print_matrix <- function(x, quote = TRUE, print.gap = NULL, right = FALSE,
-                         max = NULL, display = TRUE, width = NULL,
-                         stdout = TRUE)
+print_matrix <- function(x, quote, print.gap, right, max, display)
 {
     if (all(dim(x) == 0)) {
         cat("<0 x 0 matrix>\n")
         return(0L)
     }
-
-    justify <- if (right) "right" else "left"
-    fmt <- utf8_encode(x, quote = quote, justify = justify, display = display)
-    fmt <- encode_dimnames(fmt, display = display)
-
-    nprint <- .Call(rutf8_print_table, fmt, print.gap, right, max, width,
-                    stdout)
-    nprint
+    x <- set_dimnames(x)
+    print_table(x, quote = quote, print.gap = print.gap, right = right,
+                max = max, display = display)
 }
 
 
-print_array <- function(x, quote = TRUE, print.gap = NULL, right = FALSE,
-                        max = NULL, display = TRUE, width = NULL,
-                        stdout = TRUE)
+print_array <- function(x, quote, print.gap, right, max, display)
 {
     n <- length(x)
     dim <- dim(x)
@@ -213,11 +202,8 @@ print_array <- function(x, quote = TRUE, print.gap = NULL, right = FALSE,
         return(0L)
     }
 
-    justify <- if (right) "right" else "left"
-    fmt <- utf8_encode(x, width = 0L, quote = quote, justify = justify,
-                        display = display)
-    fmt <- encode_dimnames(fmt, display = display)
-    dimnames <- dimnames(fmt)
+    x <- set_dimnames(x)
+    dimnames <- dimnames(x)
 
     nrow <- dim[1]
     ncol <- dim[2]
@@ -234,9 +220,9 @@ print_array <- function(x, quote = TRUE, print.gap = NULL, right = FALSE,
         cat(paste(label, collapse = ", "), "\n\n", sep = "")
 
         ix <- off + seq_len(nrow * ncol)
-        mat <- matrix(fmt[ix], nrow, ncol, dimnames = dimnames[1:2])
-        np <- .Call(rutf8_print_table, mat, print.gap, right,
-                    max - nprint, width, stdout)
+        mat <- matrix(x[ix], nrow, ncol, dimnames = dimnames[1:2])
+        np <- print_table(mat, quote = quote, print.gap = print.gap,
+                          right = right, max = max - nprint, display = display)
         nprint <- nprint + np
         off <- off + (nrow * ncol)
 
@@ -257,7 +243,23 @@ print_array <- function(x, quote = TRUE, print.gap = NULL, right = FALSE,
 }
 
 
-encode_dimnames <- function(x, display = TRUE)
+print_table <- function(x, quote, print.gap, right, max, display)
+{
+    width <- getOption("width")
+    stdout <- as.integer(stdout()) == 1
+
+    justify <- if (right) "right" else "left"
+    fmt <- utf8_encode(x, quote = quote, justify = justify, display = display)
+    dimnames(fmt) <- lapply(dimnames(fmt), utf8_encode, display = display)
+
+    nprint <- .Call(rutf8_print_table, fmt, print.gap, right, max, width,
+                    stdout)
+    nprint
+
+}
+
+
+set_dimnames <- function(x)
 {
     dim <- dim(x)
     dimnames <- dimnames(x)
@@ -281,7 +283,6 @@ encode_dimnames <- function(x, display = TRUE)
         }
     }
 
-    dimnames <- lapply(dimnames, utf8_encode, display = display)
     dimnames(x) <- dimnames
     
     x
