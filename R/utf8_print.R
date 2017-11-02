@@ -278,7 +278,6 @@ print_array <- function(x, quote, na.print, print.gap, right, max, display) {
 print_table <- function(x, width, quote, na.print, print.gap, right, max,
                         display) {
   linewidth <- getOption("width")
-  stdout <- as.integer(stdout()) == 1L
 
   x <- utf8_encode(x, width = width, quote = quote, display = display)
   x[is.na(x)] <- utf8_encode(na.print, display = display)
@@ -290,10 +289,7 @@ print_table <- function(x, width, quote, na.print, print.gap, right, max,
     colnames(x)[is.na(colnames(x))] <- "NA"
   }
 
-  nprint <- .Call(
-    rutf8_print_table, x, print.gap, right, max,
-    linewidth, stdout
-  )
+  nprint <- .Call(rutf8_render_table, x, print.gap, right, max, linewidth)
   nprint
 }
 
