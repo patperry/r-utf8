@@ -137,9 +137,9 @@ static const char *translate(SEXP charsxp, int is_stdout)
 		nbuf = 0; \
 	} while (0)
 
-static int print_range(SEXP sx, int begin, int end, int print_gap,
-			int right, int max, int is_stdout, int namewidth,
-			const int *colwidths)
+static int print_range(struct utf8lite_render *render, SEXP sx, int begin,
+		       int end, int print_gap, int right, int max,
+		       int is_stdout, int namewidth, const int *colwidths)
 {
 	SEXP elt, name, dim_names, row_names, col_names;
 	R_xlen_t ix;
@@ -236,12 +236,16 @@ out:
 SEXP rutf8_print_table(SEXP sx, SEXP sprint_gap, SEXP sright, SEXP smax,
 		       SEXP swidth, SEXP sis_stdout)
 {
-	SEXP elt, dim_names, row_names, col_names;
+	SEXP srender, elt, dim_names, row_names, col_names;
+	struct utf8lite_render *render;
 	R_xlen_t ix, nx;
 	int i, j, nrow, ncol;
 	int print_gap, right, max, width, is_stdout, utf8;
 	int begin, end, w, nprint, linewidth, namewidth, *colwidths;
 	int nprot = 0;
+
+	PROTECT(srender = rutf8_alloc_render(0)); nprot++;
+	render = rutf8_as_render(srender);
 
 	PROTECT(dim_names = getAttrib(sx, R_DimNamesSymbol)); nprot++;
 	row_names = VECTOR_ELT(dim_names, 0);
@@ -275,9 +279,9 @@ SEXP rutf8_print_table(SEXP sx, SEXP sprint_gap, SEXP sright, SEXP smax,
 	}
 
 	if (ncol == 0) {
-		nprint = print_range(sx, 0, 0, print_gap, right, max,
+		nprint = print_range(render, sx, 0, 0, print_gap, right, max,
 				     is_stdout, namewidth, NULL);
-		goto out;
+		goto exit;
 	}
 
 	colwidths = (void *)R_alloc(ncol, sizeof(*colwidths));
@@ -337,13 +341,13 @@ SEXP rutf8_print_table(SEXP sx, SEXP sprint_gap, SEXP sright, SEXP smax,
 			end++;
 		}
 
-		nprint += print_range(sx, begin, end, print_gap, right,
+		nprint += print_range(render, sx, begin, end, print_gap, right,
 				      max - nprint, is_stdout, namewidth,
 				      colwidths);
 		begin = end;
 	}
-
-out:
+exit:
+	rutf8_free_render(srender);
 	UNPROTECT(nprot);
 	return ScalarInteger(nprint);
 }
