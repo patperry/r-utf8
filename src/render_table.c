@@ -23,7 +23,8 @@
 #include "rutf8.h"
 
 
-static void render_entry(struct utf8lite_render *r, SEXP sx, int right, int pad)
+static void render_entry(struct utf8lite_render *r, SEXP sx, int right,
+			 int pad)
 {
 	int err = 0;
 
