@@ -57,32 +57,10 @@ utf8_print <- function(x, chars = NULL, quote = TRUE, na.print = NULL,
                                right = right, max = max, display = display,
                                stdout = stdout)
     } else {
-        names <- names(fmt)
-        dimnames <- dimnames(fmt)
-
-        if (is.null(dimnames)) {
-            dimnames <- vector("list", length(dim))
-        }
-
-        for (i in seq_along(dim)) {
-            d <- dim[[i]]
-            ix <- seq_len(d)
-            if (is.null(dimnames[[i]]) && d > 0) {
-                if (i == 1) {
-                    dimnames[[i]] <- format(paste0("[", ix, ",]"),
-                                            justify = "right")
-                } else if (i == 2) {
-                    dimnames[[i]] <- paste0("[,", ix, "]")
-                } else {
-                    dimnames[[i]] <- as.character(ix)
-                }
-            }
-        }
-
         fmt <- utf8_encode(fmt, width = 0L, quote = quote, justify = justify,
                            display = display)
-        dimnames <- lapply(dimnames, utf8_encode, display = display)
-        dimnames(fmt) <- dimnames
+        fmt <- encode_dimnames(fmt, display = display)
+        dimnames <- dimnames(fmt)
 
         nprint <- 0L
 
@@ -150,24 +128,19 @@ print_vector <- function(x, quote = TRUE, print.gap = NULL, right = FALSE,
 {
     n <- length(x)
     dim <- dim(x)
-    names <- names(x)
-    dimnames <- dimnames(x)
     justify <- if (right) "right" else "left"
 
-    if (length(dim) == 1 && !is.null(dimnames)) {
+    dimnames <- dimnames(x)
+    if (!is.null(dimnames)) {
         names <- dimnames[[1]]
+    } else {
+        names <- names(x)
     }
 
     fmt <- utf8_encode(x, width = NULL, quote = quote, justify = justify,
                        display = display)
-
-    if (is.null(dim)) {
-        names <- utf8_encode(names, display = display)
-        names(fmt) <- names
-    } else {
-        dimnames <- lapply(dimnames, utf8_encode, display = display)
-        dimnames(fmt) <- dimnames
-    }
+    names <- utf8_encode(names, display = display)
+    names(fmt) <- names
 
     if (n == 0) {
         cat("character(0)\n")
@@ -232,4 +205,35 @@ print_vector <- function(x, quote = TRUE, print.gap = NULL, right = FALSE,
     }
 
     nprint
+}
+
+
+encode_dimnames <- function(x, display = TRUE)
+{
+    dim <- dim(x)
+    dimnames <- dimnames(x)
+
+    if (is.null(dimnames)) {
+        dimnames <- vector("list", length(dim))
+    }
+
+    for (i in seq_along(dim)) {
+        d <- dim[[i]]
+        ix <- seq_len(d)
+        if (is.null(dimnames[[i]]) && d > 0) {
+            if (i == 1) {
+                dimnames[[i]] <- format(paste0("[", ix, ",]"),
+                                        justify = "right")
+            } else if (i == 2) {
+                dimnames[[i]] <- paste0("[,", ix, "]")
+            } else {
+                dimnames[[i]] <- as.character(ix)
+            }
+        }
+    }
+
+    dimnames <- lapply(dimnames, utf8_encode, display = display)
+    dimnames(x) <- dimnames
+    
+    x
 }
