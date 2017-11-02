@@ -169,33 +169,32 @@ print_vector_named <- function(x, quote = TRUE, print.gap = NULL,
 print_vector_unnamed <- function(x, quote = TRUE, print.gap = NULL,
                                  right = FALSE, max = NULL, display = TRUE,
                                  width = NULL, stdout = TRUE) {
-  justify <- if (right) "right" else "left"
-  fmt <- utf8_encode(x,
-    width = NULL, quote = quote, justify = justify,
-    display = display
-  )
+  fmt <- utf8_encode(x, width = NULL, quote = quote)
+  elt <- max(0, utf8_width(fmt, encode = FALSE))
 
   n <- length(x)
   names <- utf8_format(paste0("[", seq_len(n), "]"), justify = "right")
-  namewidth <- max(0, utf8_width(names))
+  namewidth <- max(0, utf8_width(names, encode = FALSE))
 
-  elt <- max(0, utf8_width(fmt))
   ncol <- max(1, (width - namewidth) %/% (elt + print.gap))
   extra <- n %% ncol
 
-  mat <- matrix(fmt[seq_len(n - extra)], ncol = ncol, byrow = TRUE)
+  mat <- matrix(x[seq_len(n - extra)], ncol = ncol, byrow = TRUE)
   rownames(mat) <- names[seq(from = 1, by = ncol, length.out = nrow(mat))]
-  nprint <- .Call(
-    rutf8_print_table, mat, print.gap, right, max, width,
-    stdout
+
+  nprint <- print_table(mat,
+    width = elt, quote = quote,
+    print.gap = print.gap, right = right, max = max,
+    display = display
   )
 
   if (extra > 0 && nprint < max) {
-    last <- rbind(as.vector(fmt[n - extra + seq_len(extra)]))
+    last <- rbind(as.vector(x[n - extra + seq_len(extra)]))
     rownames(last) <- names[n - extra + 1]
-    np <- .Call(
-      rutf8_print_table, last, print.gap, right,
-      max - nprint, width, stdout
+    np <- print_table(last,
+      width = elt, quote = quote,
+      print.gap = print.gap, right = right,
+      max = max - nprint, display = display
     )
     nprint <- nprint + np
   }
@@ -211,8 +210,8 @@ print_matrix <- function(x, quote, print.gap, right, max, display) {
   }
   x <- set_dimnames(x)
   print_table(x,
-    quote = quote, print.gap = print.gap, right = right,
-    max = max, display = display
+    width = 0L, quote = quote, print.gap = print.gap,
+    right = right, max = max, display = display
   )
 }
 
@@ -245,8 +244,9 @@ print_array <- function(x, quote, print.gap, right, max, display) {
     ix <- off + seq_len(nrow * ncol)
     mat <- matrix(x[ix], nrow, ncol, dimnames = dimnames[1:2])
     np <- print_table(mat,
-      quote = quote, print.gap = print.gap,
-      right = right, max = max - nprint, display = display
+      width = 0L, quote = quote,
+      print.gap = print.gap, right = right,
+      max = max - nprint, display = display
     )
     nprint <- nprint + np
     off <- off + (nrow * ncol)
@@ -268,17 +268,20 @@ print_array <- function(x, quote, print.gap, right, max, display) {
 }
 
 
-print_table <- function(x, quote, print.gap, right, max, display) {
-  width <- getOption("width")
+print_table <- function(x, width, quote, print.gap, right, max, display) {
+  linewidth <- getOption("width")
   stdout <- as.integer(stdout()) == 1
 
   justify <- if (right) "right" else "left"
-  fmt <- utf8_encode(x, quote = quote, justify = justify, display = display)
+  fmt <- utf8_encode(x,
+    width = width, quote = quote, justify = justify,
+    display = display
+  )
   dimnames(fmt) <- lapply(dimnames(fmt), utf8_encode, display = display)
 
   nprint <- .Call(
-    rutf8_print_table, fmt, print.gap, right, max, width,
-    stdout
+    rutf8_print_table, fmt, print.gap, right, max,
+    linewidth, stdout
   )
   nprint
 }
