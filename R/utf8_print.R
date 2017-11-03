@@ -284,10 +284,10 @@ print_table <- function(x, width, quote, na.print, print.gap, right, max,
   x[is.na(x)] <- utf8_encode(na.print, display = display)
   dimnames(x) <- lapply(dimnames(x), utf8_encode, display = display)
   if (!is.null(rownames(x))) {
-    rownames(x)[is.na(rownames(x))] <- "NA"
+    rownames(x)[is.na(rownames(x))] <- "<NA>"
   }
   if (!is.null(colnames(x))) {
-    colnames(x)[is.na(colnames(x))] <- "NA"
+    colnames(x)[is.na(colnames(x))] <- "<NA>"
   }
 
   str <- .Call(rutf8_render_table, x, print.gap, right, max, linewidth)
