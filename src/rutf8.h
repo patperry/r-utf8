@@ -216,11 +216,9 @@ SEXP rutf8_utf8_normalize(SEXP x, SEXP map_case, SEXP map_compat,
 SEXP rutf8_utf8_valid(SEXP x);
 SEXP rutf8_utf8_width(SEXP x, SEXP encode, SEXP quote, SEXP utf8);
 
-/* internal utility functions */
+/* utility functions */
 int rutf8_as_justify(SEXP justify);
 int rutf8_encodes_utf8(cetype_t ce);
 const char *rutf8_translate_utf8(SEXP x);
-
-int centre_pad_begin(struct utf8lite_render *r, int width_max, int fullwidth);
 
 #endif /* RUTF8_H */

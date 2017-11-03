@@ -110,7 +110,8 @@ SEXP rutf8_bytes_lencode(struct utf8lite_render *r,
 	if (centre && width_min > 0) {
 		fullwidth = rutf8_bytes_width(bytes, r->flags);
 		if (fullwidth <= width_min - quotes) {
-			width = centre_pad_begin(r, width_min, fullwidth);
+			width = (width_min - fullwidth - quotes) / 2;
+			TRY(utf8lite_render_spaces(r, width));
 		}
 	}
 
@@ -220,7 +221,10 @@ SEXP rutf8_bytes_lformat(struct utf8lite_render *r,
 	if (centre && !trim) {
 		fullwidth = (rutf8_bytes_lwidth(bytes, flags, chars, ellipsis)
 			     + quotes);
-		bfill = centre_pad_begin(r, width_max, fullwidth);
+		if (fullwidth < width_max) {
+			bfill = (width_max - fullwidth) / 2;
+			TRY(utf8lite_render_spaces(r, bfill));
+		}
 	}
 
 	width = 0;
