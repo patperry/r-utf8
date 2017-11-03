@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
+#include <limits.h>
 #include "rutf8.h"
 
 
-SEXP rutf8_utf8_width(SEXP sx, SEXP sencode, SEXP sutf8)
+SEXP rutf8_utf8_width(SEXP sx, SEXP sencode, SEXP squote, SEXP sutf8)
 {
 	SEXP ans;
 	struct rutf8_string elt;
 	R_xlen_t i, n;
-	int flags, encode, utf8, w;
+	int flags, encode, quote, quotes, utf8, w;
 
 	if (sx == R_NilValue) {
 		return R_NilValue;
@@ -32,6 +33,7 @@ SEXP rutf8_utf8_width(SEXP sx, SEXP sencode, SEXP sutf8)
 	}
 	n = XLENGTH(sx);
 	encode = LOGICAL(sencode)[0] == TRUE;
+	quote = LOGICAL(squote)[0] == TRUE;
 	utf8 = LOGICAL(sutf8)[0] == TRUE;
 
 	flags = UTF8LITE_ENCODE_C;
@@ -44,6 +46,10 @@ SEXP rutf8_utf8_width(SEXP sx, SEXP sencode, SEXP sutf8)
 		flags |= UTF8LITE_ESCAPE_EXTENDED;
 #endif
 	}
+	if (quote) {
+		flags |= UTF8LITE_ESCAPE_DQUOTE;
+	}
+	quotes = quote ? 2 : 0;
 
 	PROTECT(ans = allocVector(INTSXP, n));
 	setAttrib(ans, R_NamesSymbol, getAttrib(sx, R_NamesSymbol));
@@ -64,6 +70,11 @@ SEXP rutf8_utf8_width(SEXP sx, SEXP sencode, SEXP sutf8)
 			w = rutf8_string_width(&elt, flags);
 			if (w < 0) {
 				w = NA_INTEGER;
+			} else if (w > INT_MAX - quotes) {
+				Rf_error("width exceeds maximum (%d)",
+					 INT_MAX);
+			} else {
+				w += quotes;
 			}
 		}
 		INTEGER(ans)[i] = w;

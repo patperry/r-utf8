@@ -5,12 +5,15 @@
 Compute the display widths of the elements of a character object.
 }
 \usage{
-utf8_width(x, encode = TRUE)
+utf8_width(x, encode = TRUE, quote = FALSE)
 }
 \arguments{
     \item{x}{character object.}
 
     \item{encode}{whether to encode the object before measuring its
+        width.}
+
+    \item{quote}{whether to quote the object before measuring its
         width.}
 }
 \details{
@@ -39,4 +42,5 @@ Encoding(x) <- c("UTF-8", "UTF-8", "bytes")
 utf8_width(x)
 utf8_width(x, encode = FALSE)
 utf8_width('"')
+utf8_width('"', quote = TRUE)
 }

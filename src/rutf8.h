@@ -215,7 +215,7 @@ SEXP rutf8_utf8_format(SEXP x, SEXP trim, SEXP chars, SEXP justify,
 SEXP rutf8_utf8_normalize(SEXP x, SEXP map_case, SEXP map_compat,
 			  SEXP map_quote, SEXP remove_ignorable);
 SEXP rutf8_utf8_valid(SEXP x);
-SEXP rutf8_utf8_width(SEXP x, SEXP encode, SEXP utf8);
+SEXP rutf8_utf8_width(SEXP x, SEXP encode, SEXP quote, SEXP utf8);
 
 /* internal utility functions */
 int rutf8_as_justify(SEXP justify);
