@@ -8,7 +8,7 @@
 ^CONDUCT[.]md$
 ^Makefile$
 ^NEWS[.]md$
-^README[.]md$
+^README[.]Rmd$
 ^TODO[.]md$
 ^appveyor[.]yml$
 ^dist$

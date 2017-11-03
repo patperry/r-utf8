@@ -3,7 +3,7 @@ UTF8_LIB= src/utf8.so
 BUILT_VIGNETTES= \
 	vignettes/utf8.Rmd
 
-all: $(UTF8_LIB) $(BUILT_VIGNETTES)
+all: $(UTF8_LIB) README.md $(BUILT_VIGNETTES)
 
 $(UTF8_LIB):
 	$(RSCRIPT) -e 'devtools::compile_dll()'
@@ -11,14 +11,11 @@ $(UTF8_LIB):
 NEWS: NEWS.md
 	sed -e 's/^### //g; s/`//g' $< > $@
 
-README: README.md
-	sed -e '/\*Corpus\*/,$$!d' \
-		-e 's/…../.../' \
-		-e 's/..…/.../' \
-		-e 's/⋮/./' $< > $@
+README.md: README.Rmd
+	$(RSCRIPT) -e 'devtools::load_all(); knitr::knit("README.Rmd")'
 
 vignettes/%.Rmd: vignettes/%.Rmd.in
-	$(RSCRIPT) -e 'devtools::load_all("."); setwd("vignettes"); knitr::knit(basename("$<"), basename("$@"))'
+	$(RSCRIPT) -e 'devtools::load_all(); setwd("vignettes"); knitr::knit(basename("$<"), basename("$@"))'
 
 check: $(UTF8_LIB)
 	$(RSCRIPT) -e 'devtools::test(".")'
@@ -29,13 +26,13 @@ clean:
 cov:
 	$(RSCRIPT) -e 'covr::package_coverage(line_exclusions = c("R/deprecated.R", list.files("src/utf8lite", recursive = TRUE, full.names = TRUE)))'
 
-dist: $(BUILT_VIGNETTES) NEWS README
+dist: $(BUILT_VIGNETTES) NEWS README.md
 	mkdir -p dist && cd dist && R CMD build ..
 
 distclean: clean
 	rm -rf $(BUILT_VIGNETTES)
 
-doc: $(BUILT_VIGNETTES) NEWS README
+doc: $(BUILT_VIGNETTES) NEWS README.md
 
 install: $(UTF8_LIB)
 	$(RSCRIPT) -e 'devtools::install(".")'
