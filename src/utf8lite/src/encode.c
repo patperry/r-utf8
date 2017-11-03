@@ -180,7 +180,7 @@ success:
 	goto out;
 
 inval_incomplete:
-	utf8lite_message_set(msg, "too few continuation bytes"
+	utf8lite_message_set(msg, "not enough continuation bytes"
 			     " after leading byte (0x%02X)",
 			     (unsigned)ch1);
 	goto error;
@@ -191,9 +191,9 @@ inval_lead:
 	goto error;
 
 inval_cont:
-	utf8lite_message_set(msg, "invalid continuation byte (0x%02X)"
-			     " after leading byte (0x%02X)",
-			     (unsigned)ch, (unsigned)ch1);
+	utf8lite_message_set(msg, "leading byte 0x%02X followed by"
+			     " invalid continuation byte (0x%02X)",
+			     (unsigned)ch1, (unsigned)ch);
 	goto error;
 
 error:
