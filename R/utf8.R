@@ -16,7 +16,7 @@
 # converts a character vector from its declared encoding to UTF-8
 as_utf8 <- function(x, normalize = TRUE)
 {
-    ans <- .Call(rutf8_utf8_coerce, x)
+    ans <- .Call(rutf8_as_utf8, x)
     if (normalize) {
         ans <- utf8_normalize(ans)
     }
