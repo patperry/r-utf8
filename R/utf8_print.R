@@ -270,7 +270,10 @@ print_table <- function(x, width, quote, na.print, print.gap, right, max,
         colnames(x)[is.na(colnames(x))] <- "NA"
     }
 
-    nprint <- .Call(rutf8_render_table, x, print.gap, right, max, linewidth)
+    str <- .Call(rutf8_render_table, x, print.gap, right, max, linewidth)
+    cat(str)
+
+    nprint <- min(max, length(x))
     nprint
 }
 
