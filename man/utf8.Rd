@@ -1,3 +1,4 @@
+\name{as_utf8}
 \title{UTF-8 Character Encoding}
 \alias{as_utf8}
 \alias{utf8_valid}
