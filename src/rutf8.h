@@ -22,7 +22,7 @@
 #include <Rdefines.h>
 #include "utf8lite/src/utf8lite.h"
 
-#define RUTF8_ELLIPSIS "\xE2\x80\xA6" // U+2026, width 1
+#define RUTF8_ELLIPSIS "\xE2\x80\xA6" /* U+2026 */
 
 #define CHECK_EVERY 1000
 #define CHECK_INTERRUPT(i) \
