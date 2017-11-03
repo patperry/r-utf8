@@ -12,6 +12,7 @@ knitr::opts_chunk$set(
     comment = "#>",
     fig.path = "README-"
 )
+options(width = 95)
 ```
 
 utf8
@@ -93,7 +94,9 @@ printable. Use `utf8_print` for an updated print function:
 
 ```{r}
 print(intToUtf8(0x1F600 + 0:79)) # with default R print function
+
 utf8_print(intToUtf8(0x1F600 + 0:79)) # with utf8_print, truncates line
+
 utf8_print(intToUtf8(0x1F600 + 0:79), chars = 1000) # higher character limit
 ```
 
