@@ -546,6 +546,27 @@ START_TEST(test_encode_emoji_extended_zwsp)
 END_TEST
 
 
+START_TEST(test_encode_emoji_zwsp_rmdi)
+{
+	set_flags(UTF8LITE_ENCODE_EMOJI | UTF8LITE_ENCODE_RMDI);
+
+	ck_assert(!utf8lite_render_text(&render, JS("\\u2614")));
+	ck_assert_str_eq(render.string, "\xe2\x98\x94\xe2\x80\x8b");
+	clear();
+
+	set_flags(UTF8LITE_ENCODE_EMOJI | UTF8LITE_ESCAPE_UTF8);
+	ck_assert(!utf8lite_render_text(&render, JS("\\u2614")));
+	ck_assert_str_eq(render.string, "\\u2614");
+	clear();
+
+	set_flags(UTF8LITE_ENCODE_EMOJI | UTF8LITE_ESCAPE_EXTENDED);
+	ck_assert(!utf8lite_render_text(&render, JS("\\u2614")));
+	ck_assert_str_eq(render.string, "\xe2\x98\x94\xe2\x80\x8b");
+	clear();
+}
+END_TEST
+
+
 START_TEST(test_byte_single)
 {
 	char byte;
@@ -844,6 +865,7 @@ Suite *render_suite(void)
         tcase_add_test(tc, test_encode_emoji_plain);
         tcase_add_test(tc, test_encode_emoji_zwsp);
         tcase_add_test(tc, test_encode_emoji_extended_zwsp);
+        tcase_add_test(tc, test_encode_emoji_zwsp_rmdi);
         suite_add_tcase(s, tc);
 
 	tc = tcase_create("bytes");
