@@ -28,12 +28,13 @@ utf8_valid <- function(x) {
 }
 
 # gets the width; NA for invalid or nonprintable sequences
-utf8_width <- function(x, encode = TRUE) {
+utf8_width <- function(x, encode = TRUE, quote = FALSE) {
   with_rethrow({
     encode <- as_option("encode", encode)
+    quote <- as_option("quote", quote)
   })
   utf8 <- (Sys.getlocale("LC_CTYPE") != "C")
-  .Call(rutf8_utf8_width, x, encode, utf8)
+  .Call(rutf8_utf8_width, x, encode, quote, utf8)
 }
 
 utf8_normalize <- function(x, map_case = FALSE, map_compat = FALSE,

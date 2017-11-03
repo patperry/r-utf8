@@ -200,8 +200,9 @@ print_vector_unnamed <- function(x, quote, na.print, print.gap, right,
 
 
 element_width <- function(x, quote, na.print) {
-  fmt <- utf8_encode(x, quote = quote)
-  width <- max(0L, utf8_width(fmt[!is.na(x)], encode = FALSE))
+  width <- max(0L, utf8_width(x, encode = TRUE, quote = quote),
+    na.rm = TRUE
+  )
   if (anyNA(x)) {
     width <- max(width, utf8_width(na.print))
   }
