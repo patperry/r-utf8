@@ -43,39 +43,14 @@ static const char *encoding_name(cetype_t ce)
 }
 
 
-static int is_valid(const uint8_t *str, size_t size, size_t *errptr)
-{
-	const uint8_t *end = str + size;
-	const uint8_t *start;
-	const uint8_t *ptr = str;
-	size_t err = (size_t)-1;
-	int valid;
-
-	valid = 1;
-	while (ptr != end) {
-		start = ptr;
-		if (utf8lite_scan_utf8(&ptr, end, NULL)) {
-			err = (size_t)(start - str);
-			valid = 0;
-			goto out;
-		}
-	}
-
-out:
-	if (!valid && errptr) {
-		*errptr = err;
-	}
-
-	return valid;
-}
-
-
-SEXP rutf8_utf8_coerce(SEXP sx)
+SEXP rutf8_as_utf8(SEXP sx)
 {
 	SEXP ans, sstr;
+	struct utf8lite_message msg;
+	struct utf8lite_text text;
 	const uint8_t *str;
 	cetype_t ce;
-	size_t size, err;
+	size_t size;
 	R_xlen_t i, n;
 	int raw, duped;;
 
@@ -109,38 +84,27 @@ SEXP rutf8_utf8_coerce(SEXP sx)
 			size = strlen((const char *)str);
 		}
 
-		if (!is_valid(str, size, &err)) {
+		if (utf8lite_text_assign(&text, str, size, 0, &msg)) {
 			if (ce == CE_BYTES) {
-				error("argument entry %"PRIu64
-				      " cannot be converted"
-				      " from \"bytes\" to \"UTF-8\";"
-				      " it contains an invalid byte"
-				      " in position %"PRIu64
-				      " (\\x%0x)",
-				      (uint64_t)i + 1,
-				      (uint64_t)err + 1,
-				      (unsigned)str[err]);
+				Rf_error("argument entry %"PRIu64
+					 " cannot be cast"
+					 " from \"bytes\" to \"UTF-8\": %s",
+					 (uint64_t)i + 1, msg.string);
 			} else if (raw) {
-				error("argument entry %"PRIu64
-				      " is marked as \"UTF-8\""
-				      " but contains an invalid byte"
-				      " in position %"PRIu64
-				      " (\\x%0x)",
-				      (uint64_t)i + 1,
-				      (uint64_t)err + 1,
-				      (unsigned)str[err]);
+				Rf_error("argument entry %"PRIu64
+					 " is incorrectly marked as \"UTF-8\""
+					 ": %s",
+					 (uint64_t)i + 1,
+					 msg.string);
 			} else {
-				error("argument entry %"PRIu64
-				      " cannot be converted"
-				      " from \"%s\" encoding to \"UTF-8\";"
-				      " calling 'enc2utf8' on that entry"
-				      " returns a string with an invalid"
-				      " byte in position %"PRIu64,
-				      " (\\x%0x)",
-				      (uint64_t)i + 1,
-				      encoding_name(ce),
-				      (uint64_t)err + 1,
-				      (unsigned)str[err]);
+				Rf_error("argument entry %"PRIu64
+					 " cannot be converted"
+					 " from \"%s\" encoding to \"UTF-8\";"
+					 " calling 'enc2utf8'"
+					 " returns malformed data: %s",
+					 (uint64_t)i + 1,
+					 encoding_name(ce),
+					 msg.string);
 			}
 		}
 
@@ -159,57 +123,5 @@ SEXP rutf8_utf8_coerce(SEXP sx)
 		UNPROTECT(1);
 	}
 
-	return ans;
-}
-
-
-SEXP rutf8_utf8_valid(SEXP sx)
-{
-	SEXP ans, sstr;
-	const uint8_t *str;
-	cetype_t ce;
-	size_t size, err;
-	R_xlen_t i, n;
-	int raw, val;;
-
-	if (sx == R_NilValue) {
-		return R_NilValue;
-	}
-	if (!isString(sx)) {
-		error("argument is not a character object");
-	}
-
-	n = XLENGTH(sx);
-	PROTECT(ans = allocVector(LGLSXP, n));
-	setAttrib(ans, R_NamesSymbol, getAttrib(sx, R_NamesSymbol));
-	setAttrib(ans, R_DimSymbol, getAttrib(sx, R_DimSymbol));
-	setAttrib(ans, R_DimNamesSymbol, getAttrib(sx, R_DimNamesSymbol));
-
-	n = XLENGTH(sx);
-	for (i = 0; i < n; i++) {
-		CHECK_INTERRUPT(i);
-
-		sstr = STRING_ELT(sx, i);
-		if (sstr == NA_STRING) {
-			LOGICAL(ans)[i] = NA_LOGICAL;
-			continue;
-		}
-
-		ce = getCharCE(sstr);
-		raw = encodes_utf8(ce) || ce == CE_BYTES;
-
-		if (raw) {
-			str = (const uint8_t *)CHAR(sstr);
-			size = (size_t)XLENGTH(sstr);
-		} else {
-			str = (const uint8_t *)translate_utf8(sstr);
-			size = strlen((const char *)str);
-		}
-
-		val = is_valid(str, size, &err) ? TRUE : FALSE;
-		LOGICAL(ans)[i] = val;
-	}
-
-	UNPROTECT(1);
 	return ans;
 }
