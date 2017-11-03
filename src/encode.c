@@ -191,8 +191,9 @@ inval_lead:
 	goto error;
 
 inval_cont:
-	utf8lite_message_set(msg, "invalid continuation byte (0x%02X)",
-			     (unsigned)ch);
+	utf8lite_message_set(msg, "invalid continuation byte (0x%02X)"
+			     " after leading byte (0x%02X)",
+			     (unsigned)ch, (unsigned)ch1);
 	goto error;
 
 error:
