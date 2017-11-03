@@ -440,6 +440,19 @@ int utf8lite_render_code(struct utf8lite_render *r, int32_t ch, int *attrptr)
 }
 
 
+int utf8lite_render_char(struct utf8lite_render *r, int32_t ch)
+{
+	uint8_t buf[5];
+	uint8_t *ptr = buf;
+
+	// decode to string, then render. 'render_string' handles
+	// escaping, removing default ignorables, etc. if necessary
+	utf8lite_encode_utf8(ch, &ptr);
+	*ptr = '\0';
+	return utf8lite_render_string(r, (const char *)buf);
+}
+
+
 int utf8lite_render_string(struct utf8lite_render *r, const char *str)
 {
 	struct utf8lite_text text;
