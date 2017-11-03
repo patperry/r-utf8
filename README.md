@@ -50,7 +50,7 @@ Usage
 ### Validate character data and convert to UTF-8
 
 Use `as_utf8` to validate input text and convert to UTF-8 encoding. The
-function fails if the input text has the wrong declared encoding:
+function alerts you if the input text has the wrong declared encoding:
 
 
 ```r
@@ -59,6 +59,11 @@ x <- c("fa\u00E7ile", "fa\xE7ile", "fa\xC3\xA7ile")
 Encoding(x) <- c("UTF-8", "UTF-8", "bytes")
 as_utf8(x) # fails
 #> Error in as_utf8(x): argument entry 2 is incorrectly marked as "UTF-8": leading byte 0xE7 followed by invalid continuation byte (0x69) at position 4
+
+# mark the correct encoding
+Encoding(x[2]) <- "latin1"
+as_utf8(x) # succeeds
+#> [1] "façile" "façile" "façile"
 ```
 
 ### Normalize data
