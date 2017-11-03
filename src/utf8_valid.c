@@ -19,41 +19,15 @@
 #include "rutf8.h"
 
 
-static int is_valid(const uint8_t *str, size_t size, size_t *errptr)
-{
-	const uint8_t *end = str + size;
-	const uint8_t *start;
-	const uint8_t *ptr = str;
-	size_t err = (size_t)-1;
-	int valid;
-
-	valid = 1;
-	while (ptr != end) {
-		start = ptr;
-		if (utf8lite_scan_utf8(&ptr, end, NULL)) {
-			err = (size_t)(start - str);
-			valid = 0;
-			goto out;
-		}
-	}
-
-out:
-	if (!valid && errptr) {
-		*errptr = err;
-	}
-
-	return valid;
-}
-
-
 SEXP rutf8_utf8_valid(SEXP sx)
 {
 	SEXP ans, sstr;
 	const uint8_t *str;
+	struct utf8lite_text text;
 	cetype_t ce;
-	size_t size, err;
+	size_t size;
 	R_xlen_t i, n;
-	int raw, val;;
+	int raw, val;
 
 	if (sx == R_NilValue) {
 		return R_NilValue;
@@ -89,7 +63,11 @@ SEXP rutf8_utf8_valid(SEXP sx)
 			size = strlen((const char *)str);
 		}
 
-		val = is_valid(str, size, &err) ? TRUE : FALSE;
+		if (utf8lite_text_assign(&text, str, size, 0, NULL)) {
+			val = FALSE;
+		} else {
+			val = TRUE;
+		}
 		LOGICAL(ans)[i] = val;
 	}
 
