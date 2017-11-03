@@ -437,6 +437,35 @@ START_TEST(test_escape_utf8)
 END_TEST
 
 
+START_TEST(test_encode_char)
+{
+	set_flags(0);
+
+	ck_assert(!utf8lite_render_char(&render, 'x'));
+	ck_assert_str_eq(render.string, "x");
+
+	ck_assert(!utf8lite_render_char(&render, 0x200B));
+	ck_assert_str_eq(render.string, "x\xE2\x80\x8B");
+
+	ck_assert(!utf8lite_render_char(&render, 'x'));
+	ck_assert_str_eq(render.string, "x\xE2\x80\x8Bx");
+	utf8lite_render_clear(&render);
+
+
+	set_flags(UTF8LITE_ENCODE_RMDI);
+	ck_assert(!utf8lite_render_char(&render, 'x'));
+	ck_assert_str_eq(render.string, "x");
+
+	ck_assert(!utf8lite_render_char(&render, 0x200B));
+	ck_assert_str_eq(render.string, "x");
+
+	ck_assert(!utf8lite_render_char(&render, 'x'));
+	ck_assert_str_eq(render.string, "xx");
+	utf8lite_render_clear(&render);
+}
+END_TEST
+
+
 START_TEST(test_encode_rmdi)
 {
 	char buffer[32];
@@ -861,6 +890,7 @@ Suite *render_suite(void)
 
 	tc = tcase_create("encode");
         tcase_add_checked_fixture(tc, setup_render, teardown_render);
+        tcase_add_test(tc, test_encode_char);
         tcase_add_test(tc, test_encode_rmdi);
         tcase_add_test(tc, test_encode_emoji_plain);
         tcase_add_test(tc, test_encode_emoji_zwsp);

@@ -955,6 +955,18 @@ int utf8lite_render_graph(struct utf8lite_render *r,
 			  const struct utf8lite_graph *g);
 
 /**
+ * Render a single character, treating it as a grapheme cluster. If any
+ * render escape flags are set, filter the character through the
+ * appropriate escaping and encoding.
+ *
+ * \param r the render object
+ * \param ch the character
+ *
+ * \returns 0 on success
+ */
+int utf8lite_render_char(struct utf8lite_render *r, int32_t ch);
+
+/**
  * Render a string. If any render escape flags are set, filter
  * all character graphemes through the appropriate escaping.
  *
