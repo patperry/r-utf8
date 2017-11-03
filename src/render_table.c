@@ -120,7 +120,7 @@ exit:
 SEXP rutf8_render_table(SEXP sx, SEXP sprint_gap, SEXP sright, SEXP smax,
 			SEXP swidth)
 {
-	SEXP srender, elt, dim_names, row_names, col_names;
+	SEXP ans, str, srender, elt, dim_names, row_names, col_names;
 	struct utf8lite_render *render;
 	R_xlen_t ix, nx;
 	int i, j, nrow, ncol;
@@ -229,9 +229,13 @@ SEXP rutf8_render_table(SEXP sx, SEXP sprint_gap, SEXP sright, SEXP smax,
 				       colwidths);
 		begin = end;
 	}
+
 exit:
-	Rprintf("%s", render->string);
+	PROTECT(str = mkCharLenCE(render->string, render->length, CE_UTF8));
+	nprot++;
+	PROTECT(ans = ScalarString(str)); nprot++;
+
 	rutf8_free_render(srender);
 	UNPROTECT(nprot);
-	return ScalarInteger(nprint);
+	return ans;
 }
