@@ -6,7 +6,7 @@
     UTF-8 text encoding and validation.
 }
 \usage{
-as_utf8(x, normalize = TRUE)
+as_utf8(x, normalize = FALSE)
 
 utf8_valid(x)
 }
