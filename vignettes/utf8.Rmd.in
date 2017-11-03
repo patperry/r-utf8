@@ -9,7 +9,7 @@ vignette: >
 
 ```{r, echo = FALSE, message = FALSE, warning = FALSE}
 knitr::opts_chunk$set(comment = "", fig.path = "unicode-", fig.retina = TRUE)
-options(width = 116)
+options(width = 80)
 ```
 
 Character encoding
@@ -69,15 +69,9 @@ So, we should be in good shape.
 
 Unfortunately, we run into trouble as soon as we try to process the text:
 
-```r
-term_stats(lines) # produces an error
+```{r}
+corpus::term_stats(lines) # produces an error
 ```
-
-```
-Error in term_stats(lines) :
-  argument entry 15252 is marked as "UTF-8" but contains an invalid byte in position 36 (\xa3)
-```
-
 
 The error message tells us that line 15252 contains an invalid byte.
 
@@ -114,20 +108,30 @@ codes <- matrix(0:127, 8, 16, byrow = TRUE,
                 dimnames = list(0:7, c(0:9, letters[1:6])))
 ascii <- apply(codes, c(1, 2), intToUtf8)
 
+# replace control codes with ""
+ascii["0", c(0:6, "e", "f")] <- ""
+ascii["1",] <- ""
+ascii["7", "f"] <- ""
+
 utf8_print(ascii, quote = FALSE)
 ```
 The first 32 codes (the first two rows of the table) are special control
 codes, the most common of which, `0x0a` denotes a new line (`\n`). The special
 code `0x00` often denotes the end of the input, and R does not allow this
-value in character strings. When you call `utf8_print`, it uses the low
-level `utf8_encode` subroutine format control codes; they format
-as `\uXXXX` for four hexadecimal digits `XXXX` or as `\UXXXXYYYY`
-for eight hexadecimal digits `XXXXYYYY`.
+value in character strings. Code `0x7f` corresponds to a "delete" control.
+
+When you call `utf8_print`, it uses the low level `utf8_encode` subroutine
+format control codes; they format as `\uXXXX` for four hexadecimal digits
+`XXXX` or as `\UXXXXYYYY` for eight hexadecimal digits `XXXXYYYY`:
+
+```{r}
+utf8_print(intToUtf8(1:0x0f), quote = FALSE)
+```
 
 Compare `utf8_print` output with the output with the base R print function:
 
 ```{r}
-print(ascii, quote = FALSE)
+print(intToUtf8(1:0x0f), quote = FALSE)
 ```
 
 Base R format control codes below 128 using octal escapes. There are some
@@ -145,6 +149,9 @@ languages. We can see these characters below.
 codes <- matrix(128:255, 8, 16, byrow = TRUE,
                 dimnames = list(c(8:9, letters[1:6]), c(0:9, letters[1:6])))
 latin1 <- apply(codes, c(1, 2), intToUtf8)
+
+# replace control codes with ""
+latin1[c("8", "9"),] <- ""
 
 utf8_print(latin1, quote = FALSE)
 ```
@@ -220,6 +227,9 @@ printing UTF-8 characters:
  + `utf8_valid()` tests whether character data is valid according to its
    declared encoding;
 
+ + `utf8_normalize()` converts text to Unicode composed normal form (NFC),
+   optionally applying case-folding and compatibility maps;
+
  + `utf8_encode()` encodes a character string, escaping all control
    characters, so that it can be safely printed to the screen;
 
@@ -242,15 +252,9 @@ Translating to UTF-8
 Back to our original problem: getting the text of _Mansfield Park_ into R.
 Our first attempt failed:
 
-```r
-term_stats(lines)
+```{r}
+corpus::term_stats(lines)
 ```
-
-```
-Error in term_stats(lines) :
-  argument entry 15252 is marked as "UTF-8" but contains an invalid byte in position 36 (\xa3)
-```
-
 
 We discovered a problem on line 15252:
 
@@ -270,8 +274,8 @@ lines2[15252]
 It worked! Now we can analyze our text.
 
 ```{r}
-f <- text_filter(drop_punct = TRUE, drop = stopwords_en)
-term_stats(lines2, f)
+f <- corpus::text_filter(drop_punct = TRUE, drop = corpus::stopwords_en)
+corpus::term_stats(lines2, f)
 ```
 
 The *readtext* package
