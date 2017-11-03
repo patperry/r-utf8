@@ -15,7 +15,6 @@ r_github_packages:
 
 before_install:
   - make NEWS
-  - make README.md
 
 matrix:
   include:
