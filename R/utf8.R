@@ -14,7 +14,7 @@
 
 
 # converts a character vector from its declared encoding to UTF-8
-as_utf8 <- function(x, normalize = FALSE)
+as_utf8 <- function(x, normalize = TRUE)
 {
     ans <- .Call(rutf8_utf8_coerce, x)
     if (normalize) {
@@ -22,7 +22,6 @@ as_utf8 <- function(x, normalize = FALSE)
     }
     ans
 }
-
 
 # test whether the elements can be converted to valid UTF-8
 utf8_valid <- function(x)
@@ -39,7 +38,6 @@ utf8_width <- function(x, encode = TRUE)
     utf8 <- (Sys.getlocale("LC_CTYPE") != "C")
     .Call(rutf8_utf8_width, x, encode, utf8)
 }
-
 
 utf8_normalize <- function(x, map_case = FALSE, map_compat = FALSE,
                            map_quote = FALSE, remove_ignorable = FALSE)
