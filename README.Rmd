@@ -1,3 +1,19 @@
+---
+output:
+  github_document:
+    html_preview: false
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+    collapse = TRUE,
+    comment = "#>",
+    fig.path = "README-"
+)
+```
+
 utf8
 ====
 
@@ -21,17 +37,20 @@ Installation
 *utf8* is [available on CRAN][cran]. To install the latest released version,
 run the following command in R:
 
-    ### install.packages("utf8") # not available yet, actually
+```r
+### install.packages("utf8") # not available yet, actually
+```
 
 
 ### Development version
 
 To install the latest development version, run the following:
 
-    tmp <- tempfile()
-    system2("git", c("clone", "--recursive",
-                     shQuote("https://github.com/patperry/r-utf8.git"), shQuote(tmp)))
-    devtools::install(tmp)
+```r
+tmp <- tempfile()
+system2("git", c("clone", "--recursive", shQuote("https://github.com/patperry/r-utf8.git"), shQuote(tmp)))
+devtools::install(tmp)
+```
 
 Note that *utf8* uses a git submodule, so you cannot use
 `devtools::install_github`.
@@ -46,11 +65,10 @@ Use `as_utf8` to validate input text and convert to UTF-8 encoding. The
 function fails if the input text has the wrong declared encoding:
 
 ```{r}
-#second entry is encoded in latin-1, but declared as UTF-8, so
+# second entry is encoded in latin-1, but declared as UTF-8, so
 x <- c("fa\u00E7ile", "fa\xE7ile", "fa\xC3\xA7ile")
 Encoding(x) <- c("UTF-8", "UTF-8", "bytes")
-
-as_utf8(x)
+as_utf8(x) # fails
 ```
 
 ### Normalize data
@@ -114,7 +132,6 @@ and if you choose to contribute, you must adhere to its terms.
 [apache-badge]: https://img.shields.io/badge/License-Apache%202.0-blue.svg "Apache License, Version 2.0"
 [appveyor]: https://ci.appveyor.com/project/patperry/r-utf8/branch/master "Continuous Integration (Windows)"
 [appveyor-badge]: https://ci.appveyor.com/api/projects/status/github/patperry/r-utf8?branch=master&svg=true "Continuous Inegration (Windows)"
-[building]: #development-version "Building from Source"
 [codecov]: https://codecov.io/github/patperry/r-utf8?branch=master "Code Coverage"
 [codecov-badge]: https://codecov.io/github/patperry/r-utf8/coverage.svg?branch=master "Code Coverage"
 [conduct]: https://github.com/patperry/r-utf8/blob/master/CONDUCT.md "Contributor Code of Conduct"
