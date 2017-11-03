@@ -97,7 +97,7 @@ SEXP rutf8_utf8_normalize(SEXP x, SEXP map_case, SEXP map_compat,
 			continue;
 		}
 
-		ptr = (const uint8_t *)translate_utf8(elt);
+		ptr = (const uint8_t *)rutf8_translate_utf8(elt);
 		size = strlen((const char *)ptr);
 		TRY(utf8lite_text_assign(&text, ptr, size, 0, NULL));
 		TRY(utf8lite_textmap_set(&ctx->map, &text));

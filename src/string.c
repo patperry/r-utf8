@@ -52,11 +52,11 @@ int text_init(struct utf8lite_text *text, SEXP charsxp)
 	assert(charsxp != NA_STRING);
 
 	ce = getCharCE(charsxp);
-	if (encodes_utf8(ce)) {
+	if (rutf8_encodes_utf8(ce)) {
 		ptr = (const uint8_t *)CHAR(charsxp);
 		size = (size_t)XLENGTH(charsxp);
 	} else if (ce == CE_LATIN1 || ce == CE_NATIVE) {
-		ptr = (const uint8_t *)translate_utf8(charsxp);
+		ptr = (const uint8_t *)rutf8_translate_utf8(charsxp);
 		size = strlen((const char *)ptr);
 	} else {
 		err = UTF8LITE_ERROR_INVAL; // bytes or other encoding

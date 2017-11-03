@@ -53,13 +53,13 @@ SEXP rutf8_utf8_valid(SEXP sx)
 		}
 
 		ce = getCharCE(sstr);
-		raw = encodes_utf8(ce) || ce == CE_BYTES;
+		raw = rutf8_encodes_utf8(ce) || ce == CE_BYTES;
 
 		if (raw) {
 			str = (const uint8_t *)CHAR(sstr);
 			size = (size_t)XLENGTH(sstr);
 		} else {
-			str = (const uint8_t *)translate_utf8(sstr);
+			str = (const uint8_t *)rutf8_translate_utf8(sstr);
 			size = strlen((const char *)str);
 		}
 

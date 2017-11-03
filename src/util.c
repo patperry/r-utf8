@@ -51,7 +51,7 @@ exit:
 }
 
 
-int encodes_utf8(cetype_t ce)
+int rutf8_encodes_utf8(cetype_t ce)
 {
 	switch (ce) {
 	case CE_ANY:
@@ -70,7 +70,7 @@ int encodes_utf8(cetype_t ce)
 #include <windows.h>
 extern unsigned int localeCP;
 
-const char *translate_utf8(SEXP x)
+const char *rutf8_translate_utf8(SEXP x)
 {
 	LPWSTR wstr;
 	const char *raw;
@@ -122,7 +122,7 @@ const char *translate_utf8(SEXP x)
 
 #else
 
-const char *translate_utf8(SEXP x)
+const char *rutf8_translate_utf8(SEXP x)
 {
 	return translateCharUTF8(x);
 }
