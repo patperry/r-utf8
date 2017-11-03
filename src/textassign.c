@@ -210,5 +210,6 @@ void assign_esc_unsafe(struct utf8lite_text *text, const uint8_t *ptr,
 
 void append_location(struct utf8lite_message *msg, size_t offset)
 {
-	utf8lite_message_append(msg, " at text byte %"PRIu64, (uint64_t)offset);
+	utf8lite_message_append(msg, " at position %"PRIu64,
+				(uint64_t)(offset + 1));
 }
