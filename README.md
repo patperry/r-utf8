@@ -29,7 +29,6 @@ run the following command in R:
 ### install.packages("utf8") # not available yet, actually
 ```
 
-
 ### Development version
 
 To install the latest development version, run the following:
@@ -101,6 +100,7 @@ utf8_print(intToUtf8(0x1F600 + 0:79)) # with utf8_print, truncates line
 utf8_print(intToUtf8(0x1F600 + 0:79), chars = 1000) # higher character limit
 #> [1] "😀​😁​😂​😃​😄​😅​😆​😇​😈​😉​😊​😋​😌​😍​😎​😏​😐​😑​😒​😓​😔​😕​😖​😗​😘​😙​😚​😛​😜​😝​😞​😟​😠​😡​😢​😣​😤​😥​😦​😧​😨​😩​😪​😫​😬​😭​😮​😯​😰​😱​😲​😳​😴​😵​😶​😷​😸​😹​😺​😻​😼​😽​😾​😿​🙀​🙁​🙂​🙃​🙄​🙅​🙆​🙇​🙈​🙉​🙊​🙋​🙌​🙍​🙎​🙏​"
 ```
+
 
 Citation
 --------
