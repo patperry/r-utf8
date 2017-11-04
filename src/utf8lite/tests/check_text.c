@@ -269,6 +269,8 @@ START_TEST(test_hash)
 			  hash(JS("\\u2603")));
 	ck_assert_uint_eq(hash(S("\xF0\x9F\x98\x80")),
 			  hash(JS("\\ud83d\\ude00")));
+	ck_assert_uint_eq(hash(S("new\nline")),
+			  hash(JS("new\\nline")));
 }
 END_TEST
 
