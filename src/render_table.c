@@ -41,11 +41,11 @@ exit:
 }
 
 
-static int charsxp_width(SEXP sx)
+static int charsxp_width(SEXP sx, int flags)
 {
 	struct rutf8_string text;
 	rutf8_string_init(&text, sx);
-	return rutf8_string_width(&text, 0);
+	return rutf8_string_width(&text, flags);
 }
 
 
@@ -75,7 +75,7 @@ static int render_range(struct utf8lite_render *r, SEXP sx, int begin,
 			if (j > begin || row_names != R_NilValue) {
 				TRY(utf8lite_render_spaces(r, print_gap));
 			}
-			w = charsxp_width(name);
+			w = charsxp_width(name, r->flags);
 			render_entry(r, name, right, colwidths[j] - w);
 		}
 		TRY(utf8lite_render_newlines(r, 1));
@@ -92,7 +92,7 @@ static int render_range(struct utf8lite_render *r, SEXP sx, int begin,
 			name = STRING_ELT(row_names, i);
 			assert(name != NA_STRING);
 
-			w = charsxp_width(name);
+			w = charsxp_width(name, r->flags);
 			render_entry(r, name, 0, namewidth - w);
 		}
 
@@ -111,7 +111,7 @@ static int render_range(struct utf8lite_render *r, SEXP sx, int begin,
 				TRY(utf8lite_render_spaces(r, print_gap));
 			}
 
-			w = charsxp_width(elt);
+			w = charsxp_width(elt, r->flags);
 			render_entry(r, elt, right, width - w);
 		}
 
@@ -160,7 +160,7 @@ SEXP rutf8_render_table(SEXP sx, SEXP sprint_gap, SEXP sright, SEXP smax,
 			elt = STRING_ELT(row_names, i);
 			assert(elt != NA_STRING);
 
-			w = charsxp_width(elt);
+			w = charsxp_width(elt, render->flags);
 			if (w > namewidth) {
 				namewidth = w;
 			}
@@ -179,7 +179,7 @@ SEXP rutf8_render_table(SEXP sx, SEXP sprint_gap, SEXP sright, SEXP smax,
 		for (j = 0; j < ncol; j++) {
 			elt = STRING_ELT(col_names, j);
 			assert(elt != NA_STRING);
-			colwidths[j] = charsxp_width(elt);
+			colwidths[j] = charsxp_width(elt, render->flags);
 		}
 	}
 
@@ -188,7 +188,7 @@ SEXP rutf8_render_table(SEXP sx, SEXP sprint_gap, SEXP sright, SEXP smax,
 		elt = STRING_ELT(sx, ix);
 		assert(elt != NA_STRING);
 
-		w = charsxp_width(elt);
+		w = charsxp_width(elt, render->flags);
 		if (w > colwidths[j]) {
 			colwidths[j] = w;
 		}
