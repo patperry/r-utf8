@@ -196,11 +196,16 @@ END_TEST
 START_TEST(test_equals_mixed)
 {
 	ck_assert(equals(JS("\\\\"), S("\\")));
-	ck_assert(equals(JS("\\n"), S("\n")));
 	ck_assert(equals(S("\\"), JS("\\\\")));
+
+	ck_assert(equals(JS("\\n"), S("\n")));
 	ck_assert(equals(S("\n"), JS("\\n")));
-	ck_assert(!equals(S("\\n"), JS("\\n")));
+
+	ck_assert(equals(S("\\"), JS("\\\\")));
+	ck_assert(equals(JS("\\\\"), S("\\")));
+
 	ck_assert(!equals(JS("\\n"), S("\\n")));
+	ck_assert(!equals(S("\\n"), JS("\\n")));
 }
 END_TEST
 
@@ -217,6 +222,7 @@ START_TEST(test_compare_raw)
 	ck_assert(!compare(S(""), S("")));
 	ck_assert(!compare(S("hello"), S("hello")));
 	ck_assert(compare(S("hello"), S("hell")) > 0);
+	ck_assert(compare(S("hell"), S("hello")) < 0);
 	ck_assert(compare(S("hello"), S("hellp")) < 0);
 }
 END_TEST
