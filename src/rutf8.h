@@ -193,8 +193,9 @@ struct utf8lite_render *rutf8_as_render(SEXP x);
 int rutf8_is_render(SEXP x);
 
 /* printing */
-SEXP rutf8_render_table(SEXP x, SEXP print_gap, SEXP right, SEXP max,
-			SEXP width);
+SEXP rutf8_render_table(SEXP x, SEXP width, SEXP quote, SEXP na_print,
+			SEXP print_gap, SEXP right, SEXP max,
+			SEXP display, SEXP linewidth, SEXP utf8);
 
 /* utf8 */
 SEXP rutf8_as_utf8(SEXP x);
