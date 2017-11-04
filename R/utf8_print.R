@@ -35,9 +35,6 @@ utf8_print <- function(x, chars = NULL, quote = TRUE, na.print = NULL,
         display <- as_option("display", display)
     })
 
-    if (is.null(na.print)) {
-        na.print <- if (quote) "NA" else "<NA>"
-    }
     if (is.null(print.gap)) {
         print.gap <- 1L
     }
@@ -185,6 +182,9 @@ element_width <- function(x, quote, na.print)
     width <- max(0L, utf8_width(x, encode = TRUE, quote = quote),
                  na.rm = TRUE)
     if (anyNA(x)) {
+        if (is.null(na.print)) {
+            na.print <- if (quote) "NA" else "<NA>"
+        }
         width <- max(width, utf8_width(na.print))
     }
     width
@@ -258,18 +258,23 @@ print_array <- function(x, quote, na.print, print.gap, right, max, display)
 print_table <- function(x, width, quote, na.print, print.gap, right, max,
                         display)
 {
-    linewidth <- getOption("width")
-
+    if (is.null(na.print)) {
+        na.print <- if (quote) "NA" else "<NA>"
+        na.name.print <- "<NA>"
+    } else {
+        na.name.print <- na.print
+    }
     x <- utf8_encode(x, width = width, quote = quote, display = display)
     x[is.na(x)] <- utf8_encode(na.print, display = display)
-    dimnames(x) <- lapply(dimnames(x), utf8_encode, display = display)
     if (!is.null(rownames(x))) {
-        rownames(x)[is.na(rownames(x))] <- "<NA>"
+        rownames(x)[is.na(rownames(x))] <- na.name.print
     }
     if (!is.null(colnames(x))) {
-        colnames(x)[is.na(colnames(x))] <- "<NA>"
+        colnames(x)[is.na(colnames(x))] <- na.name.print
     }
+    dimnames(x) <- lapply(dimnames(x), utf8_encode, display = display)
 
+    linewidth <- getOption("width")
     str <- .Call(rutf8_render_table, x, print.gap, right, max, linewidth)
     cat(str)
 

@@ -174,3 +174,12 @@ test_that("'utf8_print' can handle NA", {
     expect_equal(capture_output(utf8_print(NA_character_, quote = FALSE)),
                  capture_output(print(NA_character_, quote = FALSE)))
 })
+
+
+test_that("'utf8_print' can handle NA names", {
+    x <- matrix("hello", 1, 1, dimnames=list(NA,NA))
+    expect_equal(capture_output(utf8_print(x)),
+                 capture_output(print(x)))
+    expect_equal(capture_output(utf8_print(x, na.print = "foo")),
+                 capture_output(print(x, na.print = "foo")))
+})
