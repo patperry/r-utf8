@@ -93,7 +93,7 @@ int utf8lite_text_equals(const struct utf8lite_text *text1,
 		// same bits, different size
 		return 0;
 	} else {
-		// different bits, different size
+		// different bits or different size
 		utf8lite_text_iter_make(&it1, text1);
 		utf8lite_text_iter_make(&it2, text2);
 		while (utf8lite_text_iter_advance(&it1)) {
