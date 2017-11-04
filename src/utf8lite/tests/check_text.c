@@ -166,6 +166,45 @@ START_TEST(test_unescape_utf16)
 END_TEST
 
 
+static int equals(const struct utf8lite_text *x,
+		  const struct utf8lite_text *y)
+{
+	return utf8lite_text_equals(x, y);
+}
+
+
+START_TEST(test_equals_raw)
+{
+	ck_assert(equals(S(""), S("")));
+	ck_assert(equals(S("hello"), S("hello")));
+	ck_assert(!equals(S("hello"), S("hell")));
+	ck_assert(!equals(S("hello"), S("hell_")));
+}
+END_TEST
+
+
+START_TEST(test_equals_escape)
+{
+	ck_assert(equals(JS("\\\\"), JS("\\\\")));
+	ck_assert(equals(JS("\\n"), JS("\\n")));
+	ck_assert(!equals(JS("\\\\"), JS("\\\\\\\\")));
+	ck_assert(!equals(JS("\\n"), JS("\\\\n")));
+}
+END_TEST
+
+
+START_TEST(test_equals_mixed)
+{
+	ck_assert(equals(JS("\\\\"), S("\\")));
+	ck_assert(equals(JS("\\n"), S("\n")));
+	ck_assert(equals(S("\\"), JS("\\\\")));
+	ck_assert(equals(S("\n"), JS("\\n")));
+	ck_assert(!equals(S("\\n"), JS("\\n")));
+	ck_assert(!equals(JS("\\n"), S("\\n")));
+}
+END_TEST
+
+
 static struct utf8lite_text_iter text_iter;
 
 static void start (const struct utf8lite_text *text)
@@ -551,6 +590,13 @@ Suite *text_suite(void)
 	tcase_add_test(tc, test_unescape_escape);
 	tcase_add_test(tc, test_unescape_raw);
 	tcase_add_test(tc, test_unescape_utf16);
+	suite_add_tcase(s, tc);
+
+	tc = tcase_create("comparison");
+        tcase_add_checked_fixture(tc, setup_text, teardown_text);
+	tcase_add_test(tc, test_equals_raw);
+	tcase_add_test(tc, test_equals_escape);
+	tcase_add_test(tc, test_equals_mixed);
 	suite_add_tcase(s, tc);
 
 	tc = tcase_create("iteration");

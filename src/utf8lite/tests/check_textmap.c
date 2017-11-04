@@ -55,32 +55,6 @@ struct utf8lite_text *casefold(const struct utf8lite_text *text)
 }
 
 
-START_TEST(test_equals)
-{
-	assert_text_eq(S("hello"), S("hello"));
-	assert_text_eq(S("hello"), JS("hello"));
-
-	assert_text_eq(S(""), S(""));
-	assert_text_eq(S(""), JS(""));
-}
-END_TEST
-
-
-START_TEST(test_not_equals)
-{
-	assert_text_ne(S("foo"), S("bar"));
-}
-END_TEST
-
-
-START_TEST(test_equals_esc)
-{
-	assert_text_ne(S("\n"), JS("\\n"));
-	assert_text_ne(S("\\n"), JS("\\n"));
-}
-END_TEST
-
-
 START_TEST(test_map_basic)
 {
 	assert_text_eq(get_map(S("hello"), 0), S("hello"));
@@ -457,13 +431,6 @@ Suite *textmap_suite(void)
 	TCase *tc;
 
 	s = suite_create("textmap");
-	tc = tcase_create("compare");
-	tcase_add_checked_fixture(tc, setup, teardown);
-	tcase_add_test(tc, test_equals);
-	tcase_add_test(tc, test_not_equals);
-	tcase_add_test(tc, test_equals_esc);
-	suite_add_tcase(s, tc);
-
 	tc = tcase_create("normalize");
 	tcase_add_checked_fixture(tc, setup, teardown);
 	tcase_add_test(tc, test_map_basic);
