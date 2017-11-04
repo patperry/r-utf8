@@ -254,6 +254,24 @@ START_TEST(test_compare_mixed)
 }
 END_TEST
 
+static size_t hash(const struct utf8lite_text *text)
+{
+	return utf8lite_text_hash(text);
+}
+
+
+START_TEST(test_hash)
+{
+	ck_assert_uint_eq(hash(S("")), hash(JS("")));
+	ck_assert_uint_eq(hash(S("\\")), hash(JS("\\\\")));
+	ck_assert_uint_eq(hash(S("\xC2\xA1")), hash(JS("\\u00a1")));
+	ck_assert_uint_eq(hash(S("\xE2\x98\x83")),
+			  hash(JS("\\u2603")));
+	ck_assert_uint_eq(hash(S("\xF0\x9F\x98\x80")),
+			  hash(JS("\\ud83d\\ude00")));
+}
+END_TEST
+
 
 static struct utf8lite_text_iter text_iter;
 
@@ -650,6 +668,7 @@ Suite *text_suite(void)
 	tcase_add_test(tc, test_compare_raw);
 	tcase_add_test(tc, test_compare_escape);
 	tcase_add_test(tc, test_compare_mixed);
+	tcase_add_test(tc, test_hash);
 	suite_add_tcase(s, tc);
 
 	tc = tcase_create("iteration");
