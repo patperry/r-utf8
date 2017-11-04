@@ -278,24 +278,29 @@ print_array <- function(x, quote, na.print, print.gap, right, max, display) {
 
 print_table <- function(x, width, quote, na.print, print.gap, right, max,
                         display) {
+  width <- as.integer(width)
   if (is.null(na.print)) {
     na.print <- if (quote) "NA" else "<NA>"
     na.name.print <- "<NA>"
   } else {
     na.name.print <- na.print
   }
-  x <- utf8_encode(x, width = width, quote = quote, display = display)
-  x[is.na(x)] <- utf8_encode(na.print, display = display)
+  print.gap <- as.integer(print.gap)
+  max <- as.integer(max)
+
   if (!is.null(rownames(x))) {
     rownames(x)[is.na(rownames(x))] <- na.name.print
   }
   if (!is.null(colnames(x))) {
     colnames(x)[is.na(colnames(x))] <- na.name.print
   }
-  dimnames(x) <- lapply(dimnames(x), utf8_encode, display = display)
 
   linewidth <- getOption("width")
-  str <- .Call(rutf8_render_table, x, print.gap, right, max, linewidth)
+  utf8 <- (Sys.getlocale("LC_CTYPE") != "C")
+  str <- .Call(
+    rutf8_render_table, x, width, quote, na.print, print.gap,
+    right, max, display, linewidth, utf8
+  )
   cat(str)
 
   nprint <- min(max, length(x))
