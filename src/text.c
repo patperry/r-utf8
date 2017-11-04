@@ -97,16 +97,12 @@ int utf8lite_text_equals(const struct utf8lite_text *text1,
 		utf8lite_text_iter_make(&it1, text1);
 		utf8lite_text_iter_make(&it2, text2);
 		while (utf8lite_text_iter_advance(&it1)) {
-			if (!utf8lite_text_iter_advance(&it2)) {
-				return 0;
-			} else if (it1.current != it2.current) {
+			utf8lite_text_iter_advance(&it2);
+			if (it1.current != it2.current) {
 				return 0;
 			}
 		}
-		if (utf8lite_text_iter_advance(&it2)) {
-			return 0;
-		}
-		return 1;
+		return !utf8lite_text_iter_advance(&it2);
 	}
 }
 
@@ -144,20 +140,14 @@ int utf8lite_text_compare(const struct utf8lite_text *text1,
 
 	utf8lite_text_iter_make(&it1, text1);
 	utf8lite_text_iter_make(&it2, text2);
-
 	while (utf8lite_text_iter_advance(&it1)) {
-		if (!utf8lite_text_iter_advance(&it2)) {
-			return +1;
-		} else if (it1.current < it2.current) {
+		utf8lite_text_iter_advance(&it2);
+		if (it1.current < it2.current) {
 			return -1;
 		} else if (it1.current > it2.current) {
 			return +1;
 		}
 	}
 
-	if (utf8lite_text_iter_advance(&it2)) {
-		return -1;
-	}
-
-	return 0;
+	return utf8lite_text_iter_advance(&it2) ? -1 : 0;
 }
