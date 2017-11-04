@@ -15,7 +15,6 @@
  */
 
 #include <ctype.h>
-#include <errno.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
@@ -27,12 +26,10 @@ int utf8lite_text_init_copy(struct utf8lite_text *text,
 {
         size_t size = UTF8LITE_TEXT_SIZE(other);
         size_t attr = other->attr;
-	int err;
 
 	if (size) {
 		if (!(text->ptr = malloc(size + 1))) {
-			err = ENOMEM;
-			return err;
+			return UTF8LITE_ERROR_NOMEM;
 		}
 
 		memcpy(text->ptr, other->ptr, size);
