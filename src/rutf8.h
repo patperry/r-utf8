@@ -133,12 +133,9 @@ int rutf8_string_lwidth(const struct rutf8_string *str, int flags,
 			int limit, int ellipsis);
 int rutf8_string_rwidth(const struct rutf8_string *str, int flags,
 			int limit, int ellipsis);
-SEXP rutf8_string_lencode(struct utf8lite_render *r,
-			  const struct rutf8_string *str,
-			  int width, int quote, int centre);
-SEXP rutf8_string_rencode(struct utf8lite_render *r,
-			  const struct rutf8_string *str,
-			  int width, int quote);
+void rutf8_string_render(struct utf8lite_render *r,
+			 const struct rutf8_string *str,
+			 int width, int quote, enum rutf8_justify_type justify);
 SEXP rutf8_string_lformat(struct utf8lite_render *r,
 			  const struct rutf8_string *str,
 			  int trim, int chars, int width_max,
@@ -153,12 +150,9 @@ int rutf8_text_lwidth(const struct utf8lite_text *text, int flags,
 		      int limit, int ellipsis);
 int rutf8_text_rwidth(const struct utf8lite_text *text, int flags,
 		      int limit, int ellipsis);
-SEXP rutf8_text_lencode(struct utf8lite_render *r,
-			const struct utf8lite_text *text,
-			int width, int quote, int centre);
-SEXP rutf8_text_rencode(struct utf8lite_render *r,
-			const struct utf8lite_text *text,
-			int width, int quote);
+void rutf8_text_render(struct utf8lite_render *r,
+		       const struct utf8lite_text *text,
+		       int width, int quote, enum rutf8_justify_type justify);
 SEXP rutf8_text_lformat(struct utf8lite_render *r,
 			const struct utf8lite_text *text,
 			int trim, int chars, int width_max,
@@ -173,12 +167,10 @@ int rutf8_bytes_lwidth(const struct rutf8_bytes *bytes, int flags,
 		       int limit, int ellipsis);
 int rutf8_bytes_rwidth(const struct rutf8_bytes *bytes, int flags,
 		       int limit, int ellipsis);
-SEXP rutf8_bytes_lencode(struct utf8lite_render *r,
-			 const struct rutf8_bytes *bytes,
-			 int width_min, int quote, int centre);
-SEXP rutf8_bytes_rencode(struct utf8lite_render *r,
-			 const struct rutf8_bytes *bytes,
-			 int width_min, int quote);
+void rutf8_bytes_render(struct utf8lite_render *r,
+			const struct rutf8_bytes *bytes,
+			int width_min, int quote,
+			enum rutf8_justify_type justify);
 SEXP rutf8_bytes_lformat(struct utf8lite_render *r,
 			 const struct rutf8_bytes *bytes,
 			 int trim, int chars, int width_max,

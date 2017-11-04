@@ -93,11 +93,10 @@ int rutf8_bytes_rwidth(const struct rutf8_bytes *bytes, int flags,
 }
 
 
-SEXP rutf8_bytes_lencode(struct utf8lite_render *r,
-			 const struct rutf8_bytes *bytes,
-			 int width_min, int quote, int centre)
+static void rutf8_bytes_lrender(struct utf8lite_render *r,
+				const struct rutf8_bytes *bytes,
+				int width_min, int quote, int centre)
 {
-	SEXP ans = R_NilValue;
 	const uint8_t *ptr, *end;
 	uint8_t byte;
 	int err = 0, w, fullwidth, width, quotes;
@@ -147,20 +146,15 @@ SEXP rutf8_bytes_lencode(struct utf8lite_render *r,
 	if (width < width_min) {
 		TRY(utf8lite_render_spaces(r, width_min - width));
 	}
-
-	ans = mkCharLenCE((char *)r->string, r->length, CE_UTF8);
-	utf8lite_render_clear(r);
 exit:
 	CHECK_ERROR(err);
-	return ans;
 }
 
 
-SEXP rutf8_bytes_rencode(struct utf8lite_render *r,
-			 const struct rutf8_bytes *bytes,
-			 int width_min, int quote)
+static void rutf8_bytes_rrender(struct utf8lite_render *r,
+				const struct rutf8_bytes *bytes,
+				int width_min, int quote)
 {
-	SEXP ans = R_NilValue;
 	const uint8_t *ptr, *end;
 	uint8_t byte;
 	int err = 0, fullwidth, quotes;
@@ -193,12 +187,22 @@ SEXP rutf8_bytes_rencode(struct utf8lite_render *r,
 	if (quote) {
 		TRY(utf8lite_render_bytes(r, "\"", 1));
 	}
-
-	ans = mkCharLenCE((char *)r->string, r->length, CE_UTF8);
-	utf8lite_render_clear(r);
 exit:
 	CHECK_ERROR(err);
-	return ans;
+}
+
+
+void rutf8_bytes_render(struct utf8lite_render *r,
+		       const struct rutf8_bytes *bytes,
+		       int width, int quote, enum rutf8_justify_type justify)
+{
+	int centre;
+	if (justify == RUTF8_JUSTIFY_RIGHT) {
+		rutf8_bytes_rrender(r, bytes, width, quote);
+	} else {
+		centre = (justify == RUTF8_JUSTIFY_CENTRE);
+		rutf8_bytes_lrender(r, bytes, width, quote, centre);
+	}
 }
 
 

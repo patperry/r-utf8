@@ -89,11 +89,10 @@ exit:
 }
 
 
-SEXP rutf8_text_lencode(struct utf8lite_render *r,
-			const struct utf8lite_text *text,
-			int width_min, int quote, int centre)
+static void rutf8_text_lrender(struct utf8lite_render *r,
+			       const struct utf8lite_text *text,
+			       int width_min, int quote, int centre)
 {
-	SEXP ans = R_NilValue;
 	struct utf8lite_graphscan scan;
 	int err = 0, w, fullwidth, width, quotes;
 
@@ -138,20 +137,15 @@ SEXP rutf8_text_lencode(struct utf8lite_render *r,
 	}
 
 	TRY(utf8lite_render_spaces(r, width_min - width));
-
-	ans = mkCharLenCE((char *)r->string, r->length, CE_UTF8);
-	utf8lite_render_clear(r);
 exit:
 	CHECK_ERROR(err);
-	return ans;
 }
 
 
-SEXP rutf8_text_rencode(struct utf8lite_render *r,
-			const struct utf8lite_text *text,
-			int width_min, int quote)
+static void rutf8_text_rrender(struct utf8lite_render *r,
+			       const struct utf8lite_text *text,
+			       int width_min, int quote)
 {
-	SEXP ans = R_NilValue;
 	struct utf8lite_graphscan scan;
 	int err = 0, fullwidth, quotes;
 
@@ -178,12 +172,22 @@ SEXP rutf8_text_rencode(struct utf8lite_render *r,
 	if (quote) {
 		TRY(utf8lite_render_bytes(r, "\"", 1));
 	}
-
-	ans = mkCharLenCE((char *)r->string, r->length, CE_UTF8);
-	utf8lite_render_clear(r);
 exit:
 	CHECK_ERROR(err);
-	return ans;
+}
+
+
+void rutf8_text_render(struct utf8lite_render *r,
+		       const struct utf8lite_text *text,
+		       int width, int quote, enum rutf8_justify_type justify)
+{
+	int centre;
+	if (justify == RUTF8_JUSTIFY_RIGHT) {
+		rutf8_text_rrender(r, text, width, quote);
+	} else {
+		centre = (justify == RUTF8_JUSTIFY_CENTRE);
+		rutf8_text_lrender(r, text, width, quote, centre);
+	}
 }
 
 
