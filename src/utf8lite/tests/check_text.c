@@ -207,8 +207,8 @@ START_TEST(test_equals_mixed)
 	ck_assert(!equals(JS("\\n"), S("\\n")));
 	ck_assert(!equals(S("\\n"), JS("\\n")));
 
-	ck_assert(!equals(JS("\\\\\\"), S("\\")));
-	ck_assert(!equals(S("\\"), JS("\\\\\\")));
+	ck_assert(!equals(JS("\\\\\\\\"), S("\\")));
+	ck_assert(!equals(S("\\"), JS("\\\\\\\\")));
 }
 END_TEST
 
