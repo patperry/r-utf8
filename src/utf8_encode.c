@@ -101,21 +101,15 @@ SEXP rutf8_utf8_encode(SEXP sx, SEXP swidth, SEXP squote,
 		CHECK_INTERRUPT(i);
 
 		rutf8_string_init(&elt, STRING_ELT(sx, i));
-
-		switch (justify) {
-		case RUTF8_JUSTIFY_LEFT:
-		case RUTF8_JUSTIFY_CENTRE:
-		case RUTF8_JUSTIFY_NONE:
-			ans_i = rutf8_string_lencode(render, &elt, width,
-						     quote, centre);
-			break;
-
-		case RUTF8_JUSTIFY_RIGHT:
-			ans_i = rutf8_string_rencode(render, &elt, width,
-						     quote);
-			break;
+		if (elt.type == RUTF8_STRING_NONE) {
+			ans_i = NA_STRING;
+		} else {
+			rutf8_string_render(render, &elt, width, quote,
+					    justify);
+			ans_i = mkCharLenCE(render->string, render->length,
+					    CE_UTF8);
+			utf8lite_render_clear(render);
 		}
-
 		SET_STRING_ELT(ans, i, ans_i);
 	}
 
