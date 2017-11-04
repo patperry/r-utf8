@@ -71,6 +71,47 @@ const char *unescape(const struct utf8lite_text *text)
 }
 
 
+START_TEST(test_copy)
+{
+	struct utf8lite_text text;
+	const struct utf8lite_text *other = JS("hello\nworld!");
+
+	ck_assert(!utf8lite_text_init_copy(&text, other));
+	ck_assert(utf8lite_text_equals(&text, other));
+	utf8lite_text_destroy(&text);
+	ck_assert(utf8lite_text_equals(other, JS("hello\nworld!")));
+}
+END_TEST
+
+
+START_TEST(test_copy_empty)
+{
+	struct utf8lite_text text;
+	const struct utf8lite_text *other = S("");
+
+	ck_assert(!utf8lite_text_init_copy(&text, other));
+	ck_assert(utf8lite_text_equals(&text, other));
+	utf8lite_text_destroy(&text);
+	ck_assert(utf8lite_text_equals(other, S("")));
+}
+END_TEST
+
+
+START_TEST(test_copy_null)
+{
+	struct utf8lite_text text;
+	struct utf8lite_text other;
+	other.ptr = NULL;
+	other.attr = 0;
+
+	ck_assert(!utf8lite_text_init_copy(&text, &other));
+	ck_assert(text.ptr == NULL);
+	ck_assert(utf8lite_text_equals(&text, &other));
+	utf8lite_text_destroy(&text);
+}
+END_TEST
+
+
 START_TEST(test_valid_text)
 {
 	ck_assert(is_valid_json("hello world"));
@@ -646,6 +687,13 @@ Suite *text_suite(void)
 	TCase *tc;
 
 	s = suite_create("text");
+
+	tc = tcase_create("copy");
+        tcase_add_checked_fixture(tc, setup_text, teardown_text);
+	tcase_add_test(tc, test_copy);
+	tcase_add_test(tc, test_copy_empty);
+	tcase_add_test(tc, test_copy_null);
+	suite_add_tcase(s, tc);
 
 	tc = tcase_create("validation");
         tcase_add_checked_fixture(tc, setup_text, teardown_text);
