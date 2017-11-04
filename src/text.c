@@ -83,10 +83,34 @@ size_t utf8lite_text_hash(const struct utf8lite_text *text)
 
 
 int utf8lite_text_equals(const struct utf8lite_text *text1,
-		       const struct utf8lite_text *text2)
+			 const struct utf8lite_text *text2)
 {
-	return ((text1->attr == text2->attr)
-		&& !memcmp(text1->ptr, text2->ptr, UTF8LITE_TEXT_SIZE(text2)));
+	struct utf8lite_text_iter it1, it2;
+	size_t n;
+
+	if (text1->attr == text2->attr) {
+		// same bits and size
+		n = UTF8LITE_TEXT_SIZE(text1);
+		return !memcmp(text1->ptr, text2->ptr, n);
+	} else if (UTF8LITE_TEXT_BITS(text1) == UTF8LITE_TEXT_BITS(text2)) {
+		// same bits, different size
+		return 0;
+	} else {
+		// different bits, different size
+		utf8lite_text_iter_make(&it1, text1);
+		utf8lite_text_iter_make(&it2, text2);
+		while (utf8lite_text_iter_advance(&it1)) {
+			if (!utf8lite_text_iter_advance(&it2)) {
+				return 0;
+			} else if (it1.current != it2.current) {
+				return 0;
+			}
+		}
+		if (utf8lite_text_iter_advance(&it2)) {
+			return 0;
+		}
+		return 1;
+	}
 }
 
 
