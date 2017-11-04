@@ -63,16 +63,56 @@ int utf8lite_text_isascii(const struct utf8lite_text *text)
 
 
 // Dan Bernstein's djb2 XOR hash: http://www.cse.yorku.ca/~oz/hash.html
-size_t utf8lite_text_hash(const struct utf8lite_text *text)
+#define HASH_SEED 5381
+#define HASH_COMBINE(seed, v) (((hash) << 5) + (hash)) ^ ((size_t)(v))
+
+
+static size_t hash_raw(const struct utf8lite_text *text)
 {
 	const uint8_t *ptr = text->ptr;
 	const uint8_t *end = ptr + UTF8LITE_TEXT_SIZE(text);
-	size_t hash = 5381;
-	uint_fast8_t ch;
+	size_t hash = HASH_SEED;
+	size_t ch;
 
 	while (ptr != end) {
 		ch = *ptr++;
-		hash = ((hash << 5) + hash) ^ ch;
+		hash = HASH_COMBINE(hash, ch);
+	}
+
+	return hash;
+}
+
+
+size_t utf8lite_text_hash(const struct utf8lite_text *text)
+{
+	uint8_t buf[4];
+	const uint8_t *ptr = text->ptr;
+	const uint8_t *end = ptr + UTF8LITE_TEXT_SIZE(text);
+	uint8_t *bufptr, *bufend;
+	size_t hash = HASH_SEED;
+	int32_t code;
+	uint_fast8_t ch;
+
+	if (!UTF8LITE_TEXT_HAS_ESC(text)) {
+		return hash_raw(text);
+	}
+
+	while (ptr != end) {
+		ch = *ptr++;
+		if (ch == '\\') {
+			utf8lite_decode_escape(&ptr, &code);
+
+			bufptr = buf;
+			bufend = bufptr;
+			utf8lite_encode_utf8(code, &bufend);
+
+			while (bufptr != bufend) {
+				ch = *bufptr++;
+				hash = HASH_COMBINE(hash, ch);
+			}
+		} else {
+			hash = HASH_COMBINE(hash, ch);
+		}
 	}
 
 	return hash;
