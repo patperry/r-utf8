@@ -205,6 +205,47 @@ START_TEST(test_equals_mixed)
 END_TEST
 
 
+static int compare(const struct utf8lite_text *x,
+		   const struct utf8lite_text *y)
+{
+	return utf8lite_text_compare(x, y);
+}
+
+
+START_TEST(test_compare_raw)
+{
+	ck_assert(!compare(S(""), S("")));
+	ck_assert(!compare(S("hello"), S("hello")));
+	ck_assert(compare(S("hello"), S("hell")) > 0);
+	ck_assert(compare(S("hello"), S("hellp")) < 0);
+}
+END_TEST
+
+
+START_TEST(test_compare_escape)
+{
+	ck_assert(!compare(JS("\\\\"), JS("\\\\")));
+	ck_assert(!compare(JS("\\n"), JS("\\n")));
+	ck_assert(compare(JS("\\\\"), JS("\\\\\\\\")) < 0);
+	ck_assert(compare(JS("\\n"), JS("\\\\n")) < 0);
+	ck_assert(compare(JS("\\nhello"), JS("\\nhell")) > 0);
+	ck_assert(compare(JS("\\nhello"), JS("\\nhellp")) < 0);
+}
+END_TEST
+
+
+START_TEST(test_compare_mixed)
+{
+	ck_assert(!compare(JS("\\\\"), S("\\")));
+	ck_assert(!compare(JS("\\n"), S("\n")));
+	ck_assert(!compare(S("\\"), JS("\\\\")));
+	ck_assert(!compare(S("\n"), JS("\\n")));
+	ck_assert(compare(S("\\n"), JS("\\n")) > 0);
+	ck_assert(compare(JS("\\n"), S("\\n")) < 0);
+}
+END_TEST
+
+
 static struct utf8lite_text_iter text_iter;
 
 static void start (const struct utf8lite_text *text)
@@ -597,6 +638,9 @@ Suite *text_suite(void)
 	tcase_add_test(tc, test_equals_raw);
 	tcase_add_test(tc, test_equals_escape);
 	tcase_add_test(tc, test_equals_mixed);
+	tcase_add_test(tc, test_compare_raw);
+	tcase_add_test(tc, test_compare_escape);
+	tcase_add_test(tc, test_compare_mixed);
 	suite_add_tcase(s, tc);
 
 	tc = tcase_create("iteration");

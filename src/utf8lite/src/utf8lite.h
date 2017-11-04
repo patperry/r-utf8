@@ -527,7 +527,7 @@ int utf8lite_text_equals(const struct utf8lite_text *text1,
  * 	if the first value is less than the second; a positive value
  * 	if the first value is greater than the second
  */
-int utf8lite_compare_text(const struct utf8lite_text *text1,
+int utf8lite_text_compare(const struct utf8lite_text *text1,
 			  const struct utf8lite_text *text2);
 /**@}*/
 

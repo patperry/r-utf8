@@ -111,11 +111,53 @@ int utf8lite_text_equals(const struct utf8lite_text *text1,
 }
 
 
-int utf8lite_compare_text(const struct utf8lite_text *text1,
-			  const struct utf8lite_text *text2)
+static int compare_raw(const struct utf8lite_text *text1,
+		       const struct utf8lite_text *text2)
 {
 	size_t n1 = UTF8LITE_TEXT_SIZE(text1);
 	size_t n2 = UTF8LITE_TEXT_SIZE(text2);
 	size_t n = (n1 < n2) ? n1 : n2;
-	return memcmp(text1->ptr, text2->ptr, n);
+	int cmp;
+
+	cmp = memcmp(text1->ptr, text2->ptr, n);
+	if (cmp == 0) {
+		if (n1 < n2) {
+			cmp = -1;
+		} else if (n1 == n2) {
+			cmp = 0;
+		} else {
+			cmp = +1;
+		}
+	}
+	return cmp;
+}
+
+
+int utf8lite_text_compare(const struct utf8lite_text *text1,
+			  const struct utf8lite_text *text2)
+{
+	struct utf8lite_text_iter it1, it2;
+
+	if (!UTF8LITE_TEXT_HAS_ESC(text1) && !UTF8LITE_TEXT_HAS_ESC(text2)) {
+		return compare_raw(text1, text2);
+	}
+
+	utf8lite_text_iter_make(&it1, text1);
+	utf8lite_text_iter_make(&it2, text2);
+
+	while (utf8lite_text_iter_advance(&it1)) {
+		if (!utf8lite_text_iter_advance(&it2)) {
+			return +1;
+		} else if (it1.current < it2.current) {
+			return -1;
+		} else if (it1.current > it2.current) {
+			return +1;
+		}
+	}
+
+	if (utf8lite_text_iter_advance(&it2)) {
+		return -1;
+	}
+
+	return 0;
 }
