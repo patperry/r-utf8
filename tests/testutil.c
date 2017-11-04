@@ -76,6 +76,7 @@ struct utf8lite_text *S(const char *str)
 struct utf8lite_text *mktext(const char *str, int flags)
 {
 	struct utf8lite_text *text = alloc(sizeof(*text));
+	struct utf8lite_text text2;
 	size_t size = strlen(str);
 	uint8_t *ptr = alloc(size + 1);
 	int err;
@@ -83,6 +84,11 @@ struct utf8lite_text *mktext(const char *str, int flags)
 	memcpy(ptr, str, size + 1);
 	err = utf8lite_text_assign(text, ptr, size, flags, NULL);
 	ck_assert(!err);
+
+	ck_assert(!utf8lite_text_assign(&text2, ptr, size,
+					flags | UTF8LITE_TEXT_VALID, NULL));
+	ck_assert(text->ptr == text2.ptr);
+	ck_assert_uint_eq(text->attr, text2.attr);
 
 	return text;
 }
