@@ -30,14 +30,7 @@ void utf8lite_text_iter_make(struct utf8lite_text_iter *it,
 	it->ptr = text->ptr;
 	it->end = it->ptr + UTF8LITE_TEXT_SIZE(text);
 	it->text_attr = text->attr;
-	it->attr = 0;
 	it->current = UTF8LITE_CODE_NONE;
-}
-
-
-int utf8lite_text_iter_can_advance(const struct utf8lite_text_iter *it)
-{
-	return (it->ptr != it->end);
 }
 
 
@@ -46,35 +39,26 @@ int utf8lite_text_iter_advance(struct utf8lite_text_iter *it)
 	const uint8_t *ptr = it->ptr;
 	size_t text_attr = it->text_attr;
 	int32_t code;
-	size_t attr;
 
-	if (!utf8lite_text_iter_can_advance(it)) {
+	if (it->ptr == it->end) {
 		goto at_end;
 	}
 
-	attr = 0;
 	code = *ptr++;
 
 	if (code == '\\' && (text_attr & UTF8LITE_TEXT_ESC_BIT)) {
-		attr = UTF8LITE_TEXT_ESC_BIT;
 		utf8lite_decode_escape(&ptr, &code);
-		if (code >= 0x80) {
-			attr |= UTF8LITE_TEXT_UTF8_BIT;
-		}
 	} else if (code >= 0x80) {
-		attr = UTF8LITE_TEXT_UTF8_BIT;
 		ptr--;
 		utf8lite_decode_utf8(&ptr, &code);
 	}
 
 	it->ptr = ptr;
 	it->current = code;
-	it->attr = attr;
 	return 1;
 
 at_end:
 	it->current = UTF8LITE_CODE_NONE;
-	it->attr = 0;
 	return 0;
 }
 
@@ -83,38 +67,6 @@ void utf8lite_text_iter_skip(struct utf8lite_text_iter *it)
 {
 	it->ptr = it->end;
 	it->current = UTF8LITE_CODE_NONE;
-	it->attr = 0;
-}
-
-
-int utf8lite_text_iter_can_retreat(const struct utf8lite_text_iter *it)
-{
-	const size_t size = (it->text_attr & UTF8LITE_TEXT_SIZE_MASK);
-	const uint8_t *begin = it->end - size;
-	const uint8_t *ptr = it->ptr;
-	int32_t code = it->current;
-	struct utf8lite_text_iter it2;
-
-	if (ptr > begin + 12) {
-		return 1;
-	}
-
-	if (ptr == begin) {
-		return 0;
-	}
-
-	if (code == UTF8LITE_CODE_NONE) {
-		return 1;
-	}
-
-	if (!(it->attr & UTF8LITE_TEXT_ESC_BIT)) {
-		return (ptr != begin + UTF8LITE_UTF8_ENCODE_LEN(code));
-	}
-
-	it2 = *it;
-	iter_retreat_escaped(&it2, begin);
-
-	return (it2.ptr != begin);
 }
 
 
@@ -147,7 +99,6 @@ int utf8lite_text_iter_retreat(struct utf8lite_text_iter *it)
 
 	if (ptr == begin) {
 		it->current = UTF8LITE_CODE_NONE;
-		it->attr = 0;
 		return 0;
 	}
 
@@ -174,7 +125,6 @@ void utf8lite_text_iter_reset(struct utf8lite_text_iter *it)
 
 	it->ptr = begin;
 	it->current = UTF8LITE_CODE_NONE;
-	it->attr = 0;
 }
 
 
@@ -188,7 +138,6 @@ void iter_retreat_raw(struct utf8lite_text_iter *it)
 	if (code < 0x80) {
 		it->ptr = (uint8_t *)ptr;
 		it->current = code;
-		it->attr = 0;
 	} else {
 		// skip over continuation bytes
 		do {
@@ -198,7 +147,6 @@ void iter_retreat_raw(struct utf8lite_text_iter *it)
 		it->ptr = (uint8_t *)ptr;
 
 		utf8lite_decode_utf8(&ptr, &it->current);
-		it->attr = UTF8LITE_TEXT_UTF8_BIT;
 	}
 }
 
@@ -230,11 +178,9 @@ void iter_retreat_escaped(struct utf8lite_text_iter *it, const uint8_t *begin)
 {
 	const uint8_t *ptr = it->ptr;
 	int32_t code, unesc, hi;
-	size_t attr;
 	int i;
 
 	code = *(--ptr);
-	attr = 0;
 
 	// check for 2-byte escape
 	switch (code) {
@@ -272,7 +218,6 @@ void iter_retreat_escaped(struct utf8lite_text_iter *it, const uint8_t *begin)
 	       if (at_escape(begin, ptr)) {
 		       ptr--;
 		       code = unesc;
-		       attr = UTF8LITE_TEXT_ESC_BIT;
 	       }
 	       goto out;
 	}
@@ -283,17 +228,12 @@ void iter_retreat_escaped(struct utf8lite_text_iter *it, const uint8_t *begin)
 				&& at_escape(begin, ptr - 4))) {
 			goto out;
 		}
-		attr = UTF8LITE_TEXT_ESC_BIT;
 
 		code = 0;
 		for (i = 0; i < 4; i++) {
 			code = (code << 4) + hextoi(ptr[i - 3]);
 		}
 		ptr -= 5;
-
-		if (code >= 0x80) {
-			attr |= UTF8LITE_TEXT_UTF8_BIT;
-		}
 
 		if (UTF8LITE_IS_UTF16_LOW(code)) {
 			hi = 0;
@@ -323,11 +263,9 @@ void iter_retreat_escaped(struct utf8lite_text_iter *it, const uint8_t *begin)
 	// decode the utf-8 value
 	it->ptr = (uint8_t *)ptr;
 	utf8lite_decode_utf8(&ptr, &it->current);
-	it->attr = UTF8LITE_TEXT_UTF8_BIT;
 	return;
 
 out:
 	it->ptr = (uint8_t *)ptr;
 	it->current = code;
-	it->attr = attr;
 }

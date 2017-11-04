@@ -22,7 +22,6 @@
 
 #define NEXT() \
 	do { \
-		scan->current.text.attr |= scan->iter.attr; \
 		scan->ptr = scan->iter.ptr; \
 		if (utf8lite_text_iter_advance(&scan->iter)) { \
 			scan->prop = graph_break(scan->iter.current); \
@@ -44,7 +43,8 @@ void utf8lite_graphscan_reset(struct utf8lite_graphscan *scan)
 {
 	utf8lite_text_iter_reset(&scan->iter);
 	scan->current.text.ptr = (uint8_t *)scan->iter.ptr;
-	scan->current.text.attr = 0;
+	scan->current.text.attr = (scan->iter.text_attr
+				   & ~UTF8LITE_TEXT_SIZE_MASK);
 	NEXT();
 }
 
@@ -53,7 +53,8 @@ void utf8lite_graphscan_skip(struct utf8lite_graphscan *scan)
 {
 	utf8lite_text_iter_skip(&scan->iter);
 	scan->current.text.ptr = (uint8_t *)scan->iter.ptr;
-	scan->current.text.attr = 0;
+	scan->current.text.attr = (scan->iter.text_attr
+				   & ~UTF8LITE_TEXT_SIZE_MASK);
 	scan->prop = -1;
 }
 
@@ -61,8 +62,8 @@ void utf8lite_graphscan_skip(struct utf8lite_graphscan *scan)
 int utf8lite_graphscan_advance(struct utf8lite_graphscan *scan)
 {
 	scan->current.text.ptr = (uint8_t *)scan->ptr;
-	scan->current.text.attr = 0;
-
+	scan->current.text.attr = (scan->iter.text_attr
+				   & ~UTF8LITE_TEXT_SIZE_MASK);
 Start:
 	// GB2: Break at the end of text
 	if (scan->prop < 0) {
@@ -255,7 +256,6 @@ Break:
 
 #define PREV() \
 	do { \
-		scan->current.text.attr |= prev.attr; \
 		if (utf8lite_text_iter_retreat(&prev)) { \
 			prop = graph_break(prev.current); \
 		} else { \
@@ -317,7 +317,8 @@ int utf8lite_graphscan_retreat(struct utf8lite_graphscan *scan)
 	}
 
 	// if so, start of current grapheme becomes end of previous
-	scan->current.text.attr = 0;
+	scan->current.text.attr = (scan->iter.text_attr
+				   & ~UTF8LITE_TEXT_SIZE_MASK);
 	scan->ptr = scan->current.text.ptr;
 
 	// position iter after the last character, prev before
