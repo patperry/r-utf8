@@ -134,7 +134,7 @@ int utf8lite_textmap_set(struct utf8lite_textmap *map,
 	int32_t *dst;
 	int err;
 
-	if (UTF8LITE_TEXT_IS_ASCII(text)) {
+	if (utf8lite_text_isascii(text)) {
 		return utf8lite_textmap_set_ascii(map, text);
 	}
 
@@ -180,7 +180,6 @@ int utf8lite_textmap_set_utf32(struct utf8lite_textmap *map, const int32_t *ptr,
 	uint8_t *dst = map->text.ptr;
 	int32_t code;
 	int8_t ch;
-	int is_utf8 = 0;
 
 	while (ptr != end) {
 		code = *ptr++;
@@ -210,25 +209,18 @@ int utf8lite_textmap_set_utf32(struct utf8lite_textmap *map, const int32_t *ptr,
 				break;
 			}
 		}
-		if (code >= 0x80) {
-			is_utf8 = 1;
-		}
 		utf8lite_encode_utf8(code, &dst);
 	}
 
 	*dst = '\0'; // not necessary, but helps with debugging
 	map->text.attr = (UTF8LITE_TEXT_SIZE_MASK
 			  & ((size_t)(dst - map->text.ptr)));
-	if (is_utf8) {
-		map->text.attr |= UTF8LITE_TEXT_UTF8_BIT;
-	}
-
 	return 0;
 }
 
 
 int utf8lite_textmap_set_ascii(struct utf8lite_textmap *map,
-			     const struct utf8lite_text *text)
+			       const struct utf8lite_text *text)
 {
 	struct utf8lite_text_iter it;
 	size_t size = UTF8LITE_TEXT_SIZE(text);
@@ -236,7 +228,6 @@ int utf8lite_textmap_set_ascii(struct utf8lite_textmap *map,
 	uint8_t *dst;
 	int err;
 
-	assert(UTF8LITE_TEXT_IS_ASCII(text));
 	assert(size < SIZE_MAX);
 
 	if ((err = utf8lite_textmap_reserve(map, size + 1))) {

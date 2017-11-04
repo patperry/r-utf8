@@ -73,7 +73,6 @@ int assign_raw(struct utf8lite_text *text, const uint8_t *ptr, size_t size,
 {
 	const uint8_t *input = ptr;
 	const uint8_t *end = ptr + size;
-	size_t attr = 0;
 	uint_fast8_t ch;
 	int err;
 
@@ -82,7 +81,6 @@ int assign_raw(struct utf8lite_text *text, const uint8_t *ptr, size_t size,
 	while (ptr != end) {
 		ch = *ptr++;
 		if (ch & 0x80) {
-			attr |= UTF8LITE_TEXT_UTF8_BIT;
 			ptr--;
 			if ((err = utf8lite_scan_utf8(&ptr, end, msg))) {
 				goto error;
@@ -90,8 +88,7 @@ int assign_raw(struct utf8lite_text *text, const uint8_t *ptr, size_t size,
 		}
 	}
 
-	attr |= (size & UTF8LITE_TEXT_SIZE_MASK);
-	text->attr = attr;
+	text->attr = size;
 	return 0;
 
 error:
@@ -126,11 +123,7 @@ int assign_esc(struct utf8lite_text *text, const uint8_t *ptr, size_t size,
 			}
 
 			utf8lite_decode_escape(&start, &code);
-			if (!UTF8LITE_IS_ASCII(code)) {
-				attr |= UTF8LITE_TEXT_UTF8_BIT;
-			}
 		} else if (ch & 0x80) {
-			attr |= UTF8LITE_TEXT_UTF8_BIT;
 			ptr--;
 			if ((err = utf8lite_scan_utf8(&ptr, end, msg))) {
 				goto error;
@@ -138,7 +131,7 @@ int assign_esc(struct utf8lite_text *text, const uint8_t *ptr, size_t size,
 		}
 	}
 
-	attr |= (size & UTF8LITE_TEXT_SIZE_MASK);
+	attr |= size;
 	text->attr = attr;
 	return 0;
 
@@ -152,7 +145,6 @@ void assign_raw_unsafe(struct utf8lite_text *text, const uint8_t *ptr,
 		       size_t size)
 {
 	const uint8_t *end = ptr + size;
-	size_t attr = 0;
 	uint_fast8_t ch;
 
 	text->ptr = (uint8_t *)ptr;
@@ -160,13 +152,11 @@ void assign_raw_unsafe(struct utf8lite_text *text, const uint8_t *ptr,
 	while (ptr != end) {
 		ch = *ptr++;
 		if (ch & 0x80) {
-			attr |= UTF8LITE_TEXT_UTF8_BIT;
 			ptr += UTF8LITE_UTF8_TAIL_LEN(ch);
 		}
 	}
 
-	attr |= (size & UTF8LITE_TEXT_SIZE_MASK);
-	text->attr = attr;
+	text->attr = size;
 }
 
 
@@ -190,20 +180,16 @@ void assign_esc_unsafe(struct utf8lite_text *text, const uint8_t *ptr,
 			switch (ch) {
 			case 'u':
 				utf8lite_decode_uescape(&ptr, &code);
-				if (code >= 0x80) {
-					attr |= UTF8LITE_TEXT_UTF8_BIT;
-				}
 				break;
 			default:
 				break;
 			}
 		} else if (ch & 0x80) {
-			attr |= UTF8LITE_TEXT_UTF8_BIT;
 			ptr += UTF8LITE_UTF8_TAIL_LEN(ch);
 		}
 	}
 
-	attr |= (size & UTF8LITE_TEXT_SIZE_MASK);
+	attr |= size;
 	text->attr = attr;
 }
 

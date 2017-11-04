@@ -410,15 +410,12 @@ void utf8lite_compose(int32_t *ptr, size_t *lenptr);
  * @{
  */
 
-/** Whether the text might contain a non-ASCII UTF-8 character */
-#define UTF8LITE_TEXT_UTF8_BIT	((size_t)1 << (CHAR_BIT * sizeof(size_t) - 1))
-
 /** Whether the text might contain a backslash (`\`) that should be
  * interpreted as an escape */
-#define UTF8LITE_TEXT_ESC_BIT	((size_t)1 << (CHAR_BIT * sizeof(size_t) - 2))
+#define UTF8LITE_TEXT_ESC_BIT	((size_t)1 << (CHAR_BIT * sizeof(size_t) - 1))
 
 /** Size of the encoded text, in bytes; (decoded size) <= (encoded size) */
-#define UTF8LITE_TEXT_SIZE_MASK	((size_t)SIZE_MAX >> 2)
+#define UTF8LITE_TEXT_SIZE_MASK	((size_t)SIZE_MAX >> 1)
 
 /** Maximum size of encode text, in bytes. */
 #define UTF8LITE_TEXT_SIZE_MAX	UTF8LITE_TEXT_SIZE_MASK
@@ -428,13 +425,6 @@ void utf8lite_compose(int32_t *ptr, size_t *lenptr);
 
 /** The text attribute bits */
 #define UTF8LITE_TEXT_BITS(text) ((text)->attr & ~UTF8LITE_TEXT_SIZE_MASK)
-
-/** Indicates whether the text definitely decodes to ASCII. For this to be true,
- *  the text must be encoded in ASCII and not have any escapes that decode to
- *  non-ASCII codepoints.
- */
-#define UTF8LITE_TEXT_IS_ASCII(text) \
-	(((text)->attr & UTF8LITE_TEXT_UTF8_BIT) ? 0 : 1)
 
 /** Indicates whether the text might contain a backslash (`\`) that should
  *  be interpreted as an escape code */
@@ -493,6 +483,12 @@ int utf8lite_text_assign(struct utf8lite_text *text,
 int utf8lite_text_init_copy(struct utf8lite_text *text,
 			    const struct utf8lite_text *other);
 
+/** Indicates whether the text definitely decodes to ASCII. For this to be true,
+ *  the text must be encoded in ASCII and not have any escapes that decode to
+ *  non-ASCII codepoints.
+ */
+int utf8lite_text_isascii(const struct utf8lite_text *text);
+
 /**
  * Free the resources associated with a text object.
  *
@@ -549,7 +545,6 @@ struct utf8lite_text_iter {
 	const uint8_t *end;	/**< end of the text buffer */
 	size_t text_attr;	/**< text attributes */
 	int32_t current;	/**< current character (UTF-32) */
-	size_t attr;		/**< current character attributes */
 };
 
 /**
@@ -572,15 +567,6 @@ void utf8lite_text_iter_make(struct utf8lite_text_iter *it,
 int utf8lite_text_iter_advance(struct utf8lite_text_iter *it);
 
 /**
- * Check whether a text iterator can advance.
- *
- * \param it the text iterator
- *
- * \returns non-zero if the iterator can advance, zero otherwise
- */
-int utf8lite_text_iter_can_advance(const struct utf8lite_text_iter *it);
-
-/**
  * Retreat to the previous character in a text.
  *
  * \param it the text iterator
@@ -589,15 +575,6 @@ int utf8lite_text_iter_can_advance(const struct utf8lite_text_iter *it);
  * 	the iterator has passed the start of the text.
  */
 int utf8lite_text_iter_retreat(struct utf8lite_text_iter *it);
-
-/**
- * Check whether a text iterator can retreat.
- *
- * \param it the text iterator
- *
- * \returns non-zero if the iterator can retreat, zero otherwise
- */
-int utf8lite_text_iter_can_retreat(const struct utf8lite_text_iter *it);
 
 /**
  * Reset an iterator to the start of the text.

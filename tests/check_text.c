@@ -185,7 +185,8 @@ static int next(void)
 
 static int has_next()
 {
-	return utf8lite_text_iter_can_advance(&text_iter);
+	struct utf8lite_text_iter it = text_iter;
+	return utf8lite_text_iter_advance(&it);
 }
 
 
@@ -201,7 +202,8 @@ static int prev(void)
 
 static int has_prev()
 {
-	return utf8lite_text_iter_can_retreat(&text_iter);
+	struct utf8lite_text_iter it = text_iter;
+	return utf8lite_text_iter_retreat(&it);
 }
 
 
@@ -418,7 +420,7 @@ struct type {
 };
 
 #define ESC UTF8LITE_TEXT_ESC_BIT
-#define UTF8 UTF8LITE_TEXT_UTF8_BIT
+#define UTF8 0
 
 START_TEST(test_iter_random)
 {
@@ -494,44 +496,34 @@ START_TEST(test_iter_random)
 
 	// forward iteration
 	for (i = 0; i < ntok; i++) {
-		ck_assert(utf8lite_text_iter_can_advance(&iter));
 		ck_assert(utf8lite_text_iter_advance(&iter));
-		if (i > 0) {
-			ck_assert(utf8lite_text_iter_can_retreat(&iter));
-		}
 
 		id = toks[i];
 		ck_assert_int_eq(iter.current, types[id].value);
-		ck_assert_uint_eq(iter.attr, types[id].attr);
+		//ck_assert_uint_eq(iter.attr, types[id].attr);
 
 		len = strlen(types[id].string);
 		ptr += len;
 		ck_assert(iter.ptr == ptr);
 	}
 
-	ck_assert(!utf8lite_text_iter_can_advance(&iter));
 	ck_assert(!utf8lite_text_iter_advance(&iter));
 	ck_assert(!utf8lite_text_iter_advance(&iter));
 	ck_assert(iter.ptr == ptr);
 
 	// reverse iteration
 	while (i-- > 0) {
-		ck_assert(utf8lite_text_iter_can_retreat(&iter));
 		ck_assert(utf8lite_text_iter_retreat(&iter));
-		if (i != ntok - 1) {
-			ck_assert(utf8lite_text_iter_can_advance(&iter));
-		}
 
 		id = toks[i];
 		ck_assert_int_eq(iter.current, types[id].value);
-		ck_assert_uint_eq(iter.attr, types[id].attr);
+		//ck_assert_uint_eq(iter.attr, types[id].attr);
 
 		ck_assert(iter.ptr == ptr);
 		len = strlen(types[id].string);
 		ptr -= len;
 	}
 
-	ck_assert(!utf8lite_text_iter_can_retreat(&iter));
 	ck_assert(!utf8lite_text_iter_retreat(&iter));
 	ck_assert(!utf8lite_text_iter_retreat(&iter));
 	ck_assert(iter.ptr == ptr);

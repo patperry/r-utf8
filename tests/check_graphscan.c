@@ -175,9 +175,6 @@ void setup_unicode(void)
 			test->line = line;
 			test->is_ascii = is_ascii;
 			test->text.attr = (size_t)(dst - test->text.ptr);
-			if (!is_ascii) {
-				test->text.attr |= UTF8LITE_TEXT_UTF8_BIT;
-			}
 
 			if (ncode > 0) {
 				test->ncode = ncode;

@@ -51,6 +51,20 @@ void utf8lite_text_destroy(struct utf8lite_text *text)
 }
 
 
+int utf8lite_text_isascii(const struct utf8lite_text *text)
+{
+	struct utf8lite_text_iter it;
+
+	utf8lite_text_iter_make(&it, text);
+	while (utf8lite_text_iter_advance(&it)) {
+		if (!UTF8LITE_IS_ASCII(it.current)) {
+			return 0;
+		}
+	}
+	return 1;
+}
+
+
 // Dan Bernstein's djb2 XOR hash: http://www.cse.yorku.ca/~oz/hash.html
 size_t utf8lite_text_hash(const struct utf8lite_text *text)
 {
@@ -71,8 +85,7 @@ size_t utf8lite_text_hash(const struct utf8lite_text *text)
 int utf8lite_text_equals(const struct utf8lite_text *text1,
 		       const struct utf8lite_text *text2)
 {
-	return ((text1->attr & ~UTF8LITE_TEXT_UTF8_BIT)
-			== (text2->attr & ~UTF8LITE_TEXT_UTF8_BIT)
+	return ((text1->attr == text2->attr)
 		&& !memcmp(text1->ptr, text2->ptr, UTF8LITE_TEXT_SIZE(text2)));
 }
 
