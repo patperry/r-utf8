@@ -522,18 +522,18 @@ END_TEST
 
 START_TEST(test_encode_emoji_zwsp)
 {
-	set_flags(UTF8LITE_ENCODE_EMOJI);
+	set_flags(UTF8LITE_ENCODE_EMOJIZWSP);
 
 	ck_assert(!utf8lite_render_text(&render, JS("\\u2614")));
 	ck_assert_str_eq(render.string, "\xe2\x98\x94\xe2\x80\x8b");
 	clear();
 
-	set_flags(UTF8LITE_ENCODE_EMOJI | UTF8LITE_ESCAPE_UTF8);
+	set_flags(UTF8LITE_ENCODE_EMOJIZWSP | UTF8LITE_ESCAPE_UTF8);
 	ck_assert(!utf8lite_render_text(&render, JS("\\u2614")));
 	ck_assert_str_eq(render.string, "\\u2614");
 	clear();
 
-	set_flags(UTF8LITE_ENCODE_EMOJI | UTF8LITE_ESCAPE_EXTENDED);
+	set_flags(UTF8LITE_ENCODE_EMOJIZWSP | UTF8LITE_ESCAPE_EXTENDED);
 	ck_assert(!utf8lite_render_text(&render, JS("\\u2614")));
 	ck_assert_str_eq(render.string, "\xe2\x98\x94\xe2\x80\x8b");
 	clear();
@@ -543,7 +543,7 @@ END_TEST
 
 START_TEST(test_encode_emoji_extended_zwsp)
 {
-	set_flags(UTF8LITE_ENCODE_EMOJI);
+	set_flags(UTF8LITE_ENCODE_EMOJIZWSP);
 
 	ck_assert(!utf8lite_render_text(&render, JS("\\uD83D\\uDCF8")));
 	ck_assert_str_eq(render.string, "\xf0\x9f\x93\xb8\xe2\x80\x8b");
@@ -554,7 +554,7 @@ START_TEST(test_encode_emoji_extended_zwsp)
 			"\xf0\x9f\x93\xb8\xe2\x83\xa0\xe2\x80\x8b");
 	clear();
 
-	set_flags(UTF8LITE_ENCODE_EMOJI | UTF8LITE_ESCAPE_UTF8);
+	set_flags(UTF8LITE_ENCODE_EMOJIZWSP | UTF8LITE_ESCAPE_UTF8);
 	ck_assert(!utf8lite_render_text(&render, JS("\\uD83D\\uDCF8")));
 	ck_assert_str_eq(render.string, "\\U0001f4f8");
 	clear();
@@ -563,7 +563,7 @@ START_TEST(test_encode_emoji_extended_zwsp)
 	ck_assert_str_eq(render.string, "\\U0001f4f8\\u20e0");
 	clear();
 
-	set_flags(UTF8LITE_ENCODE_EMOJI | UTF8LITE_ESCAPE_EXTENDED);
+	set_flags(UTF8LITE_ENCODE_EMOJIZWSP | UTF8LITE_ESCAPE_EXTENDED);
 	ck_assert(!utf8lite_render_text(&render, JS("\\uD83D\\uDCF8")));
 	ck_assert_str_eq(render.string, "\\U0001f4f8");
 	clear();
@@ -577,18 +577,18 @@ END_TEST
 
 START_TEST(test_encode_emoji_zwsp_rmdi)
 {
-	set_flags(UTF8LITE_ENCODE_EMOJI | UTF8LITE_ENCODE_RMDI);
+	set_flags(UTF8LITE_ENCODE_EMOJIZWSP | UTF8LITE_ENCODE_RMDI);
 
 	ck_assert(!utf8lite_render_text(&render, JS("\\u2614")));
 	ck_assert_str_eq(render.string, "\xe2\x98\x94\xe2\x80\x8b");
 	clear();
 
-	set_flags(UTF8LITE_ENCODE_EMOJI | UTF8LITE_ESCAPE_UTF8);
+	set_flags(UTF8LITE_ENCODE_EMOJIZWSP | UTF8LITE_ESCAPE_UTF8);
 	ck_assert(!utf8lite_render_text(&render, JS("\\u2614")));
 	ck_assert_str_eq(render.string, "\\u2614");
 	clear();
 
-	set_flags(UTF8LITE_ENCODE_EMOJI | UTF8LITE_ESCAPE_EXTENDED);
+	set_flags(UTF8LITE_ENCODE_EMOJIZWSP | UTF8LITE_ESCAPE_EXTENDED);
 	ck_assert(!utf8lite_render_text(&render, JS("\\u2614")));
 	ck_assert_str_eq(render.string, "\xe2\x98\x94\xe2\x80\x8b");
 	clear();

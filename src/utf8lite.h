@@ -774,7 +774,7 @@ enum utf8lite_escape_type {
 enum utf8lite_encode_type {
 	UTF8LITE_ENCODE_C = 0,		/**< C-compatible escapes */
 	UTF8LITE_ENCODE_JSON = (1 << 5),/**< JSON-compatible escapes */
-	UTF8LITE_ENCODE_EMOJI = (1 << 6),/**< put ZWSP after emoji */
+	UTF8LITE_ENCODE_EMOJIZWSP = (1 << 6),/**< put ZWSP after emoji */
 	UTF8LITE_ENCODE_RMDI = (1 << 7),/**< remove default ignorables */
 	UTF8LITE_ENCODE_AMBIGWIDE = (1 << 8),/**< assume that ambiguous-width
 					       characters are wide */
