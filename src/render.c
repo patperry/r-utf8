@@ -280,18 +280,20 @@ static int utf8lite_escape_utf8(struct utf8lite_render *r, int32_t ch)
 
 static int utf8lite_escape_ascii(struct utf8lite_render *r, int32_t ch)
 {
-	// character expansion for a special escape: \X
-	utf8lite_render_grow(r, 2);
+	// character expansion for a special escape: \uXXXX or \X
+	utf8lite_render_grow(r, 6);
 	CHECK_ERROR(r);
 
 	if (ch <= 0x1F || ch == 0x7F) {
 		switch (ch) {
 		case '\a':
 			if (r->flags & UTF8LITE_ENCODE_JSON) {
-				return utf8lite_escape_utf8(r, ch);
+				r->length += sprintf(&r->string[r->length],
+						     "\\u%04x", (unsigned)ch);
+			} else {
+				r->string[r->length++] = '\\';
+				r->string[r->length++] = 'a';
 			}
-			r->string[r->length++] = '\\';
-			r->string[r->length++] = 'a';
 			break;
 		case '\b':
 			r->string[r->length++] = '\\';
@@ -315,13 +317,16 @@ static int utf8lite_escape_ascii(struct utf8lite_render *r, int32_t ch)
 			break;
 		case '\v':
 			if (r->flags & UTF8LITE_ENCODE_JSON) {
-				return utf8lite_escape_utf8(r, ch);
+				r->length += sprintf(&r->string[r->length],
+						     "\\u%04x", (unsigned)ch);
+			} else {
+				r->string[r->length++] = '\\';
+				r->string[r->length++] = 'v';
 			}
-			r->string[r->length++] = '\\';
-			r->string[r->length++] = 'v';
 			break;
 		default:
-			return utf8lite_escape_utf8(r, ch);
+			r->length += sprintf(&r->string[r->length],
+					     "\\u%04x", (unsigned)ch);
 		}
 	} else {
 		r->string[r->length++] = '\\';
