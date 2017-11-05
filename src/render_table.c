@@ -196,7 +196,7 @@ exit:
 
 SEXP rutf8_render_table(SEXP sx, SEXP swidth, SEXP squote, SEXP sna_print,
 			SEXP sprint_gap, SEXP sright, SEXP smax,
-			SEXP sdisplay, SEXP sfaint, SEXP slinewidth,
+			SEXP sdisplay, SEXP sstyle, SEXP slinewidth,
 			SEXP sutf8)
 {
 	SEXP ans, na_print, str, srender, elt, dim_names, row_names, col_names;
@@ -204,7 +204,7 @@ SEXP rutf8_render_table(SEXP sx, SEXP swidth, SEXP squote, SEXP sna_print,
 	struct flags flags;
 	R_xlen_t ix, nx;
 	int i, j, nrow, ncol;
-	int width, quote, print_gap, right, max, display, faint, linewidth,
+	int width, quote, print_gap, right, max, display, style, linewidth,
 	    utf8;
 	int begin, end, w, nprint, lw, namewidth, *colwidths;
 	int nprot = 0;
@@ -223,7 +223,7 @@ SEXP rutf8_render_table(SEXP sx, SEXP swidth, SEXP squote, SEXP sna_print,
 	right = LOGICAL(sright)[0] == TRUE;
 	max = INTEGER(smax)[0];
 	display = LOGICAL(sdisplay)[0] == TRUE;
-	faint = LOGICAL(sfaint)[0] == TRUE;
+	style = LOGICAL(sstyle)[0] == TRUE;
 	linewidth = INTEGER(slinewidth)[0];
 	utf8 = LOGICAL(sutf8)[0] == TRUE;
 
@@ -235,7 +235,7 @@ SEXP rutf8_render_table(SEXP sx, SEXP swidth, SEXP squote, SEXP sna_print,
                 flags.entry |= UTF8LITE_ENCODE_RMDI;
                 flags.entry |= UTF8LITE_ENCODE_EMOJIZWSP;
         }
-	if (faint) {
+	if (style) {
 		flags.entry |= UTF8LITE_ENCODE_ESCFAINT;
 	}
         if (!utf8) {

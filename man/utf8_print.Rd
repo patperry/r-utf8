@@ -7,7 +7,7 @@
 \usage{
 utf8_print(x, chars = NULL, quote = TRUE, na.print = NULL,
            print.gap = NULL, right = FALSE, max = NULL,
-           display = TRUE, faint = TRUE, ...)
+           display = TRUE, style = TRUE, ...)
 }
 \arguments{
     \item{x}{character object.}
@@ -42,8 +42,8 @@ utf8_print(x, chars = NULL, quote = TRUE, na.print = NULL,
     \item{display}{logical scalar indicating whether to optimize the
         encoding for display, not byte-for-byte data transmission.}
 
-    \item{faint}{logical scalar indicating whether to display escape
-        codes in faint (reduced intensity) style. Ignored on Windows
+    \item{style}{logical scalar indicating whether to apply ANSI
+        terminal escape codes to style the output.  Ignored on Windows
         and when \code{isatty(stdout())} is \code{FALSE}.}
 
     \item{...}{further arguments passed from other methods. Ignored.}
