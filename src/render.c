@@ -279,101 +279,96 @@ static int utf8lite_escape_utf8(struct utf8lite_render *r, int32_t ch)
 }
 
 
-static int utf8lite_render_ascii(struct utf8lite_render *r, int32_t ch)
+static int utf8lite_escape_ascii(struct utf8lite_render *r, int32_t ch)
 {
-	char *end;
-
 	// character expansion for a special escape: \X
 	utf8lite_render_grow(r, 2);
 	CHECK_ERROR(r);
 
-	end = r->string + r->length;
-
-	if ((ch <= 0x1F || ch == 0x7F)
-			&& (r->flags & UTF8LITE_ESCAPE_CONTROL)) {
+	if (ch <= 0x1F || ch == 0x7F) {
 		switch (ch) {
 		case '\a':
 			if (r->flags & UTF8LITE_ENCODE_JSON) {
 				return utf8lite_escape_utf8(r, ch);
 			}
-			end[0] = '\\';
-			end[1] = 'a';
-			r->length += 2;
+			r->string[r->length++] = '\\';
+			r->string[r->length++] = 'a';
 			break;
 		case '\b':
-			end[0] = '\\';
-			end[1] = 'b';
-			r->length += 2;
+			r->string[r->length++] = '\\';
+			r->string[r->length++] = 'b';
 			break;
 		case '\f':
-			end[0] = '\\';
-			end[1] = 'f';
-			r->length += 2;
+			r->string[r->length++] = '\\';
+			r->string[r->length++] = 'f';
 			break;
 		case '\n':
-			end[0] = '\\';
-			end[1] = 'n';
-			r->length += 2;
+			r->string[r->length++] = '\\';
+			r->string[r->length++] = 'n';
 			break;
 		case '\r':
-			end[0] = '\\';
-			end[1] = 'r';
-			r->length += 2;
+			r->string[r->length++] = '\\';
+			r->string[r->length++] = 'r';
 			break;
 		case '\t':
-			end[0] = '\\';
-			end[1] = 't';
-			r->length += 2;
+			r->string[r->length++] = '\\';
+			r->string[r->length++] = 't';
 			break;
 		case '\v':
 			if (r->flags & UTF8LITE_ENCODE_JSON) {
 				return utf8lite_escape_utf8(r, ch);
 			}
-			end[0] = '\\';
-			end[1] = 'v';
-			r->length += 2;
+			r->string[r->length++] = '\\';
+			r->string[r->length++] = 'v';
 			break;
 		default:
 			return utf8lite_escape_utf8(r, ch);
 		}
 	} else {
-		switch (ch) {
-		case '\"':
-			if (r->flags & UTF8LITE_ESCAPE_DQUOTE) {
-				end[0] = '\\';
-				end[1] = '\"';
-				r->length += 2;
-				goto exit;
-			}
-			break;
-		case '\'':
-			if (r->flags & UTF8LITE_ESCAPE_SQUOTE) {
-				end[0] = '\\';
-				end[1] = '\'';
-				r->length += 2;
-				goto exit;
-			}
-			break;
-		case '\\':
-			if (r->flags & (UTF8LITE_ESCAPE_CONTROL
-						| UTF8LITE_ESCAPE_DQUOTE
-						| UTF8LITE_ESCAPE_SQUOTE
-						| UTF8LITE_ESCAPE_EXTENDED
-						| UTF8LITE_ESCAPE_UTF8)) {
-				end[0] = '\\';
-				end[1] = '\\';
-				r->length += 2;
-				goto exit;
-			}
-			break;
-		default:
-			break;
-		}
-
-		end[0] = (char)ch;
-		r->length++;
+		r->string[r->length++] = '\\';
+		r->string[r->length++] = (char)ch;
 	}
-exit:
+
+	r->string[r->length] = '\0';
+	return 0;
+}
+
+
+static int utf8lite_render_ascii(struct utf8lite_render *r, int32_t ch)
+{
+	if ((ch <= 0x1F || ch == 0x7F)
+			&& (r->flags & UTF8LITE_ESCAPE_CONTROL)) {
+		return utf8lite_escape_ascii(r, ch);
+	}
+
+	switch (ch) {
+	case '\"':
+		if (r->flags & UTF8LITE_ESCAPE_DQUOTE) {
+			return utf8lite_escape_ascii(r, ch);
+		}
+		break;
+	case '\'':
+		if (r->flags & UTF8LITE_ESCAPE_SQUOTE) {
+			return utf8lite_escape_ascii(r, ch);
+		}
+		break;
+	case '\\':
+		if (r->flags & (UTF8LITE_ESCAPE_CONTROL
+					| UTF8LITE_ESCAPE_DQUOTE
+					| UTF8LITE_ESCAPE_SQUOTE
+					| UTF8LITE_ESCAPE_EXTENDED
+					| UTF8LITE_ESCAPE_UTF8)) {
+			return utf8lite_escape_ascii(r, ch);
+		}
+		break;
+	default:
+		break;
+	}
+
+	utf8lite_render_grow(r, 1);
+	CHECK_ERROR(r);
+
+	r->string[r->length++] = (char)ch;
 	r->string[r->length] = '\0';
 	return 0;
 }
