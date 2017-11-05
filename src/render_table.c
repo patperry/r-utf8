@@ -230,7 +230,7 @@ SEXP rutf8_render_table(SEXP sx, SEXP swidth, SEXP squote, SEXP sna_print,
 	}
         if (display) {
                 flags.entry |= UTF8LITE_ENCODE_RMDI;
-                flags.entry |= UTF8LITE_ENCODE_EMOJI;
+                flags.entry |= UTF8LITE_ENCODE_EMOJIZWSP;
         }
         if (!utf8) {
                 flags.entry |= UTF8LITE_ESCAPE_UTF8;

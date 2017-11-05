@@ -6,7 +6,8 @@
     quotes or spaces, adjusting the width for display.
 }
 \usage{
-utf8_encode(x, width = 0L, quote = FALSE, justify = "left", display = FALSE)
+utf8_encode(x, width = 0L, quote = FALSE, justify = "left", display = FALSE,
+            faint = FALSE)
 }
 \arguments{
     \item{x}{character object.}
@@ -22,6 +23,10 @@ utf8_encode(x, width = 0L, quote = FALSE, justify = "left", display = FALSE)
 
     \item{display}{logical scalar indicating whether to optimize the
         encoding for display, not byte-for-byte data transmission.}
+
+    \item{faint}{logical scalar indicating whether to insert ANSI terminal
+        escape codes to display backslash escapes in faint (decreased
+        intensity) style.}
 }
 \details{
     \code{utf8_encode} encodes a character object for printing on a UTF-8
