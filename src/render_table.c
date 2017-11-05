@@ -52,22 +52,34 @@ static int flags_get(const struct flags *f, enum cell_type t)
 	}
 }
 
+
+static int charsxp_width(SEXP sx, int flags)
+{
+	struct rutf8_string text;
+	int quotes = (flags & UTF8LITE_ESCAPE_DQUOTE) ? 2 : 0;
+	rutf8_string_init(&text, sx);
+	return rutf8_string_width(&text, flags) + quotes;
+}
+
+
 static void render_cell(struct utf8lite_render *r, const struct flags *f,
-			enum cell_type t, SEXP sx, int right, int pad)
+			enum cell_type t, SEXP sx, int width, int right)
 {
 	struct rutf8_string str;
-	int err = 0, width, quote, old;
+	int err = 0, w, pad, quote, old;
 
 	old = utf8lite_render_set_flags(r, flags_get(f, t));
+
+	w = charsxp_width(sx, r->flags);
+	pad = width - w;
 
 	if (right) {
 		TRY(utf8lite_render_spaces(r, pad));
 	}
 
 	rutf8_string_init(&str, sx);
-	width = 0;
 	quote = r->flags & UTF8LITE_ESCAPE_DQUOTE;
-	rutf8_string_render(r, &str, width, quote, RUTF8_JUSTIFY_NONE);
+	rutf8_string_render(r, &str, 0, quote, RUTF8_JUSTIFY_NONE);
 
 	if (!right) {
 		TRY(utf8lite_render_spaces(r, pad));
@@ -79,39 +91,30 @@ exit:
 
 
 static void render_entry(struct utf8lite_render *r, const struct flags *f,
-			 SEXP sx, int right, int pad)
+			 SEXP sx, int width, int right)
 {
-	render_cell(r, f, CELL_ENTRY, sx, right, pad);
+	render_cell(r, f, CELL_ENTRY, sx, width, right);
 }
 
 
 static void render_na(struct utf8lite_render *r, const struct flags *f,
-		      SEXP sx, int right, int pad)
+		      SEXP sx, int width, int right)
 {
-	render_cell(r, f, CELL_NA, sx, right, pad);
+	render_cell(r, f, CELL_NA, sx, width, right);
 }
 
 
 static void render_name(struct utf8lite_render *r, const struct flags *f,
-			SEXP sx, int right, int pad)
+			SEXP sx, int width, int right)
 {
-	render_cell(r, f, CELL_NAME, sx, right, pad);
+	render_cell(r, f, CELL_NAME, sx, width, right);
 }
 
 
 static void render_rowname(struct utf8lite_render *r, const struct flags *f,
-			   SEXP sx, int pad)
+			   SEXP sx, int width)
 {
-	render_cell(r, f, CELL_ROWNAME, sx, 0, pad);
-}
-
-
-static int charsxp_width(SEXP sx, int flags)
-{
-	struct rutf8_string text;
-	int quotes = (flags & UTF8LITE_ESCAPE_DQUOTE) ? 2 : 0;
-	rutf8_string_init(&text, sx);
-	return rutf8_string_width(&text, flags) + quotes;
+	render_cell(r, f, CELL_ROWNAME, sx, width, 0);
 }
 
 
@@ -122,7 +125,7 @@ static int render_range(struct utf8lite_render *r, const struct flags *f,
 {
 	SEXP elt, name, dim_names, row_names, col_names;
 	R_xlen_t ix;
-	int i, j, nrow, w, nprint, width;
+	int i, j, nrow, nprint, width;
 	int err = 0, nprot = 0;
 
 	PROTECT(dim_names = getAttrib(sx, R_DimNamesSymbol)); nprot++;
@@ -141,8 +144,7 @@ static int render_range(struct utf8lite_render *r, const struct flags *f,
 			if (j > begin || row_names != R_NilValue) {
 				TRY(utf8lite_render_spaces(r, print_gap));
 			}
-			w = charsxp_width(name, f->name);
-			render_name(r, f, name, right, colwidths[j] - w);
+			render_name(r, f, name, colwidths[j], right);
 		}
 		TRY(utf8lite_render_newlines(r, 1));
 	}
@@ -158,8 +160,7 @@ static int render_range(struct utf8lite_render *r, const struct flags *f,
 			name = STRING_ELT(row_names, i);
 			assert(name != NA_STRING);
 
-			w = charsxp_width(name, f->rowname);
-			render_rowname(r, f, name, namewidth - w);
+			render_rowname(r, f, name, namewidth);
 		}
 
 		for (j = begin; j < end; j++) {
@@ -177,11 +178,9 @@ static int render_range(struct utf8lite_render *r, const struct flags *f,
 			ix = (R_xlen_t)i + (R_xlen_t)j * (R_xlen_t)nrow;
 			elt = STRING_ELT(sx, ix);
 			if (elt == NA_STRING) {
-				w = charsxp_width(na_print, f->na);
-				render_na(r, f, na_print, right, width - w);
+				render_na(r, f, na_print, width, right);
 			} else {
-				w = charsxp_width(elt, f->entry);
-				render_entry(r, f, elt, right, width - w);
+				render_entry(r, f, elt, width, right);
 			}
 		}
 
