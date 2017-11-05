@@ -778,6 +778,8 @@ enum utf8lite_encode_type {
 	UTF8LITE_ENCODE_RMDI = (1 << 7),/**< remove default ignorables */
 	UTF8LITE_ENCODE_AMBIGWIDE = (1 << 8),/**< assume that ambiguous-width
 					       characters are wide */
+	UTF8LITE_ENCODE_ESCFAINT = (1 << 9)/** use ANSI terminal controls
+					      to make escapes appear faint */
 };
 
 /**

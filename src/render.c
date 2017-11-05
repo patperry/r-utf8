@@ -24,6 +24,11 @@
 #include "private/array.h"
 #include "utf8lite.h"
 
+#define ANSI_STYLE_NORMAL	"\033[0m"
+#define ANSI_STYLE_BOLD		"\033[1m"
+#define ANSI_STYLE_FAINT	"\033[2m"
+#define ANSI_STYLE_SIZE		4
+
 #define CHECK_ERROR(r) \
 	if (r->error) { \
 		return r->error; \
@@ -247,6 +252,11 @@ static int utf8lite_escape_utf8(struct utf8lite_render *r, int32_t ch)
 	unsigned hi, lo;
 	int len;
 
+	if (r->flags & UTF8LITE_ENCODE_ESCFAINT) {
+		utf8lite_render_bytes(r, ANSI_STYLE_FAINT, ANSI_STYLE_SIZE);
+		CHECK_ERROR(r);
+	}
+
 	if (ch <= 0xFFFF) {
 		// \uXXXX
 		len = 6;
@@ -274,12 +284,22 @@ static int utf8lite_escape_utf8(struct utf8lite_render *r, int32_t ch)
 				     "\\U%08"PRIx32, (uint32_t)ch);
 	}
 
+	if (r->flags & UTF8LITE_ENCODE_ESCFAINT) {
+		utf8lite_render_bytes(r, ANSI_STYLE_NORMAL, ANSI_STYLE_SIZE);
+		CHECK_ERROR(r);
+	}
+
 	return 0;
 }
 
 
 static int utf8lite_escape_ascii(struct utf8lite_render *r, int32_t ch)
 {
+	if (r->flags & UTF8LITE_ENCODE_ESCFAINT) {
+		utf8lite_render_bytes(r, ANSI_STYLE_FAINT, ANSI_STYLE_SIZE);
+		CHECK_ERROR(r);
+	}
+
 	// character expansion for a special escape: \uXXXX or \X
 	utf8lite_render_grow(r, 6);
 	CHECK_ERROR(r);
@@ -293,27 +313,33 @@ static int utf8lite_escape_ascii(struct utf8lite_render *r, int32_t ch)
 			} else {
 				r->string[r->length++] = '\\';
 				r->string[r->length++] = 'a';
+				r->string[r->length] = '\0';
 			}
 			break;
 		case '\b':
 			r->string[r->length++] = '\\';
 			r->string[r->length++] = 'b';
+			r->string[r->length] = '\0';
 			break;
 		case '\f':
 			r->string[r->length++] = '\\';
 			r->string[r->length++] = 'f';
+			r->string[r->length] = '\0';
 			break;
 		case '\n':
 			r->string[r->length++] = '\\';
 			r->string[r->length++] = 'n';
+			r->string[r->length] = '\0';
 			break;
 		case '\r':
 			r->string[r->length++] = '\\';
 			r->string[r->length++] = 'r';
+			r->string[r->length] = '\0';
 			break;
 		case '\t':
 			r->string[r->length++] = '\\';
 			r->string[r->length++] = 't';
+			r->string[r->length] = '\0';
 			break;
 		case '\v':
 			if (r->flags & UTF8LITE_ENCODE_JSON) {
@@ -322,18 +348,36 @@ static int utf8lite_escape_ascii(struct utf8lite_render *r, int32_t ch)
 			} else {
 				r->string[r->length++] = '\\';
 				r->string[r->length++] = 'v';
+				r->string[r->length] = '\0';
 			}
 			break;
 		default:
 			r->length += sprintf(&r->string[r->length],
 					     "\\u%04x", (unsigned)ch);
+			break;
+		}
+
+		if (r->flags & UTF8LITE_ENCODE_ESCFAINT) {
+			utf8lite_render_bytes(r, ANSI_STYLE_NORMAL,
+					      ANSI_STYLE_SIZE);
+			CHECK_ERROR(r);
 		}
 	} else {
 		r->string[r->length++] = '\\';
+
+		if (r->flags & UTF8LITE_ENCODE_ESCFAINT) {
+			r->string[r->length] = '\0';
+			utf8lite_render_bytes(r, ANSI_STYLE_NORMAL,
+					      ANSI_STYLE_SIZE);
+			CHECK_ERROR(r);
+			utf8lite_render_grow(r, 1);
+			CHECK_ERROR(r);
+		}
+
 		r->string[r->length++] = (char)ch;
+		r->string[r->length] = '\0';
 	}
 
-	r->string[r->length] = '\0';
 	return 0;
 }
 
