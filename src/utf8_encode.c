@@ -19,14 +19,16 @@
 
 
 SEXP rutf8_utf8_encode(SEXP sx, SEXP swidth, SEXP squote,
-		       SEXP sjustify, SEXP sdisplay, SEXP sutf8)
+		       SEXP sjustify, SEXP sdisplay, SEXP sfaint,
+		       SEXP sutf8)
 {
 	SEXP ans, ans_i = NA_STRING, srender;
 	struct rutf8_string elt;
 	struct utf8lite_render *render;
 	enum rutf8_justify_type justify;
 	R_xlen_t i, n;
-	int nprot = 0, width, quote, display, utf8, w, centre, quotes, flags;
+	int width, quote, display, faint, utf8;
+	int nprot = 0, w, quotes, flags;
 
 	if (sx == R_NilValue) {
 		return R_NilValue;
@@ -46,15 +48,19 @@ SEXP rutf8_utf8_encode(SEXP sx, SEXP swidth, SEXP squote,
 	quote = LOGICAL(squote)[0] == TRUE;
 	justify = rutf8_as_justify(sjustify);
 	display = LOGICAL(sdisplay)[0] == TRUE;
+	faint = LOGICAL(sfaint)[0] == TRUE;
 	utf8 = LOGICAL(sutf8)[0] == TRUE;
 
 	flags = (UTF8LITE_ESCAPE_CONTROL | UTF8LITE_ENCODE_C);
 	if (quote) {
 		flags |= UTF8LITE_ESCAPE_DQUOTE;
 	}
+	if (faint) {
+		flags |= UTF8LITE_ENCODE_ESCFAINT;
+	}
 	if (display) {
 		flags |= UTF8LITE_ENCODE_RMDI;
-		flags |= UTF8LITE_ENCODE_EMOJI;
+		flags |= UTF8LITE_ENCODE_EMOJIZWSP;
 	}
 	if (!utf8) {
 		flags |= UTF8LITE_ESCAPE_UTF8;
@@ -67,7 +73,6 @@ SEXP rutf8_utf8_encode(SEXP sx, SEXP swidth, SEXP squote,
 	if (justify == RUTF8_JUSTIFY_NONE) {
 		width = 0;
 	}
-	centre = (justify == RUTF8_JUSTIFY_CENTRE);
 
 	if (width < 0) {
 		width = 0;
