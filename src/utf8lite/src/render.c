@@ -535,7 +535,7 @@ int utf8lite_render_graph(struct utf8lite_render *r,
 		CHECK_ERROR(r);
 	}
 
-	if (attr & CODE_EMOJI && (r->flags & UTF8LITE_ENCODE_EMOJI)) {
+	if (attr & CODE_EMOJI && (r->flags & UTF8LITE_ENCODE_EMOJIZWSP)) {
 		utf8lite_render_bytes(r, "\xE2\x80\x8B", 3); // U+200B, ZWSP
 		CHECK_ERROR(r);
 	}
