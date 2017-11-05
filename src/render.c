@@ -244,7 +244,6 @@ static int maybe_indent(struct utf8lite_render *r)
 
 static int utf8lite_escape_utf8(struct utf8lite_render *r, int32_t ch)
 {
-	char *end;
 	unsigned hi, lo;
 	int len;
 
@@ -262,19 +261,19 @@ static int utf8lite_escape_utf8(struct utf8lite_render *r, int32_t ch)
 	utf8lite_render_grow(r, len);
 	CHECK_ERROR(r);
 
-	end = r->string + r->length;
-
 	if (ch <= 0xFFFF) {
-		sprintf(end, "\\u%04x", (unsigned)ch);
+		r->length += sprintf(&r->string[r->length],
+				     "\\u%04x", (unsigned)ch);
 	} else if (r->flags & UTF8LITE_ENCODE_JSON) {
 		hi = UTF8LITE_UTF16_HIGH(ch);
 		lo = UTF8LITE_UTF16_LOW(ch);
-		sprintf(end, "\\u%04x\\u%04x", hi, lo);
+		r->length += sprintf(&r->string[r->length],
+				     "\\u%04x\\u%04x", hi, lo);
 	} else {
-		sprintf(end, "\\U%08"PRIx32, (uint32_t)ch);
+		r->length += sprintf(&r->string[r->length],
+				     "\\U%08"PRIx32, (uint32_t)ch);
 	}
 
-	r->length += len;
 	return 0;
 }
 
