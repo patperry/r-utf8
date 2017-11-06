@@ -66,16 +66,17 @@ static int flags_get(const struct flags *f, enum cell_type t)
 static const char *sgr_get(const struct style *s, enum cell_type t, int *lenptr)
 {
 	switch (t) {
-	case CELL_ENTRY:
-	case CELL_NA:
-		*lenptr = 0;
-		return NULL;
 	case CELL_NAME:
 		*lenptr = s->names_len;
 		return s->names;
+
 	case CELL_ROWNAME:
 		*lenptr = s->rownames_len;
 		return s->rownames;
+
+	default:
+		*lenptr = 0;
+		return NULL;
 	}
 }
 
