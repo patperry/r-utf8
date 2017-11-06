@@ -105,9 +105,9 @@ static void render_cell(struct utf8lite_render *r, const struct style *s,
 	pad = width - w;
 
 	if (sgr) {
-		TRY(utf8lite_render_bytes(r, "\x1b[", 2));
-		TRY(utf8lite_render_bytes(r, sgr, nsgr));
-		TRY(utf8lite_render_bytes(r, "m", 1));
+		TRY(utf8lite_render_raw(r, "\x1b[", 2));
+		TRY(utf8lite_render_raw(r, sgr, nsgr));
+		TRY(utf8lite_render_raw(r, "m", 1));
 	}
 
 	if (right) {
@@ -122,7 +122,7 @@ static void render_cell(struct utf8lite_render *r, const struct style *s,
 	}
 
 	if (sgr) {
-		TRY(utf8lite_render_bytes(r, "\x1b[0m", 4));
+		TRY(utf8lite_render_raw(r, "\x1b[0m", 4));
 	}
 exit:
 	CHECK_ERROR(err);

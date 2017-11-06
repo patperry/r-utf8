@@ -115,7 +115,7 @@ static void rutf8_bytes_lrender(struct utf8lite_render *r,
 	}
 
 	if (quote) {
-		TRY(utf8lite_render_bytes(r, "\"", 1));
+		TRY(utf8lite_render_raw(r, "\"", 1));
 		assert(width < INT_MAX);
 		width++;
 	}
@@ -137,7 +137,7 @@ static void rutf8_bytes_lrender(struct utf8lite_render *r,
 	}
 
 	if (quote) {
-		TRY(utf8lite_render_bytes(r, "\"", 1));
+		TRY(utf8lite_render_raw(r, "\"", 1));
 		if (width < width_min) { // avoid overflow
 			width++;
 		}
@@ -174,7 +174,7 @@ static void rutf8_bytes_rrender(struct utf8lite_render *r,
 	}
 
 	if (quote) {
-		TRY(utf8lite_render_bytes(r, "\"", 1));
+		TRY(utf8lite_render_raw(r, "\"", 1));
 	}
 
 	ptr = bytes->ptr;
@@ -186,7 +186,7 @@ static void rutf8_bytes_rrender(struct utf8lite_render *r,
 	}
 
 	if (quote) {
-		TRY(utf8lite_render_bytes(r, "\"", 1));
+		TRY(utf8lite_render_raw(r, "\"", 1));
 	}
 exit:
 	CHECK_ERROR(err);
@@ -358,34 +358,34 @@ void render_byte(struct utf8lite_render *r, uint8_t byte)
 		if (r->flags & UTF8LITE_ESCAPE_CONTROL) {
 			switch (byte) {
 			case '\a':
-				TRY(utf8lite_render_bytes(r, "\\a", 2));
+				TRY(utf8lite_render_raw(r, "\\a", 2));
 				break;
 			case '\b':
-				TRY(utf8lite_render_bytes(r, "\\b", 2));
+				TRY(utf8lite_render_raw(r, "\\b", 2));
 				break;
 			case '\f':
-				TRY(utf8lite_render_bytes(r, "\\f", 2));
+				TRY(utf8lite_render_raw(r, "\\f", 2));
 				break;
 			case '\n':
-				TRY(utf8lite_render_bytes(r, "\\n", 2));
+				TRY(utf8lite_render_raw(r, "\\n", 2));
 				break;
 			case '\r':
-				TRY(utf8lite_render_bytes(r, "\\r", 2));
+				TRY(utf8lite_render_raw(r, "\\r", 2));
 				break;
 			case '\t':
-				TRY(utf8lite_render_bytes(r, "\\t", 2));
+				TRY(utf8lite_render_raw(r, "\\t", 2));
 				break;
 			case '\v':
-				TRY(utf8lite_render_bytes(r, "\\v", 2));
+				TRY(utf8lite_render_raw(r, "\\v", 2));
 				break;
 			default:
 				sprintf(buf, "\\x%02x", (unsigned)byte);
-				TRY(utf8lite_render_bytes(r, buf, 4));
+				TRY(utf8lite_render_raw(r, buf, 4));
 				break;
 			}
 		} else {
 			ch = (char)byte;
-			TRY(utf8lite_render_bytes(r, &ch, 1));
+			TRY(utf8lite_render_raw(r, &ch, 1));
 		}
 	} else {
 		buf[0] = (char)byte;
