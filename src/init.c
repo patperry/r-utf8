@@ -36,8 +36,6 @@ void R_init_utf8(DllInfo *dll)
 {
 	R_registerRoutines(dll, NULL, CallEntries, NULL, NULL);
 	R_RegisterCCallable("utf8", "as_utf8", (DL_FUNC)&rutf8_as_utf8);
-	R_RegisterCCallable("utf8", "translate_utf8",
-			    (DL_FUNC)&rutf8_translate_utf8);
 	R_useDynamicSymbols(dll, FALSE);
 	R_forceSymbols(dll, TRUE);
 }
