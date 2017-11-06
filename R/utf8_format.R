@@ -45,21 +45,15 @@ utf8_format <- function(x, trim = FALSE, chars = NULL, justify = "left",
 
         dim <- dim(x)
         dimnames <- dimnames(x)
+        names <- if (is.null(dimnames)) names(x) else dimnames[[1]]
 
-        if (is.null(dim) || length(dim) == 1) {
-            names <- if (is.null(dimnames)) names(x) else dimnames[[1]]
-            if (is.null(names)) {
-                namewidth <- floor(log10(length(x)) + 1) + 2
-            } else {
-                namewidth <- 0
-            }
+        if (is.null(names)) {
+            comma <- length(dim) > 1
+            namewidth <- floor(log10(length(x)) + 1) + 2 + comma
+        } else if (length(dim) > 1) {
+            namewidth <- max(0, utf8_width(names))
         } else {
-            names <- if (is.null(dimnames)) NULL else dimnames[[1]]
-            if (is.null(names)) {
-                namewidth <- floor(log10(length(x)) + 1) + 3 # add comma
-            } else {
-                namewidth <- max(0, utf8_width(names))
-            }
+            namewidth <- 0
         }
 
         chars <- (linewidth - ellipsis - quotes - gap - namewidth)
