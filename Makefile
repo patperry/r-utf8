@@ -21,7 +21,7 @@ check: $(UTF8_LIB)
 	$(RSCRIPT) -e 'devtools::test(".")'
 
 clean:
-	$(RSCRIPT) -e 'devtools::clean_dll(".")' && rm README.md
+	$(RSCRIPT) -e 'devtools::clean_dll(".")' && rm -f README.md
 
 cov:
 	$(RSCRIPT) -e 'covr::package_coverage(line_exclusions = c("R/deprecated.R", list.files("src/utf8lite", recursive = TRUE, full.names = TRUE)))'
