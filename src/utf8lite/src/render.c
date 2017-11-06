@@ -201,28 +201,6 @@ int utf8lite_render_newlines(struct utf8lite_render *r, int nline)
 }
 
 
-int utf8lite_render_spaces(struct utf8lite_render *r, int nspace)
-{
-	char *end;
-
-	CHECK_ERROR(r);
-
-	if (nspace <= 0) {
-		return 0;
-	}
-
-	utf8lite_render_grow(r, nspace);
-	CHECK_ERROR(r);
-
-	end = r->string + r->length;
-	memset(end, ' ', nspace);
-	r->length += nspace;
-	r->string[r->length] = '\0';
-
-	return 0;
-}
-
-
 static int maybe_indent(struct utf8lite_render *r)
 {
 	int ntab = r->indent;
@@ -493,6 +471,19 @@ int utf8lite_render_char(struct utf8lite_render *r, int32_t ch)
 	utf8lite_encode_utf8(ch, &ptr);
 	*ptr = '\0';
 	return utf8lite_render_string(r, (const char *)buf);
+}
+
+
+int utf8lite_render_chars(struct utf8lite_render *r, int32_t ch, int nchar)
+{
+	CHECK_ERROR(r);
+
+	while (nchar-- > 0) {
+		utf8lite_render_char(r, ch);
+		CHECK_ERROR(r);
+	}
+
+	return 0;
 }
 
 

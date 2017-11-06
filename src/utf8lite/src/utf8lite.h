@@ -912,16 +912,6 @@ int utf8lite_render_indent(struct utf8lite_render *r, int nlevel);
 int utf8lite_render_newlines(struct utf8lite_render *r, int nline);
 
 /**
- * Add spaces.
- *
- * \param r the render object
- * \param nspace the number of spaces to add
- *
- * \returns 0 on success
- */
-int utf8lite_render_spaces(struct utf8lite_render *r, int nspace);
-
-/**
  * Render a character grapheme. If any render escape flags are set, filter
  * the grapheme through the appropriate escaping and encoding.
  *
@@ -944,6 +934,18 @@ int utf8lite_render_graph(struct utf8lite_render *r,
  * \returns 0 on success
  */
 int utf8lite_render_char(struct utf8lite_render *r, int32_t ch);
+
+/**
+ * Render multiple copies of a character, treating each as a grapheme
+ * cluster.
+ *
+ * \param r the render object
+ * \parma ch the character
+ * \param nchar the number of copies to render
+ *
+ * \returns 0 on success
+ */
+int utf8lite_render_chars(struct utf8lite_render *r, int32_t ch, int nchar);
 
 /**
  * Render a string. If any render escape flags are set, filter
