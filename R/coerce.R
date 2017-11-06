@@ -138,3 +138,14 @@ as_print_gap <- function(name, value) {
   }
   value
 }
+
+as_style <- function(name, value) {
+  value <- as_character_scalar(name, value)
+  if (is.null(value) || is.na(value)) {
+    return(NULL)
+  }
+  if (!grepl("^[0-9;]*$", value)) {
+    stop(sprintf("'%s' must be a valid ANSI SGR parameter string", name))
+  }
+  value
+}
