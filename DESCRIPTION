@@ -1,6 +1,6 @@
 Package: utf8
 Version: 1.0.0
-Title: UTF-8 Text Processing 
+Title: Unicode Text Processing
 Authors@R: c(
   person(c("Patrick", "O."), "Perry",
          role = c("aut", "cph", "cre"),
@@ -13,8 +13,7 @@ Suggests:
   corpus,
   knitr,
   testthat
-Description: Processing and printing 'UTF-8' encoded text. Functions for
-  inputting, validating, normalizing, encoding, formatting, and displaying.
+Description: Processing and printing 'UTF-8' encoded international text (Unicode). Functions for to input, validate, normalize, encode, format, and display.
 License: Apache License (== 2.0) | file LICENSE
 URL: https://github.com/patperry/r-utf8
 BugReports: https://github.com/patperry/r-utf8/issues
