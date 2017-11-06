@@ -9,7 +9,7 @@ The utf8 Package
 UTF-8 Text Processing
 }
 \details{
-Functions for manipulating and printing UTF-8 text:
+Functions for manipulating and printing UTF-8 encoded text:
 
 \itemize{
   \item \code{\link{as_utf8}} attempts to convert character data to UTF-8,
