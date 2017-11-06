@@ -7,7 +7,8 @@
 \usage{
 utf8_print(x, chars = NULL, quote = TRUE, na.print = NULL,
            print.gap = NULL, right = FALSE, max = NULL,
-           display = TRUE, style = TRUE, ...)
+           names = NULL, rownames = NULL, display = TRUE,
+           style = TRUE, ...)
 }
 \arguments{
     \item{x}{character object.}
@@ -39,18 +40,30 @@ utf8_print(x, chars = NULL, quote = TRUE, na.print = NULL,
         maximum number of elements to print; set to
         \code{getOption("max.print")} if argument is \code{NULL}.}
 
+    \item{names}{a character string specifying the display style for
+        the (column) names, as an ANSI SGR parameter string.}
+
+    \item{rownames}{a character string specifying the display style for
+        the row names, as an ANSI SGR parameter string.}
+
     \item{display}{logical scalar indicating whether to optimize the
         encoding for display, not byte-for-byte data transmission.}
 
     \item{style}{logical scalar indicating whether to apply ANSI
         terminal escape codes to style the output.  Ignored on Windows
-        and when \code{isatty(stdout())} is \code{FALSE}.}
+        and when \code{isatty(stdout())} is \code{FALSE}, unless
+        printing without output redirection from RStudio v1.1 or later.}
 
     \item{...}{further arguments passed from other methods. Ignored.}
 }
 \details{
     \code{utf8_print} prints a character object after formatting it with
     \code{utf8_format}.
+
+    For ANSI terminal output (non-Windows only), you can style the row and
+    column names with the \code{rownames} and \code{names} parameters,
+    specifying an ANSI SGR parameter string; see
+    \url{https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_(Select_Graphic_Rendition)_parameters}.
 }
 \value{
     The function returns \code{x} invisibly.
@@ -69,4 +82,9 @@ oldlocale <- Sys.getlocale("LC_CTYPE")
 invisible(Sys.setlocale("LC_CTYPE", "C")) # switch to C locale
 utf8_print(intToUtf8(0x1F600 + 0:79))
 invisible(Sys.setlocale("LC_CTYPE", oldlocale)) # switch back to old locale
+
+# Mac and Linux only: style the names
+# see https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_(Select_Graphic_Rendition)_parameters
+utf8_print(matrix(as.character(1:20), 4, 5),
+           names = "1;4", rownames = "2;3")
 }

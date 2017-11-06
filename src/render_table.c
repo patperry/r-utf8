@@ -36,6 +36,16 @@ struct flags {
 	int rowname;
 };
 
+struct style {
+	struct flags flags;
+	const char *names;
+	int names_len;
+	const char *rownames;
+	int rownames_len;
+	int right;
+};
+
+
 static int flags_get(const struct flags *f, enum cell_type t)
 {
 	switch (t) {
@@ -53,6 +63,23 @@ static int flags_get(const struct flags *f, enum cell_type t)
 }
 
 
+static const char *sgr_get(const struct style *s, enum cell_type t, int *lenptr)
+{
+	switch (t) {
+	case CELL_ENTRY:
+	case CELL_NA:
+		*lenptr = 0;
+		return NULL;
+	case CELL_NAME:
+		*lenptr = s->names_len;
+		return s->names;
+	case CELL_ROWNAME:
+		*lenptr = s->rownames_len;
+		return s->rownames;
+	}
+}
+
+
 static int charsxp_width(SEXP sx, int flags)
 {
 	struct rutf8_string text;
@@ -62,27 +89,40 @@ static int charsxp_width(SEXP sx, int flags)
 }
 
 
-static void render_cell(struct utf8lite_render *r, const struct flags *f,
-			enum cell_type t, SEXP sx, int width, int right)
+static void render_cell(struct utf8lite_render *r, const struct style *s,
+			enum cell_type t, SEXP sx, int width)
 {
 	struct rutf8_string str;
-	int err = 0, w, pad, quote, old;
+	const char *sgr;
+	int err = 0, w, pad, right, quote, old, nsgr;
 
-	old = utf8lite_render_set_flags(r, flags_get(f, t));
+	old = utf8lite_render_set_flags(r, flags_get(&s->flags, t));
+	quote = r->flags & UTF8LITE_ESCAPE_DQUOTE;
+	right = (t == CELL_NAME) ? 0 : s->right;
+	sgr = sgr_get(s, t, &nsgr);
 
 	w = charsxp_width(sx, r->flags);
 	pad = width - w;
+
+	if (sgr) {
+		TRY(utf8lite_render_bytes(r, "\x1b[", 2));
+		TRY(utf8lite_render_bytes(r, sgr, nsgr));
+		TRY(utf8lite_render_bytes(r, "m", 1));
+	}
 
 	if (right) {
 		TRY(utf8lite_render_spaces(r, pad));
 	}
 
 	rutf8_string_init(&str, sx);
-	quote = r->flags & UTF8LITE_ESCAPE_DQUOTE;
 	rutf8_string_render(r, &str, 0, quote, RUTF8_JUSTIFY_NONE);
 
 	if (!right) {
 		TRY(utf8lite_render_spaces(r, pad));
+	}
+
+	if (sgr) {
+		TRY(utf8lite_render_bytes(r, "\x1b[0m", 4));
 	}
 exit:
 	CHECK_ERROR(err);
@@ -90,37 +130,37 @@ exit:
 }
 
 
-static void render_entry(struct utf8lite_render *r, const struct flags *f,
-			 SEXP sx, int width, int right)
+static void render_entry(struct utf8lite_render *r, const struct style *s,
+			 SEXP sx, int width)
 {
-	render_cell(r, f, CELL_ENTRY, sx, width, right);
+	render_cell(r, s, CELL_ENTRY, sx, width);
 }
 
 
-static void render_na(struct utf8lite_render *r, const struct flags *f,
-		      SEXP sx, int width, int right)
+static void render_na(struct utf8lite_render *r, const struct style *s,
+		      SEXP sx, int width)
 {
-	render_cell(r, f, CELL_NA, sx, width, right);
+	render_cell(r, s, CELL_NA, sx, width);
 }
 
 
-static void render_name(struct utf8lite_render *r, const struct flags *f,
-			SEXP sx, int width, int right)
+static void render_name(struct utf8lite_render *r, const struct style *s,
+			SEXP sx, int width)
 {
-	render_cell(r, f, CELL_NAME, sx, width, right);
+	render_cell(r, s, CELL_NAME, sx, width);
 }
 
 
-static void render_rowname(struct utf8lite_render *r, const struct flags *f,
+static void render_rowname(struct utf8lite_render *r, const struct style *s,
 			   SEXP sx, int width)
 {
-	render_cell(r, f, CELL_ROWNAME, sx, width, 0);
+	render_cell(r, s, CELL_ROWNAME, sx, width);
 }
 
 
-static int render_range(struct utf8lite_render *r, const struct flags *f,
+static int render_range(struct utf8lite_render *r, const struct style *s,
 			SEXP sx, SEXP na_print, int begin, int end,
-			int print_gap, int right, int max, int namewidth,
+			int print_gap, int max, int namewidth,
 			const int *colwidths)
 {
 	SEXP elt, name, dim_names, row_names, col_names;
@@ -144,7 +184,7 @@ static int render_range(struct utf8lite_render *r, const struct flags *f,
 			if (j > begin || row_names != R_NilValue) {
 				TRY(utf8lite_render_spaces(r, print_gap));
 			}
-			render_name(r, f, name, colwidths[j], right);
+			render_name(r, s, name, colwidths[j]);
 		}
 		TRY(utf8lite_render_newlines(r, 1));
 	}
@@ -159,8 +199,7 @@ static int render_range(struct utf8lite_render *r, const struct flags *f,
 		if (row_names != R_NilValue) {
 			name = STRING_ELT(row_names, i);
 			assert(name != NA_STRING);
-
-			render_rowname(r, f, name, namewidth);
+			render_rowname(r, s, name, namewidth);
 		}
 
 		for (j = begin; j < end; j++) {
@@ -178,9 +217,9 @@ static int render_range(struct utf8lite_render *r, const struct flags *f,
 			ix = (R_xlen_t)i + (R_xlen_t)j * (R_xlen_t)nrow;
 			elt = STRING_ELT(sx, ix);
 			if (elt == NA_STRING) {
-				render_na(r, f, na_print, width, right);
+				render_na(r, s, na_print, width);
 			} else {
-				render_entry(r, f, elt, width, right);
+				render_entry(r, s, elt, width);
 			}
 		}
 
@@ -195,18 +234,20 @@ exit:
 
 SEXP rutf8_render_table(SEXP sx, SEXP swidth, SEXP squote, SEXP sna_print,
 			SEXP sprint_gap, SEXP sright, SEXP smax,
-			SEXP sdisplay, SEXP sstyle, SEXP slinewidth,
-			SEXP sutf8)
+			SEXP snames, SEXP srownames, SEXP sdisplay,
+			SEXP sstyle, SEXP slinewidth, SEXP sutf8)
 {
-	SEXP ans, na_print, str, srender, elt, dim_names, row_names, col_names;
+	SEXP ans, names, rownames, na_print, str, srender, elt, dim_names,
+	     row_names, col_names;
 	struct utf8lite_render *render;
-	struct flags flags;
+	struct style s;
 	R_xlen_t ix, nx;
 	int i, j, nrow, ncol;
-	int width, quote, print_gap, right, max, display, style, linewidth,
-	    utf8;
+	int width, quote, print_gap, max, display, style, linewidth, utf8;
 	int begin, end, w, nprint, lw, namewidth, *colwidths;
 	int nprot = 0;
+
+	memset(&s, 0, sizeof(s));
 
 	PROTECT(dim_names = getAttrib(sx, R_DimNamesSymbol)); nprot++;
 	row_names = VECTOR_ELT(dim_names, 0);
@@ -219,33 +260,43 @@ SEXP rutf8_render_table(SEXP sx, SEXP swidth, SEXP squote, SEXP sna_print,
         quote = LOGICAL(squote)[0] == TRUE;
 	PROTECT(na_print = STRING_ELT(sna_print, 0)); nprot++;
 	print_gap = INTEGER(sprint_gap)[0];
-	right = LOGICAL(sright)[0] == TRUE;
+	s.right = LOGICAL(sright)[0] == TRUE;
 	max = INTEGER(smax)[0];
 	display = LOGICAL(sdisplay)[0] == TRUE;
 	style = LOGICAL(sstyle)[0] == TRUE;
 	linewidth = INTEGER(slinewidth)[0];
 	utf8 = LOGICAL(sutf8)[0] == TRUE;
 
-	flags.entry = (UTF8LITE_ESCAPE_CONTROL | UTF8LITE_ENCODE_C);
+	s.flags.entry = (UTF8LITE_ESCAPE_CONTROL | UTF8LITE_ENCODE_C);
 	if (quote) {
-		flags.entry |= UTF8LITE_ESCAPE_DQUOTE;
+		s.flags.entry |= UTF8LITE_ESCAPE_DQUOTE;
 	}
         if (display) {
-                flags.entry |= UTF8LITE_ENCODE_RMDI;
-                flags.entry |= UTF8LITE_ENCODE_EMOJIZWSP;
+                s.flags.entry |= UTF8LITE_ENCODE_RMDI;
+                s.flags.entry |= UTF8LITE_ENCODE_EMOJIZWSP;
         }
 	if (style) {
-		flags.entry |= UTF8LITE_ENCODE_ESCFAINT;
+		s.flags.entry |= UTF8LITE_ENCODE_ESCFAINT;
+		if (snames != R_NilValue) {
+			PROTECT(names = STRING_ELT(snames, 0)); nprot++;
+			s.names = CHAR(names);
+			s.names_len = LENGTH(names);
+		}
+		if (srownames != R_NilValue) {
+			PROTECT(rownames = STRING_ELT(srownames, 0)); nprot++;
+			s.rownames = CHAR(rownames);
+			s.rownames_len = LENGTH(rownames);
+		}
 	}
         if (!utf8) {
-                flags.entry |= UTF8LITE_ESCAPE_UTF8;
+                s.flags.entry |= UTF8LITE_ESCAPE_UTF8;
         }
 #if defined(_WIN32) || defined(_WIN64)
-        flags.entry |= UTF8LITE_ESCAPE_EXTENDED;
+        s.flags.entry |= UTF8LITE_ESCAPE_EXTENDED;
 #endif
-	flags.na = flags.entry & ~UTF8LITE_ESCAPE_DQUOTE;
-	flags.name = flags.na & ~UTF8LITE_ENCODE_ESCFAINT;
-	flags.rowname = flags.name;
+	s.flags.na = s.flags.entry & ~UTF8LITE_ESCAPE_DQUOTE;
+	s.flags.name = s.flags.na & ~UTF8LITE_ENCODE_ESCFAINT;
+	s.flags.rowname = s.flags.name;
 
 	PROTECT(srender = rutf8_alloc_render(0)); nprot++;
 	render = rutf8_as_render(srender);
@@ -260,7 +311,7 @@ SEXP rutf8_render_table(SEXP sx, SEXP swidth, SEXP squote, SEXP sna_print,
 			elt = STRING_ELT(row_names, i);
 			assert(elt != NA_STRING);
 
-			w = charsxp_width(elt, flags.rowname);
+			w = charsxp_width(elt, s.flags.rowname);
 			if (w > namewidth) {
 				namewidth = w;
 			}
@@ -268,8 +319,8 @@ SEXP rutf8_render_table(SEXP sx, SEXP swidth, SEXP squote, SEXP sna_print,
 	}
 
 	if (ncol == 0) {
-		nprint = render_range(render, &flags, sx, na_print, 0, 0,
-				      print_gap, right, max, namewidth, NULL);
+		nprint = render_range(render, &s, sx, na_print, 0, 0,
+				      print_gap, max, namewidth, NULL);
 		goto exit;
 	}
 
@@ -281,7 +332,7 @@ SEXP rutf8_render_table(SEXP sx, SEXP swidth, SEXP squote, SEXP sna_print,
 		for (j = 0; j < ncol; j++) {
 			elt = STRING_ELT(col_names, j);
 			assert(elt != NA_STRING);
-			w = charsxp_width(elt, flags.name);
+			w = charsxp_width(elt, s.flags.name);
 			if (w > colwidths[j]) {
 				colwidths[j] = w;
 			}
@@ -293,9 +344,9 @@ SEXP rutf8_render_table(SEXP sx, SEXP swidth, SEXP squote, SEXP sna_print,
 		elt = STRING_ELT(sx, ix);
 
 		if (elt == NA_STRING) {
-			w = charsxp_width(na_print, flags.na);
+			w = charsxp_width(na_print, s.flags.na);
 		} else {
-			w = charsxp_width(elt, flags.entry);
+			w = charsxp_width(elt, s.flags.entry);
 		}
 
 		if (w > colwidths[j]) {
@@ -339,8 +390,8 @@ SEXP rutf8_render_table(SEXP sx, SEXP swidth, SEXP squote, SEXP sna_print,
 			end++;
 		}
 
-		nprint += render_range(render, &flags, sx, na_print, begin,
-				       end, print_gap, right, max - nprint,
+		nprint += render_range(render, &s, sx, na_print, begin,
+				       end, print_gap, max - nprint,
 				       namewidth, colwidths);
 		begin = end;
 	}
