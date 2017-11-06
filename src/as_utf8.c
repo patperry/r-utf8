@@ -68,8 +68,9 @@ SEXP rutf8_as_utf8(SEXP sx)
 	for (i = 0; i < n; i++) {
 		CHECK_INTERRUPT(i);
 
-		sstr = STRING_ELT(sx, i);
+		PROTECT(sstr = STRING_ELT(sx, i));
 		if (sstr == NA_STRING) {
+			UNPROTECT(1);
 			continue;
 		}
 
@@ -117,6 +118,8 @@ SEXP rutf8_as_utf8(SEXP sx)
 				       mkCharLenCE((const char *)str,
 					           size, CE_UTF8));
 		}
+
+		UNPROTECT(1);
 	}
 
 	if (duped) {

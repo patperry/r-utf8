@@ -92,8 +92,9 @@ SEXP rutf8_utf8_normalize(SEXP x, SEXP map_case, SEXP map_compat,
 	for (i = 0; i < n; i++) {
 		CHECK_INTERRUPT(i);
 
-		elt = STRING_ELT(ans, i);
+		PROTECT(elt = STRING_ELT(ans, i)); nprot++;
 		if (elt == NA_STRING) {
+			UNPROTECT(1); nprot--;
 			continue;
 		}
 
@@ -108,6 +109,7 @@ SEXP rutf8_utf8_normalize(SEXP x, SEXP map_case, SEXP map_compat,
 
 		elt = mkCharLenCE((const char *)ptr, (int)size, CE_UTF8);
 		SET_STRING_ELT(ans, i, elt);
+		UNPROTECT(1); nprot--;
 	}
 
 exit:

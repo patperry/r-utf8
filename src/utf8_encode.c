@@ -22,7 +22,7 @@ SEXP rutf8_utf8_encode(SEXP sx, SEXP swidth, SEXP squote,
 		       SEXP sjustify, SEXP sdisplay, SEXP sstyle,
 		       SEXP sutf8)
 {
-	SEXP ans, ans_i = NA_STRING, srender;
+	SEXP ans, selt, ans_i = NA_STRING, srender;
 	struct rutf8_string elt;
 	struct utf8lite_render *render;
 	enum rutf8_justify_type justify;
@@ -79,8 +79,11 @@ SEXP rutf8_utf8_encode(SEXP sx, SEXP swidth, SEXP squote,
 		for (i = 0; i < n; i++) {
 			CHECK_INTERRUPT(i);
 
-			rutf8_string_init(&elt, STRING_ELT(sx, i));
+			PROTECT(selt = STRING_ELT(sx, i)); nprot++;
+			rutf8_string_init(&elt, selt);
+
 			if (elt.type == RUTF8_STRING_NONE) {
+				UNPROTECT(1); nprot--;
 				continue;
 			}
 
@@ -94,6 +97,7 @@ SEXP rutf8_utf8_encode(SEXP sx, SEXP swidth, SEXP squote,
 			if (w > width) {
 				width = w;
 			}
+			UNPROTECT(1); nprot--;
 		}
 	}
 
@@ -105,7 +109,8 @@ SEXP rutf8_utf8_encode(SEXP sx, SEXP swidth, SEXP squote,
 	for (i = 0; i < n; i++) {
 		CHECK_INTERRUPT(i);
 
-		rutf8_string_init(&elt, STRING_ELT(sx, i));
+		PROTECT(selt = STRING_ELT(sx, i)); nprot++;
+		rutf8_string_init(&elt, selt);
 		if (elt.type == RUTF8_STRING_NONE) {
 			ans_i = NA_STRING;
 		} else {
@@ -115,6 +120,8 @@ SEXP rutf8_utf8_encode(SEXP sx, SEXP swidth, SEXP squote,
 					    CE_UTF8);
 			utf8lite_render_clear(render);
 		}
+
+		UNPROTECT(1); nprot--;
 		SET_STRING_ELT(ans, i, ans_i);
 	}
 

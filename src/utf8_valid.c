@@ -46,9 +46,10 @@ SEXP rutf8_utf8_valid(SEXP sx)
 	for (i = 0; i < n; i++) {
 		CHECK_INTERRUPT(i);
 
-		sstr = STRING_ELT(sx, i);
+		PROTECT(sstr = STRING_ELT(sx, i));
 		if (sstr == NA_STRING) {
 			LOGICAL(ans)[i] = NA_LOGICAL;
+			UNPROTECT(1);
 			continue;
 		}
 
@@ -69,6 +70,7 @@ SEXP rutf8_utf8_valid(SEXP sx)
 			val = TRUE;
 		}
 		LOGICAL(ans)[i] = val;
+		UNPROTECT(1);
 	}
 
 	UNPROTECT(1);
