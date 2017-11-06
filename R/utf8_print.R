@@ -116,8 +116,8 @@ print_vector_named <- function(x, quote, na.print, print.gap, right, max,
                                names, rownames, display, style)
 {
     n <- length(x)
-    names <- names(x)
-    namewidth <- max(0L, utf8_width(names))
+    nm <- names(x)
+    namewidth <- max(0L, utf8_width(nm))
     eltwidth <- element_width(x, quote = quote, na.print = na.print)
     width <- max(eltwidth, namewidth)
 
@@ -130,7 +130,7 @@ print_vector_named <- function(x, quote, na.print, print.gap, right, max,
     while (off + ncol <= n && nprint < max) {
         ix <- (off + 1L):(off + ncol)
         mat <- matrix(x[ix], ncol = ncol, byrow = TRUE,
-                      dimnames = list(NULL, names[ix]))
+                      dimnames = list(NULL, nm[ix]))
         np <- print_table(mat, width = width, quote = quote,
                           na.print = na.print, print.gap = print.gap,
                           right = right, max = max - nprint,
@@ -144,7 +144,7 @@ print_vector_named <- function(x, quote, na.print, print.gap, right, max,
         ix <- n - extra + seq_len(extra)
         last <- rbind(as.vector(x[ix]))
         rownames(last) <- NULL
-        colnames(last) <-  names[ix]
+        colnames(last) <-  nm[ix]
 
         np <- print_table(last, width = width, quote = quote,
                           na.print = na.print, print.gap = print.gap,
@@ -162,8 +162,8 @@ print_vector_unnamed <- function(x, quote, na.print, print.gap, right,
                                  max, names, rownames, display, style)
 {
     n <- length(x)
-    names <- utf8_format(paste0("[", seq_len(n), "]"), justify = "right")
-    namewidth <- max(0L, utf8_width(names))
+    nm <- utf8_format(paste0("[", seq_len(n), "]"), justify = "right")
+    namewidth <- max(0L, utf8_width(nm))
     width <- element_width(x, quote = quote, na.print = na.print)
 
     linewidth <- getOption("width")
@@ -171,7 +171,7 @@ print_vector_unnamed <- function(x, quote, na.print, print.gap, right,
     extra <- n %% ncol
 
     mat <- matrix(x[seq_len(n - extra)], ncol = ncol, byrow = TRUE)
-    rownames(mat) <- names[seq(from = 1L, by = ncol, length.out = nrow(mat))]
+    rownames(mat) <- nm[seq(from = 1L, by = ncol, length.out = nrow(mat))]
 
     nprint <- print_table(mat, width = width, quote = quote,
                           na.print = na.print, print.gap = print.gap,
@@ -181,7 +181,7 @@ print_vector_unnamed <- function(x, quote, na.print, print.gap, right,
 
     if (extra > 0L && nprint < max) {
         last <- rbind(as.vector(x[n - extra  + seq_len(extra)]))
-        rownames(last) <- names[n - extra + 1]
+        rownames(last) <- nm[n - extra + 1]
         np <- print_table(last, width = width, quote = quote,
                           na.print = na.print, print.gap = print.gap,
                           right = right, max = max - nprint, names = names,
