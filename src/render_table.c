@@ -98,7 +98,7 @@ static void render_cell(struct utf8lite_render *r, const struct style *s,
 
 	old = utf8lite_render_set_flags(r, flags_get(&s->flags, t));
 	quote = r->flags & UTF8LITE_ESCAPE_DQUOTE;
-	right = (t == CELL_NAME) ? 0 : s->right;
+	right = (t == CELL_ROWNAME) ? 0 : s->right;
 	sgr = sgr_get(s, t, &nsgr);
 
 	w = charsxp_width(sx, r->flags);
