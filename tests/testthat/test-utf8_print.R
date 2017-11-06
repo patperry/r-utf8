@@ -183,3 +183,13 @@ test_that("'utf8_print' can handle NA names", {
     expect_equal(capture_output(utf8_print(x, na.print = "foo")),
                  capture_output(print(x, na.print = "foo")))
 })
+
+
+test_that("'utf8_print' can right justify", {
+    x <- matrix(c("a", "ab", "abc"), 3, 1,
+                dimnames = list(c("1", "2", "3"), "ch"))
+    expect_equal(capture_output(utf8_print(x, quote = FALSE, right = TRUE)),
+                 capture_output(print(x, quote = FALSE, right = TRUE)))
+    expect_equal(capture_output(utf8_print(x, quote = TRUE, right = TRUE)),
+                 capture_output(print(x, quote = TRUE, right = TRUE)))
+})
