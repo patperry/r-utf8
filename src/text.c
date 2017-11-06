@@ -111,7 +111,7 @@ static void rutf8_text_lrender(struct utf8lite_render *r,
 	}
 
 	if (quote) {
-		TRY(utf8lite_render_bytes(r, "\"", 1));
+		TRY(utf8lite_render_raw(r, "\"", 1));
 		assert(width < INT_MAX); // width <= width_min / 2
 		width++;
 	}
@@ -130,7 +130,7 @@ static void rutf8_text_lrender(struct utf8lite_render *r,
 	}
 
 	if (quote) {
-		TRY(utf8lite_render_bytes(r, "\"", 1));
+		TRY(utf8lite_render_raw(r, "\"", 1));
 		if (width < width_min) { // avoid overflow
 			width++;
 		}
@@ -162,7 +162,7 @@ static void rutf8_text_rrender(struct utf8lite_render *r,
 	}
 
 	if (quote) {
-		TRY(utf8lite_render_bytes(r, "\"", 1));
+		TRY(utf8lite_render_raw(r, "\"", 1));
 	}
 
 	utf8lite_graphscan_make(&scan, text);
@@ -171,7 +171,7 @@ static void rutf8_text_rrender(struct utf8lite_render *r,
 	}
 
 	if (quote) {
-		TRY(utf8lite_render_bytes(r, "\"", 1));
+		TRY(utf8lite_render_raw(r, "\"", 1));
 	}
 exit:
 	CHECK_ERROR(err);
