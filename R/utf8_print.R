@@ -316,7 +316,7 @@ print_table <- function(x, width, quote, na.print, print.gap, right, max,
     colnames(x)[is.na(colnames(x))] <- na.name.print
   }
 
-  if (.Platform$OS.type == "windows" || !isatty(stdout())) {
+  if (!isatty(stdout())) {
     if (is.na(as.numeric(Sys.getenv("RSTUDIO_CONSOLE_COLOR"))) ||
       sink.number() != 0) {
       style <- FALSE

@@ -50,9 +50,9 @@ utf8_print(x, chars = NULL, quote = TRUE, na.print = NULL,
         encoding for display, not byte-for-byte data transmission.}
 
     \item{style}{logical scalar indicating whether to apply ANSI
-        terminal escape codes to style the output.  Ignored on Windows
-        and when \code{isatty(stdout())} is \code{FALSE}, unless
-        printing without output redirection from RStudio v1.1 or later.}
+        terminal escape codes to style the output.  Ignore when
+        \code{isatty(stdout())} is \code{FALSE}, unless printing
+        without output redirection from RStudio v1.1 or later.}
 
     \item{...}{further arguments passed from other methods. Ignored.}
 }
