@@ -20,7 +20,7 @@
 
 SEXP rutf8_utf8_width(SEXP sx, SEXP sencode, SEXP squote, SEXP sutf8)
 {
-	SEXP ans;
+	SEXP ans, selt;
 	struct rutf8_string elt;
 	R_xlen_t i, n;
 	int flags, encode, quote, quotes, utf8, w;
@@ -59,7 +59,8 @@ SEXP rutf8_utf8_width(SEXP sx, SEXP sencode, SEXP squote, SEXP sutf8)
 	for (i = 0; i < n; i++) {
 		CHECK_INTERRUPT(i);
 
-		rutf8_string_init(&elt, STRING_ELT(sx, i));
+		PROTECT(selt = STRING_ELT(sx, i));
+		rutf8_string_init(&elt, selt);
 		
 		if (elt.type == RUTF8_STRING_NONE) {
 			w = NA_INTEGER;
@@ -78,6 +79,7 @@ SEXP rutf8_utf8_width(SEXP sx, SEXP sencode, SEXP squote, SEXP sutf8)
 			}
 		}
 		INTEGER(ans)[i] = w;
+		UNPROTECT(1);
 	}
 
 	UNPROTECT(1);

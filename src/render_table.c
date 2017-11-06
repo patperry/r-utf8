@@ -179,13 +179,14 @@ static int render_range(struct utf8lite_render *r, const struct style *s,
 		TRY(utf8lite_render_chars(r, ' ', namewidth));
 
 		for (j = begin; j < end; j++) {
-			name = STRING_ELT(col_names, j);
+			PROTECT(name = STRING_ELT(col_names, j)); nprot++;
 			assert(name != NA_STRING);
 
 			if (j > begin || row_names != R_NilValue) {
 				TRY(utf8lite_render_chars(r, ' ', print_gap));
 			}
 			render_name(r, s, name, colwidths[j]);
+			UNPROTECT(1); nprot--;
 		}
 		TRY(utf8lite_render_newlines(r, 1));
 	}
@@ -198,9 +199,10 @@ static int render_range(struct utf8lite_render *r, const struct style *s,
 		}
 
 		if (row_names != R_NilValue) {
-			name = STRING_ELT(row_names, i);
+			PROTECT(name = STRING_ELT(row_names, i)); nprot++;
 			assert(name != NA_STRING);
 			render_rowname(r, s, name, namewidth);
+			UNPROTECT(1); nprot--;
 		}
 
 		for (j = begin; j < end; j++) {
@@ -216,12 +218,13 @@ static int render_range(struct utf8lite_render *r, const struct style *s,
 
 			width = colwidths[j];
 			ix = (R_xlen_t)i + (R_xlen_t)j * (R_xlen_t)nrow;
-			elt = STRING_ELT(sx, ix);
+			PROTECT(elt = STRING_ELT(sx, ix)); nprot++;
 			if (elt == NA_STRING) {
 				render_na(r, s, na_print, width);
 			} else {
 				render_entry(r, s, elt, width);
 			}
+			UNPROTECT(1); nprot--;
 		}
 
 		TRY(utf8lite_render_newlines(r, 1));
@@ -309,13 +312,15 @@ SEXP rutf8_render_table(SEXP sx, SEXP swidth, SEXP squote, SEXP sna_print,
 		for (i = 0; i < nrow; i++) {
 			CHECK_INTERRUPT(i);
 
-			elt = STRING_ELT(row_names, i);
+			PROTECT(elt = STRING_ELT(row_names, i)); nprot++;
 			assert(elt != NA_STRING);
 
 			w = charsxp_width(elt, s.flags.rowname);
 			if (w > namewidth) {
 				namewidth = w;
 			}
+
+			UNPROTECT(1); nprot--;
 		}
 	}
 
@@ -331,18 +336,19 @@ SEXP rutf8_render_table(SEXP sx, SEXP swidth, SEXP squote, SEXP sna_print,
 	}
 	if (col_names != R_NilValue) {
 		for (j = 0; j < ncol; j++) {
-			elt = STRING_ELT(col_names, j);
+			PROTECT(elt = STRING_ELT(col_names, j)); nprot++;
 			assert(elt != NA_STRING);
 			w = charsxp_width(elt, s.flags.name);
 			if (w > colwidths[j]) {
 				colwidths[j] = w;
 			}
+			UNPROTECT(1); nprot--;
 		}
 	}
 
 	j = 0;
 	for (ix = 0; ix < nx; ix++) {
-		elt = STRING_ELT(sx, ix);
+		PROTECT(elt = STRING_ELT(sx, ix)); nprot++;
 
 		if (elt == NA_STRING) {
 			w = charsxp_width(na_print, s.flags.na);
@@ -357,6 +363,8 @@ SEXP rutf8_render_table(SEXP sx, SEXP swidth, SEXP squote, SEXP sna_print,
 		if ((ix + 1) % nrow == 0) {
 			j++;
 		}
+
+		UNPROTECT(1); nprot--;
 	}
 
 	nprint = 0;
