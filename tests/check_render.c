@@ -47,7 +47,7 @@ static void clear(void)
 
 static void spaces(int n)
 {
-	ck_assert(!utf8lite_render_spaces(&render, n));
+	ck_assert(!utf8lite_render_chars(&render, ' ', n));
 }
 
 
