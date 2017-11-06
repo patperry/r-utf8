@@ -26,7 +26,7 @@ Installation
 run the following command in R:
 
 ```r
-### install.packages("utf8") # not available yet, actually
+install.packages("utf8")
 ```
 
 ### Development version
