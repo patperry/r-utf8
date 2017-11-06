@@ -231,7 +231,7 @@ static int utf8lite_escape_utf8(struct utf8lite_render *r, int32_t ch)
 	int len;
 
 	if (r->flags & UTF8LITE_ENCODE_ESCFAINT) {
-		utf8lite_render_bytes(r, ANSI_STYLE_FAINT, ANSI_STYLE_SIZE);
+		utf8lite_render_raw(r, ANSI_STYLE_FAINT, ANSI_STYLE_SIZE);
 		CHECK_ERROR(r);
 	}
 
@@ -263,7 +263,7 @@ static int utf8lite_escape_utf8(struct utf8lite_render *r, int32_t ch)
 	}
 
 	if (r->flags & UTF8LITE_ENCODE_ESCFAINT) {
-		utf8lite_render_bytes(r, ANSI_STYLE_NORMAL, ANSI_STYLE_SIZE);
+		utf8lite_render_raw(r, ANSI_STYLE_NORMAL, ANSI_STYLE_SIZE);
 		CHECK_ERROR(r);
 	}
 
@@ -274,7 +274,7 @@ static int utf8lite_escape_utf8(struct utf8lite_render *r, int32_t ch)
 static int utf8lite_escape_ascii(struct utf8lite_render *r, int32_t ch)
 {
 	if (r->flags & UTF8LITE_ENCODE_ESCFAINT) {
-		utf8lite_render_bytes(r, ANSI_STYLE_FAINT, ANSI_STYLE_SIZE);
+		utf8lite_render_raw(r, ANSI_STYLE_FAINT, ANSI_STYLE_SIZE);
 		CHECK_ERROR(r);
 	}
 
@@ -336,8 +336,8 @@ static int utf8lite_escape_ascii(struct utf8lite_render *r, int32_t ch)
 		}
 
 		if (r->flags & UTF8LITE_ENCODE_ESCFAINT) {
-			utf8lite_render_bytes(r, ANSI_STYLE_NORMAL,
-					      ANSI_STYLE_SIZE);
+			utf8lite_render_raw(r, ANSI_STYLE_NORMAL,
+					    ANSI_STYLE_SIZE);
 			CHECK_ERROR(r);
 		}
 	} else {
@@ -345,8 +345,8 @@ static int utf8lite_escape_ascii(struct utf8lite_render *r, int32_t ch)
 
 		if (r->flags & UTF8LITE_ENCODE_ESCFAINT) {
 			r->string[r->length] = '\0';
-			utf8lite_render_bytes(r, ANSI_STYLE_NORMAL,
-					      ANSI_STYLE_SIZE);
+			utf8lite_render_raw(r, ANSI_STYLE_NORMAL,
+					    ANSI_STYLE_SIZE);
 			CHECK_ERROR(r);
 			utf8lite_render_grow(r, 1);
 			CHECK_ERROR(r);
@@ -570,7 +570,7 @@ int utf8lite_render_graph(struct utf8lite_render *r,
 	}
 
 	if (attr & CODE_EMOJI && (r->flags & UTF8LITE_ENCODE_EMOJIZWSP)) {
-		utf8lite_render_bytes(r, "\xE2\x80\x8B", 3); // U+200B, ZWSP
+		utf8lite_render_raw(r, "\xE2\x80\x8B", 3); // U+200B, ZWSP
 		CHECK_ERROR(r);
 	}
 
@@ -578,8 +578,8 @@ int utf8lite_render_graph(struct utf8lite_render *r,
 }
 
 
-int utf8lite_render_bytes(struct utf8lite_render *r, const char *bytes,
-			  size_t size)
+int utf8lite_render_raw(struct utf8lite_render *r, const char *bytes,
+			size_t size)
 {
 	if (size > INT_MAX) {
 		r->error = UTF8LITE_ERROR_OVERFLOW;

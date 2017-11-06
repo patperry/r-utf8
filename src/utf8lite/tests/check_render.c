@@ -603,11 +603,11 @@ START_TEST(test_byte_single)
 	set_flags(UTF8LITE_ESCAPE_CONTROL);
 
 	byte = 0x01;
-	ck_assert(!utf8lite_render_bytes(&render, &byte, 1));
+	ck_assert(!utf8lite_render_raw(&render, &byte, 1));
 	ck_assert_int_eq(render.string[0], byte);
 
 	byte = (char)0xff;
-	ck_assert(!utf8lite_render_bytes(&render, &byte, 1));
+	ck_assert(!utf8lite_render_raw(&render, &byte, 1));
 	ck_assert_int_eq(render.string[0], 0x01);
 	ck_assert_int_eq(render.string[1], (char)0xff);
 }
@@ -621,7 +621,7 @@ START_TEST(test_byte_multiple)
 
 	set_flags(UTF8LITE_ESCAPE_CONTROL);
 
-	ck_assert(!utf8lite_render_bytes(&render, bytes, sizeof(bytes)));
+	ck_assert(!utf8lite_render_raw(&render, bytes, sizeof(bytes)));
 	for (i = 0; i < n; i++) {
 		ck_assert_int_eq(render.string[i], bytes[i]);
 	}

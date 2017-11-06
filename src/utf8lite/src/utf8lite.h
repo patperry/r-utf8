@@ -994,8 +994,8 @@ int utf8lite_render_text(struct utf8lite_render *r,
  *
  * \returns 0 on success.
  */
-int utf8lite_render_bytes(struct utf8lite_render *r, const char *bytes,
-			  size_t size);
+int utf8lite_render_raw(struct utf8lite_render *r, const char *bytes,
+			size_t size);
 
 /**@}*/
 
