@@ -13,7 +13,7 @@ Suggests:
   corpus,
   knitr,
   testthat
-Description: Functions for manipulating and printing UTF-8 text.
+Description: Functions for manipulating and printing UTF-8 encoded text.
 License: Apache License (== 2.0) | file LICENSE
 URL: https://github.com/patperry/r-utf8
 BugReports: https://github.com/patperry/r-utf8/issues
