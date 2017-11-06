@@ -93,6 +93,20 @@ START_TEST(test_single)
 END_TEST
 
 
+START_TEST(test_emoji_modifier)
+{
+	// This is an emoji followed by E_Modifier, but the emoji does not
+	// have Grapheme Break Property 'E_Base' or 'E_Base_GAZ'
+	// Any + E_Modifier
+	start(JS("\\uD83D\\uDE0A\\uD83C\\uDFFB")); // U+1F60A U+1F3FB
+	// assert_text_eq(next(), (JS("\\uD83D\\uDE0A\\uD83C\\uDFFB"));
+	assert_text_eq(next(), JS("\\uD83D\\uDE0A"));
+	assert_text_eq(next(), JS("\\uD83C\\uDFFB"));
+	ck_assert(next() == NULL);
+}
+END_TEST
+
+
 // Unicode Grapheme Break Test
 // http://www.unicode.org/Public/UCD/latest/ucd/auxiliary/GraphemeBreakTest.txt
 struct unitest {
@@ -315,6 +329,7 @@ Suite *graphscan_suite(void)
         tcase_add_checked_fixture(tc, setup_scan, teardown_scan);
         tcase_add_test(tc, test_empty);
         tcase_add_test(tc, test_single);
+        tcase_add_test(tc, test_emoji_modifier);
         suite_add_tcase(s, tc);
 
         tc = tcase_create("Unicode GraphemeBreakTest.txt");
