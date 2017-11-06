@@ -110,7 +110,7 @@ static void rutf8_bytes_lrender(struct utf8lite_render *r,
 		fullwidth = rutf8_bytes_width(bytes, r->flags);
 		if (fullwidth <= width_min - quotes) {
 			width = (width_min - fullwidth - quotes) / 2;
-			TRY(utf8lite_render_spaces(r, width));
+			TRY(utf8lite_render_chars(r, ' ', width));
 		}
 	}
 
@@ -144,7 +144,7 @@ static void rutf8_bytes_lrender(struct utf8lite_render *r,
 	}
 
 	if (width < width_min) {
-		TRY(utf8lite_render_spaces(r, width_min - width));
+		TRY(utf8lite_render_chars(r, ' ', width_min - width));
 	}
 exit:
 	CHECK_ERROR(err);
@@ -168,7 +168,8 @@ static void rutf8_bytes_rrender(struct utf8lite_render *r,
 		// ensure fullwidth + quotes doesn't overflow
 		if (fullwidth <= width_min - quotes) {
 			fullwidth += quotes;
-			TRY(utf8lite_render_spaces(r, width_min - fullwidth));
+			TRY(utf8lite_render_chars(r, ' ',
+						  width_min - fullwidth));
 		}
 	}
 
@@ -227,7 +228,7 @@ SEXP rutf8_bytes_lformat(struct utf8lite_render *r,
 			     + quotes);
 		if (fullwidth < width_max) {
 			bfill = (width_max - fullwidth) / 2;
-			TRY(utf8lite_render_spaces(r, bfill));
+			TRY(utf8lite_render_chars(r, ' ', bfill));
 		}
 	}
 
@@ -253,7 +254,7 @@ SEXP rutf8_bytes_lformat(struct utf8lite_render *r,
 
 	if (!trim) {
 		efill = width_max - width - quotes - bfill;
-		TRY(utf8lite_render_spaces(r, efill));
+		TRY(utf8lite_render_chars(r, ' ', efill));
 	}
 
 	ans = mkCharLenCE((char *)r->string, r->length, CE_BYTES);
@@ -297,7 +298,7 @@ SEXP rutf8_bytes_rformat(struct utf8lite_render *r,
 	}
 
 	if (!trim) {
-		TRY(utf8lite_render_spaces(r, width_max - width - quotes));
+		TRY(utf8lite_render_chars(r, ' ', width_max - width - quotes));
 	}
 
 	if (trunc) {

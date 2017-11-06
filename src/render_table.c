@@ -111,14 +111,14 @@ static void render_cell(struct utf8lite_render *r, const struct style *s,
 	}
 
 	if (right) {
-		TRY(utf8lite_render_spaces(r, pad));
+		TRY(utf8lite_render_chars(r, ' ', pad));
 	}
 
 	rutf8_string_init(&str, sx);
 	rutf8_string_render(r, &str, 0, quote, RUTF8_JUSTIFY_NONE);
 
 	if (!right) {
-		TRY(utf8lite_render_spaces(r, pad));
+		TRY(utf8lite_render_chars(r, ' ', pad));
 	}
 
 	if (sgr) {
@@ -175,14 +175,14 @@ static int render_range(struct utf8lite_render *r, const struct style *s,
 	nprint = 0;
 
 	if (col_names != R_NilValue) {
-		TRY(utf8lite_render_spaces(r, namewidth));
+		TRY(utf8lite_render_chars(r, ' ', namewidth));
 
 		for (j = begin; j < end; j++) {
 			name = STRING_ELT(col_names, j);
 			assert(name != NA_STRING);
 
 			if (j > begin || row_names != R_NilValue) {
-				TRY(utf8lite_render_spaces(r, print_gap));
+				TRY(utf8lite_render_chars(r, ' ', print_gap));
 			}
 			render_name(r, s, name, colwidths[j]);
 		}
@@ -210,7 +210,7 @@ static int render_range(struct utf8lite_render *r, const struct style *s,
 			nprint++;
 
 			if (j > begin || row_names != R_NilValue) {
-				TRY(utf8lite_render_spaces(r, print_gap));
+				TRY(utf8lite_render_chars(r, ' ', print_gap));
 			}
 
 			width = colwidths[j];
