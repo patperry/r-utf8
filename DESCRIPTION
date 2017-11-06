@@ -13,7 +13,7 @@ Suggests:
   corpus,
   knitr,
   testthat
-Description: Processing and printing 'UTF-8' encoded international text (Unicode). Functions for to input, validate, normalize, encode, format, and display.
+Description: Processing and printing 'UTF-8' encoded international text (Unicode). Functions to input, validate, normalize, encode, format, and display.
 License: Apache License (== 2.0) | file LICENSE
 URL: https://github.com/patperry/r-utf8
 BugReports: https://github.com/patperry/r-utf8/issues
