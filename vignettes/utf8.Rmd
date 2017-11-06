@@ -87,7 +87,7 @@ corpus::term_stats(lines) # produces an error
 ```
 
 ```
-Error in corpus::term_stats(lines): argument entry 15252 is marked as "UTF-8" but contains an invalid byte in position 36 (\xa3)
+Error in corpus::term_stats(lines): argument entry 15252 is incorrectly marked as "UTF-8": invalid leading byte (0xA3) at position 36
 ```
 
 The error message tells us that line 15252 contains an invalid byte.
@@ -371,7 +371,7 @@ corpus::term_stats(lines)
 ```
 
 ```
-Error in corpus::term_stats(lines): argument entry 15252 is marked as "UTF-8" but contains an invalid byte in position 36 (\xa3)
+Error in corpus::term_stats(lines): argument entry 15252 is incorrectly marked as "UTF-8": invalid leading byte (0xA3) at position 36
 ```
 
 We discovered a problem on line 15252:
