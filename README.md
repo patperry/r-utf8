@@ -53,7 +53,7 @@ function alerts you if the input text has the wrong declared encoding:
 
 
 ```r
-# second entry is encoded in latin-1, but declared as UTF-8, so
+# second entry is encoded in latin-1, but declared as UTF-8
 x <- c("fa\u00E7ile", "fa\xE7ile", "fa\xC3\xA7ile")
 Encoding(x) <- c("UTF-8", "UTF-8", "bytes")
 as_utf8(x) # fails
