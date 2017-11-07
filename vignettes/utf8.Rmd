@@ -331,8 +331,8 @@ utf8_print(intToUtf8(0x1f600 + 0:79), chars = 500) # increase character limit
 (Characters with codes above 0xffff, including most emoji, are not
 supported on Windows.)
 
-*Corpus* provides the following utilities for validating, formatting, and
-printing UTF-8 characters:
+The *utf8* package provides the following utilities for validating, formatting,
+and printing UTF-8 characters:
 
  + `as_utf8()` attempts to convert character data to UTF-8, throwing an
    error if the data is invalid;
@@ -355,7 +355,7 @@ printing UTF-8 characters:
     (many emoji and East Asian characters are twice as wide as other
     characters).
 
-*Corpus* does not provide a method to translate from another encoding to
+The package does not provide a method to translate from another encoding to
 UTF-8 as the `iconv()` function from base R already serves this purpose.
 
 
