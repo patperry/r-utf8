@@ -52,7 +52,7 @@ SEXP rutf8_as_utf8(SEXP sx)
 	cetype_t ce;
 	size_t size;
 	R_xlen_t i, n;
-	int raw, duped;;
+	int nprot = 0, duped = 0, raw;
 
 	if (sx == R_NilValue) {
 		return R_NilValue;
@@ -61,16 +61,15 @@ SEXP rutf8_as_utf8(SEXP sx)
 		error("argument is not a character object");
 	}
 
-	ans = sx;
-	duped = 0;
+	PROTECT(ans = sx); nprot++; // rchk warning otherwise
 
 	n = XLENGTH(sx);
 	for (i = 0; i < n; i++) {
 		CHECK_INTERRUPT(i);
 
-		PROTECT(sstr = STRING_ELT(sx, i));
+		PROTECT(sstr = STRING_ELT(sx, i)); nprot++;
 		if (sstr == NA_STRING) {
-			UNPROTECT(1);
+			UNPROTECT(1); nprot--;
 			continue;
 		}
 
@@ -111,7 +110,7 @@ SEXP rutf8_as_utf8(SEXP sx)
 
 		if (!raw || ce == CE_BYTES || ce == CE_NATIVE) {
 			if (!duped) {
-				PROTECT(ans = duplicate(ans));
+				PROTECT(ans = duplicate(ans)); nprot++;
 				duped = 1;
 			}
 			SET_STRING_ELT(ans, i,
@@ -119,12 +118,9 @@ SEXP rutf8_as_utf8(SEXP sx)
 					           size, CE_UTF8));
 		}
 
-		UNPROTECT(1);
+		UNPROTECT(1); nprot--;
 	}
 
-	if (duped) {
-		UNPROTECT(1);
-	}
-
+	UNPROTECT(nprot);
 	return ans;
 }
