@@ -138,6 +138,7 @@ and if you choose to contribute, you must adhere to its terms.
 [apache-badge]: https://img.shields.io/badge/License-Apache%202.0-blue.svg "Apache License, Version 2.0"
 [appveyor]: https://ci.appveyor.com/project/patperry/r-utf8/branch/master "Continuous Integration (Windows)"
 [appveyor-badge]: https://ci.appveyor.com/api/projects/status/github/patperry/r-utf8?branch=master&svg=true "Continuous Inegration (Windows)"
+[building]: #development-version "Building from Source"
 [codecov]: https://codecov.io/github/patperry/r-utf8?branch=master "Code Coverage"
 [codecov-badge]: https://codecov.io/github/patperry/r-utf8/coverage.svg?branch=master "Code Coverage"
 [conduct]: https://github.com/patperry/r-utf8/blob/master/CONDUCT.md "Contributor Code of Conduct"
