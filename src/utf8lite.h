@@ -900,15 +900,13 @@ const char *utf8lite_render_set_newline(struct utf8lite_render *r,
 					const char *newline);
 
 /**
- * Set the ANSI color parameters for styling escapes. The client must
- * not free the passed in string until the render object is destroyed or
- * a new style string gets set. Set to NULL for no ANSI style.
+ * Set the escape style strings. The client must not free the passed
+ * in strings until the render object is destroyed or new style
+ * strings get set.
  *
  * \param r the render object
- * \param open the ANSI graphic parameter string, matching the regex
- * 	`^[0-9;]*$`, for changing the style before rendering the escape
- * \param close the ANSI graphic parameter string for changing the style
- * 	after rendering the escape.
+ * \param open the string to render before a backslash escape.
+ * \param close the string to render after a backslash escape.
  *
  * \returns 0 on success
  */
