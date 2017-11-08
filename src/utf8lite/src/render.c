@@ -24,11 +24,6 @@
 #include "private/array.h"
 #include "utf8lite.h"
 
-#define ANSI_STYLE_START	"\033["
-#define ANSI_STYLE_START_SIZE	2
-#define ANSI_STYLE_STOP		"m"
-#define ANSI_STYLE_STOP_SIZE	1
-
 #define CHECK_ERROR(r) \
 	if (r->error) { \
 		return r->error; \
@@ -76,27 +71,23 @@ static int utf8lite_render_grow(struct utf8lite_render *r, int nadd)
 }
 
 
-static void style_open(struct utf8lite_render *r)
+static int style_open(struct utf8lite_render *r)
 {
 	if (!r->style_open_length) {
-		return;
+		return 0;
 	}
 
-	utf8lite_render_raw(r, ANSI_STYLE_START, ANSI_STYLE_START_SIZE);
-	utf8lite_render_raw(r, r->style_open, r->style_open_length);
-	utf8lite_render_raw(r, ANSI_STYLE_STOP, ANSI_STYLE_STOP_SIZE);
+	return utf8lite_render_raw(r, r->style_open, r->style_open_length);
 }
 
 
-static void style_close(struct utf8lite_render *r)
+static int style_close(struct utf8lite_render *r)
 {
 	if (!r->style_close_length) {
-		return;
+		return 0;
 	}
 
-	utf8lite_render_raw(r, ANSI_STYLE_START, ANSI_STYLE_START_SIZE);
-	utf8lite_render_raw(r, r->style_close, r->style_close_length);
-	utf8lite_render_raw(r, ANSI_STYLE_STOP, ANSI_STYLE_STOP_SIZE);
+	return utf8lite_render_raw(r, r->style_close, r->style_close_length);
 }
 
 
