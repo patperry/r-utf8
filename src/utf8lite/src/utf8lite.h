@@ -776,10 +776,8 @@ enum utf8lite_encode_type {
 	UTF8LITE_ENCODE_JSON = (1 << 5),/**< JSON-compatible escapes */
 	UTF8LITE_ENCODE_EMOJIZWSP = (1 << 6),/**< put ZWSP after emoji */
 	UTF8LITE_ENCODE_RMDI = (1 << 7),/**< remove default ignorables */
-	UTF8LITE_ENCODE_AMBIGWIDE = (1 << 8),/**< assume that ambiguous-width
+	UTF8LITE_ENCODE_AMBIGWIDE = (1 << 8)/**< assume that ambiguous-width
 					       characters are wide */
-	UTF8LITE_ENCODE_ESCFAINT = (1 << 9)/** use ANSI terminal controls
-					      to make escapes appear faint */
 };
 
 /**
@@ -820,6 +818,16 @@ struct utf8lite_render {
 	const char *newline;	/**< the newline string, for advancing
 				  to the next line */
 	int newline_length;	/**< the length in bytes of the newline string,
+				  not including the null terminator */
+
+	const char *style_open;	/**< the escape style graphic parameters,
+				  for styling backslash escapes */
+	const char *style_close;/**< the escape style graphic parameters,
+				  for restoring state after styling a
+				  backslash escapes */
+	int style_open_length;	/**< length in bytes of the style_open string,
+				  not including the null terminator */
+	int style_close_length;	/**< length in bytes of the style_close string,
 				  not including the null terminator */
 
 	int indent;		/**< the current indent level */
@@ -890,6 +898,22 @@ const char *utf8lite_render_set_tab(struct utf8lite_render *r, const char *tab);
  */
 const char *utf8lite_render_set_newline(struct utf8lite_render *r,
 					const char *newline);
+
+/**
+ * Set the ANSI color parameters for styling escapes. The client must
+ * not free the passed in string until the render object is destroyed or
+ * a new style string gets set. Set to NULL for no ANSI style.
+ *
+ * \param r the render object
+ * \param open the ANSI graphic parameter string, matching the regex
+ * 	`^[0-9;]*$`, for changing the style before rendering the escape
+ * \param close the ANSI graphic parameter string for changing the style
+ * 	after rendering the escape.
+ *
+ * \returns 0 on success
+ */
+int utf8lite_render_set_style(struct utf8lite_render *r,
+			      const char *open, const char *close);
 
 /**
  * Increase or decrease the indent level.
