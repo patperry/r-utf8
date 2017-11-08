@@ -131,38 +131,21 @@ void rutf8_string_render(struct utf8lite_render *r,
 }
 
 
-SEXP rutf8_string_lformat(struct utf8lite_render *r,
-			  const struct rutf8_string *str,
-			  int trim, int chars, int width_max,
-			  int quote, int utf8, int flags, int centre)
+SEXP rutf8_string_format(struct utf8lite_render *r,
+			 const struct rutf8_string *str,
+			 int trim, int chars, enum rutf8_justify_type justify,
+			 int quote, int utf8, int flags, int width_max)
 {
 	switch (str->type) {
 	case RUTF8_STRING_TEXT:
-		return rutf8_text_lformat(r, &str->value.text, trim, chars,
-					  width_max, quote, utf8, flags,
-					  centre);
-	case RUTF8_STRING_BYTES:
-		return rutf8_bytes_lformat(r, &str->value.bytes, trim, chars,
-					   width_max, quote, utf8, flags,
-					   centre);
-	default:
-		return NA_STRING;
-	}
-}
+		return rutf8_text_format(r, &str->value.text, trim, chars,
+					 justify, quote, utf8, flags,
+					 width_max);
 
-
-SEXP rutf8_string_rformat(struct utf8lite_render *r,
-			  const struct rutf8_string *str,
-			  int trim, int chars, int width_max,
-			  int quote, int utf8, int flags)
-{
-	switch (str->type) {
-	case RUTF8_STRING_TEXT:
-		return rutf8_text_rformat(r, &str->value.text, trim, chars,
-					  width_max, quote, utf8, flags);
 	case RUTF8_STRING_BYTES:
-		return rutf8_bytes_rformat(r, &str->value.bytes, trim, chars,
-					   width_max, quote, utf8, flags);
+		return rutf8_bytes_format(r, &str->value.bytes, trim, chars,
+					  justify, quote, utf8, flags,
+					  width_max);
 	default:
 		return NA_STRING;
 	}
