@@ -140,47 +140,42 @@ void utf8lite_render_clear(struct utf8lite_render *r)
 
 int utf8lite_render_set_flags(struct utf8lite_render *r, int flags)
 {
-	int oldflags = r->flags;
 	r->flags = flags;
-	return oldflags;
+	return 0;
 }
 
 
-const char *utf8lite_render_set_tab(struct utf8lite_render *r, const char *tab)
+int utf8lite_render_set_tab(struct utf8lite_render *r, const char *tab)
 {
-	const char *oldtab = r->tab;
 	size_t len;
 	assert(tab);
 
 	if ((len = strlen(tab)) >= INT_MAX) {
 		// tab string length exceeds maximum
 		r->error = UTF8LITE_ERROR_OVERFLOW;
-
+		return r->error;
 	} else {
 		r->tab = tab;
 		r->tab_length = (int)len;
+		return 0;
 	}
-
-	return oldtab;
 }
 
 
-const char *utf8lite_render_set_newline(struct utf8lite_render *r,
-					const char *newline)
+int utf8lite_render_set_newline(struct utf8lite_render *r, const char *newline)
 {
-	const char *oldnewline = r->newline;
 	size_t len;
 	assert(newline);
 
 	if ((len = strlen(newline)) >= INT_MAX) {
 		// newline string length exceeds maximum
 		r->error = UTF8LITE_ERROR_OVERFLOW;
+		return r->error;
 	} else {
 		r->newline = newline;
 		r->newline_length = (int)len;
+		return 0;
 	}
-
-	return oldnewline;
 }
 
 

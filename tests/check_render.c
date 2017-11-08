@@ -63,21 +63,21 @@ static void indent(int n)
 }
 
 
-static int set_flags(int flags)
+static void set_flags(int flags)
 {
-	return utf8lite_render_set_flags(&render, flags);
+	ck_assert(!utf8lite_render_set_flags(&render, flags));
 }
 
 
-static const char *set_newline(const char *newline)
+static void set_newline(const char *newline)
 {
-	return utf8lite_render_set_newline(&render, newline);
+	ck_assert(!utf8lite_render_set_newline(&render, newline));
 }
 
 
-static const char *set_tab(const char *tab)
+static void set_tab(const char *tab)
 {
-	return utf8lite_render_set_tab(&render, tab);
+	ck_assert(!utf8lite_render_set_tab(&render, tab));
 }
 
 
@@ -151,7 +151,7 @@ END_TEST
 
 START_TEST(test_format_newlines_custom)
 {
-	ck_assert_str_eq(set_newline("<LF>"), "\n");
+	set_newline("<LF>");
 
 	newlines(-1);
 	ck_assert_str_eq(render.string, "");
@@ -205,7 +205,7 @@ END_TEST
 
 START_TEST(test_format_indent_custom)
 {
-	ck_assert_str_eq(set_tab("<TAB>"), "\t");
+	set_tab("<TAB>");
 
 	ck_assert(!utf8lite_render_string(&render, "I"));
 

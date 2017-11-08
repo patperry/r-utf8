@@ -870,7 +870,7 @@ void utf8lite_render_clear(struct utf8lite_render *r);
  * \param r the render object
  * \param flags a bit mask of #utf8lite_escape_type values
  *
- * \returns the old escape flags
+ * \returns 0 on success
  */
 int utf8lite_render_set_flags(struct utf8lite_render *r, int flags);
 
@@ -882,9 +882,9 @@ int utf8lite_render_set_flags(struct utf8lite_render *r, int flags);
  * \param r the render object
  * \param tab the tab string (null terminated)
  *
- * \returns the old tab string
+ * \returns 0 on success
  */
-const char *utf8lite_render_set_tab(struct utf8lite_render *r, const char *tab);
+int utf8lite_render_set_tab(struct utf8lite_render *r, const char *tab);
 
 /**
  * Set the new line string.  The client must not free the passed-in newline
@@ -894,10 +894,9 @@ const char *utf8lite_render_set_tab(struct utf8lite_render *r, const char *tab);
  * \param r the render object
  * \param newline the newline string (null terminated)
  *
- * \returns the old newline string
+ * \returns 0 on success
  */
-const char *utf8lite_render_set_newline(struct utf8lite_render *r,
-					const char *newline);
+int utf8lite_render_set_newline(struct utf8lite_render *r, const char *newline);
 
 /**
  * Set the escape style strings. The client must not free the passed
