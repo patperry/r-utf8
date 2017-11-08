@@ -24,10 +24,10 @@
 #include "private/array.h"
 #include "utf8lite.h"
 
-#define ANSI_STYLE_NORMAL	"\033[0m"
-#define ANSI_STYLE_BOLD		"\033[1m"
-#define ANSI_STYLE_FAINT	"\033[2m"
-#define ANSI_STYLE_SIZE		4
+#define ANSI_STYLE_START	"\033["
+#define ANSI_STYLE_START_SIZE	2
+#define ANSI_STYLE_STOP		"m"
+#define ANSI_STYLE_STOP_SIZE	1
 
 #define CHECK_ERROR(r) \
 	if (r->error) { \
@@ -76,6 +76,30 @@ static int utf8lite_render_grow(struct utf8lite_render *r, int nadd)
 }
 
 
+static void style_open(struct utf8lite_render *r)
+{
+	if (!r->style_open_length) {
+		return;
+	}
+
+	utf8lite_render_raw(r, ANSI_STYLE_START, ANSI_STYLE_START_SIZE);
+	utf8lite_render_raw(r, r->style_open, r->style_open_length);
+	utf8lite_render_raw(r, ANSI_STYLE_STOP, ANSI_STYLE_STOP_SIZE);
+}
+
+
+static void style_close(struct utf8lite_render *r)
+{
+	if (!r->style_close_length) {
+		return;
+	}
+
+	utf8lite_render_raw(r, ANSI_STYLE_START, ANSI_STYLE_START_SIZE);
+	utf8lite_render_raw(r, r->style_close, r->style_close_length);
+	utf8lite_render_raw(r, ANSI_STYLE_STOP, ANSI_STYLE_STOP_SIZE);
+}
+
+
 int utf8lite_render_init(struct utf8lite_render *r, int flags)
 {
 	int err;
@@ -95,6 +119,11 @@ int utf8lite_render_init(struct utf8lite_render *r, int flags)
 
 	r->newline = "\n";
 	r->newline_length = (int)strlen(r->newline);
+
+	r->style_open = NULL;
+	r->style_open_length = 0;
+	r->style_close = NULL;
+	r->style_close_length = 0;
 
 	utf8lite_render_clear(r);
 
@@ -164,6 +193,32 @@ const char *utf8lite_render_set_newline(struct utf8lite_render *r,
 }
 
 
+int utf8lite_render_set_style(struct utf8lite_render *r,
+			      const char *open, const char *close)
+{
+	size_t open_len = 0, close_len = 0;
+
+	CHECK_ERROR(r);
+	if (open) {
+		if ((open_len = strlen(open)) >= INT_MAX) {
+			r->error = UTF8LITE_ERROR_OVERFLOW;
+			return r->error;
+		}
+	}
+	if (close) {
+		if ((close_len = strlen(close)) >= INT_MAX) {
+			r->error = UTF8LITE_ERROR_OVERFLOW;
+			return r->error;
+		}
+	}
+	r->style_open = open;
+	r->style_close = close;
+	r->style_open_length = (int)open_len;
+	r->style_close_length = (int)close_len;
+	return 0;
+}
+
+
 int utf8lite_render_indent(struct utf8lite_render *r, int nlevel)
 {
 	CHECK_ERROR(r);
@@ -230,10 +285,8 @@ static int utf8lite_escape_utf8(struct utf8lite_render *r, int32_t ch)
 	unsigned hi, lo;
 	int len;
 
-	if (r->flags & UTF8LITE_ENCODE_ESCFAINT) {
-		utf8lite_render_raw(r, ANSI_STYLE_FAINT, ANSI_STYLE_SIZE);
-		CHECK_ERROR(r);
-	}
+	style_open(r);
+	CHECK_ERROR(r);
 
 	if (ch <= 0xFFFF) {
 		// \uXXXX
@@ -262,10 +315,8 @@ static int utf8lite_escape_utf8(struct utf8lite_render *r, int32_t ch)
 				     "\\U%08"PRIx32, (uint32_t)ch);
 	}
 
-	if (r->flags & UTF8LITE_ENCODE_ESCFAINT) {
-		utf8lite_render_raw(r, ANSI_STYLE_NORMAL, ANSI_STYLE_SIZE);
-		CHECK_ERROR(r);
-	}
+	style_close(r);
+	CHECK_ERROR(r);
 
 	return 0;
 }
@@ -273,10 +324,8 @@ static int utf8lite_escape_utf8(struct utf8lite_render *r, int32_t ch)
 
 static int utf8lite_escape_ascii(struct utf8lite_render *r, int32_t ch)
 {
-	if (r->flags & UTF8LITE_ENCODE_ESCFAINT) {
-		utf8lite_render_raw(r, ANSI_STYLE_FAINT, ANSI_STYLE_SIZE);
-		CHECK_ERROR(r);
-	}
+	style_open(r);
+	CHECK_ERROR(r);
 
 	// character expansion for a special escape: \uXXXX or \X
 	utf8lite_render_grow(r, 6);
@@ -335,23 +384,16 @@ static int utf8lite_escape_ascii(struct utf8lite_render *r, int32_t ch)
 			break;
 		}
 
-		if (r->flags & UTF8LITE_ENCODE_ESCFAINT) {
-			utf8lite_render_raw(r, ANSI_STYLE_NORMAL,
-					    ANSI_STYLE_SIZE);
-			CHECK_ERROR(r);
-		}
+		style_close(r);
+		CHECK_ERROR(r);
 	} else {
 		r->string[r->length++] = '\\';
+		r->string[r->length] = '\0';
+		style_close(r);
+		CHECK_ERROR(r);
 
-		if (r->flags & UTF8LITE_ENCODE_ESCFAINT) {
-			r->string[r->length] = '\0';
-			utf8lite_render_raw(r, ANSI_STYLE_NORMAL,
-					    ANSI_STYLE_SIZE);
-			CHECK_ERROR(r);
-			utf8lite_render_grow(r, 1);
-			CHECK_ERROR(r);
-		}
-
+		utf8lite_render_grow(r, 1);
+		CHECK_ERROR(r);
 		r->string[r->length++] = (char)ch;
 		r->string[r->length] = '\0';
 	}
