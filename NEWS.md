@@ -1,3 +1,11 @@
+utf8 1.0.0.9000
+===============
+
+### MINOR IMPROVEMENTS
+
+  * Fix (spurious) `rchk` warnings.
+
+
 utf8 1.0.0 (2017-11-06)
 =======================
 
