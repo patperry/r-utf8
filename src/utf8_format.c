@@ -164,23 +164,9 @@ SEXP rutf8_utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify,
 			quote_i = quote;
 		}
 
-		switch (justify) {
-		case RUTF8_JUSTIFY_LEFT:
-		case RUTF8_JUSTIFY_CENTRE:
-		case RUTF8_JUSTIFY_NONE:
-			ans_i = rutf8_string_lformat(render, &elt,
-						     trim, chars_i, width_max,
-						     quote_i, utf8, flags,
-						     centre);
-			break;
-
-		case RUTF8_JUSTIFY_RIGHT:
-			ans_i = rutf8_string_rformat(render, &elt, trim,
-						     chars_i, width_max,
-						     quote_i, utf8, flags);
-			break;
-		}
-
+		ans_i = rutf8_string_format(render, &elt, trim, chars_i,
+					    justify, quote_i, utf8, flags,
+					    width_max);
 		UNPROTECT(1); nprot--;
 		SET_STRING_ELT(ans, i, ans_i);
 	}

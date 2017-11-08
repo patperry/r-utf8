@@ -207,10 +207,10 @@ void rutf8_bytes_render(struct utf8lite_render *r,
 }
 
 
-SEXP rutf8_bytes_lformat(struct utf8lite_render *r,
-			 const struct rutf8_bytes *bytes,
-			 int trim, int chars, int width_max,
-			 int quote, int utf8, int flags, int centre)
+static SEXP rutf8_bytes_lformat(struct utf8lite_render *r,
+				const struct rutf8_bytes *bytes,
+				int trim, int chars, int quote, int utf8,
+				int flags, int width_max, int centre)
 {
 	SEXP ans = R_NilValue;
 	const uint8_t *ptr, *end;
@@ -265,10 +265,10 @@ exit:
 }
 
 
-SEXP rutf8_bytes_rformat(struct utf8lite_render *r,
-			 const struct rutf8_bytes *bytes,
-			 int trim, int chars, int width_max, int quote,
-			 int utf8, int flags)
+static SEXP rutf8_bytes_rformat(struct utf8lite_render *r,
+				const struct rutf8_bytes *bytes,
+				int trim, int chars, int quote, int utf8,
+				int flags, int width_max)
 {
 	SEXP ans = R_NilValue;
 	const uint8_t *ptr, *end;
@@ -315,6 +315,24 @@ SEXP rutf8_bytes_rformat(struct utf8lite_render *r,
 exit:
 	CHECK_ERROR(err);
 	return ans;
+}
+
+
+SEXP rutf8_bytes_format(struct utf8lite_render *r,
+			const struct rutf8_bytes *bytes,
+			int trim, int chars, enum rutf8_justify_type justify,
+			int quote, int utf8, int flags, int width_max)
+{
+	int centre;
+
+	if (justify == RUTF8_JUSTIFY_RIGHT) {
+		return rutf8_bytes_rformat(r, bytes, trim, chars, quote,
+					   utf8, flags, width_max);
+	} else {
+		centre = (justify == RUTF8_JUSTIFY_CENTRE);
+		return rutf8_bytes_lformat(r, bytes, trim, chars, quote,
+					   utf8, flags, width_max, centre);
+	}
 }
 
 
