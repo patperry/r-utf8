@@ -24,6 +24,7 @@
 
 #define RUTF8_ELLIPSIS "\xE2\x80\xA6" /* U+2026 */
 #define RUTF8_STYLE_CLOSE "\033[0m"
+#define RUTF8_STYLE_CLOSE_SIZE 4
 
 #define CHECK_EVERY 1000
 #define CHECK_INTERRUPT(i) \
