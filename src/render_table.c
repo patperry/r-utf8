@@ -43,6 +43,8 @@ struct style {
 	const char *rownames;
 	int rownames_len;
 	int right;
+	const char *esc_open;
+	const char *esc_close;
 };
 
 
@@ -97,7 +99,8 @@ static void render_cell(struct utf8lite_render *r, const struct style *s,
 	const char *sgr;
 	int err = 0, w, pad, right, quote, old, nsgr;
 
-	old = utf8lite_render_set_flags(r, flags_get(&s->flags, t));
+	old = r->flags;
+	TRY(utf8lite_render_set_flags(r, flags_get(&s->flags, t)));
 	quote = r->flags & UTF8LITE_ESCAPE_DQUOTE;
 	right = (t == CELL_ROWNAME) ? 0 : s->right;
 	sgr = sgr_get(s, t, &nsgr);
@@ -115,8 +118,16 @@ static void render_cell(struct utf8lite_render *r, const struct style *s,
 		TRY(utf8lite_render_chars(r, ' ', pad));
 	}
 
+	if (t == CELL_ENTRY) {
+		TRY(utf8lite_render_set_style(r, s->esc_open, s->esc_close));
+	}
+
 	rutf8_string_init(&str, sx);
 	rutf8_string_render(r, &str, 0, quote, RUTF8_JUSTIFY_NONE);
+
+	if (t == CELL_ENTRY) {
+		TRY(utf8lite_render_set_style(r, NULL, NULL));
+	}
 
 	if (!right) {
 		TRY(utf8lite_render_chars(r, ' ', pad));
@@ -125,9 +136,9 @@ static void render_cell(struct utf8lite_render *r, const struct style *s,
 	if (sgr) {
 		TRY(utf8lite_render_raw(r, "\x1b[0m", 4));
 	}
+	TRY(utf8lite_render_set_flags(r, old));
 exit:
 	CHECK_ERROR(err);
-	utf8lite_render_set_flags(r, old);
 }
 
 
@@ -280,7 +291,6 @@ SEXP rutf8_render_table(SEXP sx, SEXP swidth, SEXP squote, SEXP sna_print,
                 s.flags.entry |= UTF8LITE_ENCODE_EMOJIZWSP;
         }
 	if (style) {
-		s.flags.entry |= UTF8LITE_ENCODE_ESCFAINT;
 		if (snames != R_NilValue) {
 			PROTECT(names = STRING_ELT(snames, 0)); nprot++;
 			s.names = CHAR(names);
@@ -299,11 +309,16 @@ SEXP rutf8_render_table(SEXP sx, SEXP swidth, SEXP squote, SEXP sna_print,
         s.flags.entry |= UTF8LITE_ESCAPE_EXTENDED;
 #endif
 	s.flags.na = s.flags.entry & ~UTF8LITE_ESCAPE_DQUOTE;
-	s.flags.name = s.flags.na & ~UTF8LITE_ENCODE_ESCFAINT;
+	s.flags.name = s.flags.na;
 	s.flags.rowname = s.flags.name;
 
 	PROTECT(srender = rutf8_alloc_render(0)); nprot++;
 	render = rutf8_as_render(srender);
+
+	if (style) {
+		s.esc_open = "\033[2m";
+		s.esc_close = "\033[0m";
+	}
 
 	namewidth = 0;
 	if (row_names == R_NilValue) {
