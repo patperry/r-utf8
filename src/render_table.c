@@ -109,9 +109,7 @@ static void render_cell(struct utf8lite_render *r, const struct style *s,
 	pad = width - w;
 
 	if (sgr) {
-		TRY(utf8lite_render_raw(r, "\x1b[", 2));
 		TRY(utf8lite_render_raw(r, sgr, nsgr));
-		TRY(utf8lite_render_raw(r, "m", 1));
 	}
 
 	if (right) {
@@ -134,7 +132,8 @@ static void render_cell(struct utf8lite_render *r, const struct style *s,
 	}
 
 	if (sgr) {
-		TRY(utf8lite_render_raw(r, "\x1b[0m", 4));
+		TRY(utf8lite_render_raw(r, RUTF8_STYLE_CLOSE,
+					RUTF8_STYLE_CLOSE_SIZE));
 	}
 	TRY(utf8lite_render_set_flags(r, old));
 exit:
@@ -291,15 +290,11 @@ SEXP rutf8_render_table(SEXP sx, SEXP swidth, SEXP squote, SEXP sna_print,
                 s.flags.entry |= UTF8LITE_ENCODE_EMOJIZWSP;
         }
 	if (style) {
-		if (snames != R_NilValue) {
-			PROTECT(names = STRING_ELT(snames, 0)); nprot++;
-			s.names = CHAR(names);
-			s.names_len = LENGTH(names);
+		if ((s.names = rutf8_as_style(snames))) {
+			s.names_len = strlen(s.names);
 		}
-		if (srownames != R_NilValue) {
-			PROTECT(rownames = STRING_ELT(srownames, 0)); nprot++;
-			s.rownames = CHAR(rownames);
-			s.rownames_len = LENGTH(rownames);
+		if ((s.rownames = rutf8_as_style(srownames))) {
+			s.rownames_len = strlen(s.rownames);
 		}
 	}
         if (!utf8) {
@@ -317,7 +312,7 @@ SEXP rutf8_render_table(SEXP sx, SEXP swidth, SEXP squote, SEXP sna_print,
 
 	if (style) {
 		s.esc_open = "\033[2m";
-		s.esc_close = "\033[0m";
+		s.esc_close = RUTF8_STYLE_CLOSE;
 	}
 
 	namewidth = 0;
