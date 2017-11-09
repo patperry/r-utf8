@@ -248,11 +248,11 @@ exit:
 
 SEXP rutf8_render_table(SEXP sx, SEXP swidth, SEXP squote, SEXP sna_print,
 			SEXP sprint_gap, SEXP sright, SEXP smax,
-			SEXP snames, SEXP srownames, SEXP sdisplay,
-			SEXP sstyle, SEXP slinewidth, SEXP sutf8)
+			SEXP snames, SEXP srownames, SEXP sescapes,
+			SEXP sdisplay, SEXP sstyle, SEXP slinewidth,
+			SEXP sutf8)
 {
-	SEXP ans, names, rownames, na_print, str, srender, elt, dim_names,
-	     row_names, col_names;
+	SEXP ans, na_print, str, srender, elt, dim_names, row_names, col_names;
 	struct utf8lite_render *render;
 	struct style s;
 	R_xlen_t ix, nx;
@@ -311,8 +311,9 @@ SEXP rutf8_render_table(SEXP sx, SEXP swidth, SEXP squote, SEXP sna_print,
 	render = rutf8_as_render(srender);
 
 	if (style) {
-		s.esc_open = "\033[2m";
-		s.esc_close = RUTF8_STYLE_CLOSE;
+		if ((s.esc_open = rutf8_as_style(sescapes))) {
+			s.esc_close = RUTF8_STYLE_CLOSE;
+		}
 	}
 
 	namewidth = 0;
