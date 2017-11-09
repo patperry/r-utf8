@@ -7,8 +7,8 @@
 \usage{
 utf8_print(x, chars = NULL, quote = TRUE, na.print = NULL,
            print.gap = NULL, right = FALSE, max = NULL,
-           names = NULL, rownames = NULL, display = TRUE,
-           style = TRUE, ...)
+           names = NULL, rownames = NULL, escapes = NULL,
+           display = TRUE, style = TRUE, ...)
 }
 \arguments{
     \item{x}{character object.}
@@ -45,6 +45,9 @@ utf8_print(x, chars = NULL, quote = TRUE, na.print = NULL,
 
     \item{rownames}{a character string specifying the display style for
         the row names, as an ANSI SGR parameter string.}
+
+    \item{escapes}{a character string specifying the display style for
+        the backslash escapes, as an ANSI SGR parameter string.}
 
     \item{display}{logical scalar indicating whether to optimize the
         encoding for display, not byte-for-byte data transmission.}
