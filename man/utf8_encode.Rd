@@ -6,8 +6,8 @@
     quotes or spaces, adjusting the width for display.
 }
 \usage{
-utf8_encode(x, width = 0L, quote = FALSE, justify = "left", display = FALSE,
-            style = NULL)
+utf8_encode(x, width = 0L, quote = FALSE, justify = "left", escapes = NULL,
+            display = FALSE)
 }
 \arguments{
     \item{x}{character object.}
@@ -21,12 +21,12 @@ utf8_encode(x, width = 0L, quote = FALSE, justify = "left", display = FALSE,
     \item{justify}{justification; one of \code{"left"}, \code{"right"},
         \code{"centre"}, or \code{"none"}. Can be abbreviated.}
 
-    \item{display}{logical scalar indicating whether to optimize the
-        encoding for display, not byte-for-byte data transmission.}
-
-    \item{style}{a character string specifying the display style for
+    \item{escapes}{a character string specifying the display style for
         the backslash escapes, as an ANSI SGR parameter string,
         or NULL for no styling.}
+
+    \item{display}{logical scalar indicating whether to optimize the
+        encoding for display, not byte-for-byte data transmission.}
 }
 \details{
     \code{utf8_encode} encodes a character object for printing on a UTF-8
@@ -53,5 +53,5 @@ Encoding(x) <- c("UTF-8", "UTF-8", "bytes")
 utf8_encode(x)
 
 # add style to the escapes
-cat(utf8_encode("hello\nstyled\\world", style = "1"), "\n")
+cat(utf8_encode("hello\nstyled\'world", escapes = "1"), "\n")
 }

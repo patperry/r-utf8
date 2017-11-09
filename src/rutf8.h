@@ -191,7 +191,7 @@ SEXP rutf8_render_table(SEXP x, SEXP width, SEXP quote, SEXP na_print,
 /* utf8 */
 SEXP rutf8_as_utf8(SEXP x);
 SEXP rutf8_utf8_encode(SEXP x, SEXP width, SEXP quote, SEXP justify,
-		       SEXP display, SEXP style, SEXP utf8);
+		       SEXP escapes, SEXP display, SEXP utf8);
 SEXP rutf8_utf8_format(SEXP x, SEXP trim, SEXP chars, SEXP justify,
 		       SEXP width, SEXP na_encode, SEXP quote,
 		       SEXP na_print, SEXP utf8);
