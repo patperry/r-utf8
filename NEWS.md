@@ -3,7 +3,16 @@ utf8 1.0.0.9000
 
 ### MINOR IMPROVEMENTS
 
+  * Add ability to style backslash escapes with the `escapes` arguments
+    to `utf8_encode()` and `utf8_print()`. Switch from "faint" styling
+    to no styling by default.
+
   * Fix (spurious) `rchk` warnings.
+
+### DEPRECATED AND DEFUNCT
+
+  * No longer export the C version of `as_utf8()` (the R version is still
+    present).
 
 
 utf8 1.0.0 (2017-11-06)
