@@ -7,7 +7,7 @@
 }
 \usage{
 utf8_encode(x, width = 0L, quote = FALSE, justify = "left", display = FALSE,
-            style = FALSE)
+            style = NULL)
 }
 \arguments{
     \item{x}{character object.}
@@ -24,9 +24,9 @@ utf8_encode(x, width = 0L, quote = FALSE, justify = "left", display = FALSE,
     \item{display}{logical scalar indicating whether to optimize the
         encoding for display, not byte-for-byte data transmission.}
 
-    \item{style}{logical scalar indicating whether to insert ANSI terminal
-        escape codes to display backslash escapes in faint (decreased
-        intensity) style.}
+    \item{style}{a character string specifying the display style for
+        the backslash escapes, as an ANSI SGR parameter string,
+        or NULL for no styling.}
 }
 \details{
     \code{utf8_encode} encodes a character object for printing on a UTF-8
@@ -51,4 +51,7 @@ Encoding(x) <- c("UTF-8", "UTF-8", "bytes")
 
 # encoding
 utf8_encode(x)
+
+# add style to the escapes
+cat(utf8_encode("hello\nstyled\\world", style = "1"), "\n")
 }

@@ -13,7 +13,7 @@
 #  limitations under the License.
 
 utf8_encode <- function(x, width = 0L, quote = FALSE, justify = "left",
-                        display = FALSE, style = FALSE)
+                        display = FALSE, style = NULL)
 {
     if (is.null(x)) {
         return(NULL)
@@ -28,7 +28,7 @@ utf8_encode <- function(x, width = 0L, quote = FALSE, justify = "left",
         quote <- as_option("quote", quote)
         justify <- as_justify("justify", justify)
         display <- as_option("display", display)
-        style <- as_option("style", style)
+        style <- as_style("style", style)
     })
 
     utf8 <- (Sys.getlocale("LC_CTYPE") != "C")

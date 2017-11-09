@@ -26,8 +26,9 @@ SEXP rutf8_utf8_encode(SEXP sx, SEXP swidth, SEXP squote,
 	struct rutf8_string elt;
 	struct utf8lite_render *render;
 	enum rutf8_justify_type justify;
+	const char *style;
 	R_xlen_t i, n;
-	int width, quote, display, style, utf8;
+	int width, quote, display, utf8;
 	int err = 0, nprot = 0, w, quotes, flags;
 
 	if (sx == R_NilValue) {
@@ -48,7 +49,7 @@ SEXP rutf8_utf8_encode(SEXP sx, SEXP swidth, SEXP squote,
 	quote = LOGICAL(squote)[0] == TRUE;
 	justify = rutf8_as_justify(sjustify);
 	display = LOGICAL(sdisplay)[0] == TRUE;
-	style = LOGICAL(sstyle)[0] == TRUE;
+	style = rutf8_as_style(sstyle);
 	utf8 = LOGICAL(sutf8)[0] == TRUE;
 
 	flags = (UTF8LITE_ESCAPE_CONTROL | UTF8LITE_ENCODE_C);
@@ -101,7 +102,8 @@ SEXP rutf8_utf8_encode(SEXP sx, SEXP swidth, SEXP squote,
         PROTECT(srender = rutf8_alloc_render(flags)); nprot++;
 	render = rutf8_as_render(srender);
 	if (style) {
-		TRY(utf8lite_render_set_style(render, "\033[2m", "\033[0m"));
+		TRY(utf8lite_render_set_style(render, style,
+					      RUTF8_STYLE_CLOSE));
 	}
 
 	PROTECT(ans = duplicate(sx)); nprot++;

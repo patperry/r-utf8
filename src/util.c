@@ -37,6 +37,32 @@ int rutf8_as_justify(SEXP justify)
 }
 
 
+const char *rutf8_as_style(SEXP style)
+{
+	SEXP elt;
+	char *ans;
+	int n;
+
+	if (style == R_NilValue) {
+		return NULL;
+	}
+
+	PROTECT(elt = STRING_ELT(style, 0));
+
+	n = LENGTH(elt);
+	ans = R_alloc(2 + n + 2, 1);
+
+	ans[0] = '\033';
+	ans[1] = '[';
+	memcpy(ans + 2, CHAR(elt), n);
+	ans[2 + n] = 'm';
+	ans[3 + n] = '\0';
+
+	UNPROTECT(1);
+	return ans;
+}
+
+
 int rutf8_encodes_utf8(cetype_t ce)
 {
 	switch (ce) {
