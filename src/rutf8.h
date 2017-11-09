@@ -23,6 +23,7 @@
 #include "utf8lite/src/utf8lite.h"
 
 #define RUTF8_ELLIPSIS "\xE2\x80\xA6" /* U+2026 */
+#define RUTF8_STYLE_CLOSE "\033[0m"
 
 #define CHECK_EVERY 1000
 #define CHECK_INTERRUPT(i) \
@@ -200,6 +201,7 @@ SEXP rutf8_utf8_width(SEXP x, SEXP encode, SEXP quote, SEXP utf8);
 
 /* utility functions */
 int rutf8_as_justify(SEXP justify);
+const char *rutf8_as_style(SEXP style);
 int rutf8_encodes_utf8(cetype_t ce);
 const char *rutf8_translate_utf8(SEXP x);
 

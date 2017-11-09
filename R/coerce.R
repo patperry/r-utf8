@@ -147,5 +147,8 @@ as_style <- function(name, value) {
   if (!grepl("^[0-9;]*$", value)) {
     stop(sprintf("'%s' must be a valid ANSI SGR parameter string", name))
   }
+  if (nchar(value) >= 128) {
+    stop(sprintf("'%s' must have length below 128 characters", name))
+  }
   value
 }
