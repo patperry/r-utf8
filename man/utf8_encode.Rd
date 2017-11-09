@@ -53,5 +53,5 @@ Encoding(x) <- c("UTF-8", "UTF-8", "bytes")
 utf8_encode(x)
 
 # add style to the escapes
-cat(utf8_encode("hello\nstyled\'world", escapes = "1"), "\n")
+cat(utf8_encode("hello\nstyled\\\\world", escapes = "1"), "\n")
 }
