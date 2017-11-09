@@ -13,7 +13,7 @@
 #  limitations under the License.
 
 utf8_encode <- function(x, width = 0L, quote = FALSE, justify = "left",
-                        display = FALSE, style = NULL)
+                        escapes = NULL, display = FALSE)
 {
     if (is.null(x)) {
         return(NULL)
@@ -27,11 +27,11 @@ utf8_encode <- function(x, width = 0L, quote = FALSE, justify = "left",
         width <- as_integer_scalar("width", width)
         quote <- as_option("quote", quote)
         justify <- as_justify("justify", justify)
+        escapes <- as_style("escapes", escapes)
         display <- as_option("display", display)
-        style <- as_style("style", style)
     })
 
     utf8 <- (Sys.getlocale("LC_CTYPE") != "C")
 
-    .Call(rutf8_utf8_encode, x, width, quote, justify, display, style, utf8)
+    .Call(rutf8_utf8_encode, x, width, quote, justify, escapes, display, utf8)
 }
