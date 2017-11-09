@@ -33,7 +33,7 @@ SEXP rutf8_utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify,
 	struct rutf8_string elt, na;
 	R_xlen_t i, n;
 	int chars, chars_i, ellipsis, width, width_max, trim, na_encode,
-	    quote, quote_i, quotes, na_width, utf8, nprot, flags, centre;
+	    quote, quote_i, quotes, na_width, utf8, nprot, flags;
 
 	nprot = 0;
 
@@ -75,7 +75,6 @@ SEXP rutf8_utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify,
 	if (justify == RUTF8_JUSTIFY_NONE) {
 		trim = 1;
 	}
-	centre = (justify == RUTF8_JUSTIFY_CENTRE);
 
 	if (swidth == R_NilValue) {
 		width_max = 0;
