@@ -9,6 +9,11 @@ utf8 1.0.0.9000
 
   * Fix (spurious) `rchk` warnings.
 
+### BUG FIXES
+
+  * Fix bug in `utf8_width()` determining width of non-ASCII strings
+    when `LC_CTYPE=C`.
+
 ### DEPRECATED AND DEFUNCT
 
   * No longer export the C version of `as_utf8()` (the R version is still

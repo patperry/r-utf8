@@ -64,7 +64,7 @@ SEXP rutf8_utf8_width(SEXP sx, SEXP sencode, SEXP squote, SEXP sutf8)
 		
 		if (elt.type == RUTF8_STRING_NONE) {
 			w = NA_INTEGER;
-		} else if (elt.type == RUTF8_STRING_TEXT && !utf8
+		} else if (elt.type == RUTF8_STRING_TEXT && !encode && !utf8
 				&& !utf8lite_text_isascii(&elt.value.text)) {
 			w = NA_INTEGER;
 		} else {

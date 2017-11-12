@@ -54,3 +54,11 @@ test_that("'utf8_width' gives width 1 for quotes", {
     expect_equal(utf8_width("\"", encode = TRUE), 1)
     expect_equal(utf8_width("\"", encode = FALSE), 1)
 })
+
+
+test_that("'utf8_width' gives correct with in C locale", {
+    ctype <- switch_ctype("C")
+    on.exit(Sys.setlocale("LC_CTYPE", ctype))
+    x <- intToUtf8(c(0x1F487, 0x200D, 0x2642, 0xFE0F))
+    expect_equal(utf8_width(x), nchar(utf8_encode(x)))
+})
