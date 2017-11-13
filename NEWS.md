@@ -7,6 +7,8 @@ utf8 1.0.0.9000
     to `utf8_encode()` and `utf8_print()`. Switch from "faint" styling
     to no styling by default.
 
+  * Slightly reword error messages for `as_utf8()`.
+
   * Fix (spurious) `rchk` warnings.
 
 ### BUG FIXES

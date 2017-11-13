@@ -5,7 +5,7 @@ test_that("'as_utf8' errors on latin1 declared to be UTF-8", {
   Encoding(x) <- "UTF-8"
 
   expect_equal(utf8_valid(x), c(TRUE, TRUE, FALSE, TRUE))
-  expect_error(as_utf8(x), "entry 3 is incorrectly marked as \"UTF-8\": invalid leading byte (0xA3) at position 36", fixed = TRUE)
+  expect_error(as_utf8(x), "entry 3 has wrong Encoding; marked as \"UTF-8\" but invalid leading byte (0xA3) at position 36", fixed = TRUE)
 })
 
 
@@ -14,7 +14,7 @@ test_that("utf8_valid errors on invalid UTF-8", {
   Encoding(x) <- "UTF-8"
 
   expect_equal(utf8_valid(x), c(TRUE, TRUE, TRUE, TRUE, FALSE))
-  expect_error(as_utf8(x), "entry 5 is incorrectly marked as \"UTF-8\": invalid leading byte (0xF8) at position 1", fixed = TRUE)
+  expect_error(as_utf8(x), "entry 5 has wrong Encoding; marked as \"UTF-8\" but invalid leading byte (0xF8) at position 1", fixed = TRUE)
 })
 
 
@@ -40,5 +40,5 @@ test_that("utf8_valid errors on invalid UTF8 in bytes encoding", {
   x <- paste0("hello", "\xfc\x8f\xbf\xbf\xbf\xbf") # intToUtf8(0xfffffff)
   Encoding(x) <- "bytes"
   expect_equal(utf8_valid(x), FALSE)
-  expect_error(as_utf8(x), "entry 1 cannot be cast from \"bytes\" to \"UTF-8\": invalid leading byte (0xFC) at position 6", fixed = TRUE)
+  expect_error(as_utf8(x), "entry 1 cannot be converted from \"bytes\" Encoding to \"UTF-8\"; invalid leading byte (0xFC) at position 6", fixed = TRUE)
 })
