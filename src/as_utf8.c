@@ -86,18 +86,18 @@ SEXP rutf8_as_utf8(SEXP sx)
 
 		if (utf8lite_text_assign(&text, str, size, 0, &msg)) {
 			if (ce == CE_BYTES) {
-				Rf_error("argument entry %"PRIu64
+				Rf_error("entry %"PRIu64
 					 " cannot be cast"
 					 " from \"bytes\" to \"UTF-8\": %s",
 					 (uint64_t)i + 1, msg.string);
 			} else if (raw) {
-				Rf_error("argument entry %"PRIu64
+				Rf_error("entry %"PRIu64
 					 " is incorrectly marked as \"UTF-8\""
 					 ": %s",
 					 (uint64_t)i + 1,
 					 msg.string);
 			} else {
-				Rf_error("argument entry %"PRIu64
+				Rf_error("entry %"PRIu64
 					 " cannot be converted"
 					 " from \"%s\" encoding to \"UTF-8\";"
 					 " calling 'enc2utf8'"
