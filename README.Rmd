@@ -7,6 +7,7 @@ knitr::opts_chunk$set(
     fig.path = "README-"
 )
 options(width = 95)
+library(utf8)
 ```
 
 utf8
@@ -108,12 +109,9 @@ Citation
 
 Cite *utf8* with the following BibTeX entry:
 
-    @Manual{,
-        title = {utf8: UTF-8 Text Processing},
-        author = {Patrick O. Perry},
-        year = {2017},
-        note = {R package version 1.0.0},
-    }
+```{r echo = FALSE, comment = NA}
+print(suppressWarnings(citation("utf8")), "Bibtex")
+```
 
 
 Contributing
