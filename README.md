@@ -113,12 +113,16 @@ Citation
 
 Cite *utf8* with the following BibTeX entry:
 
-    @Manual{,
-        title = {utf8: UTF-8 Text Processing},
-        author = {Patrick O. Perry},
-        year = {2017},
-        note = {R package version 1.0.0},
-    }
+
+```
+@Manual{,
+  title = {utf8: Unicode Text Processing},
+  author = {Patrick O. Perry},
+  year = {2017},
+  note = {R package version 1.0.0},
+  url = {https://CRAN.R-project.org/package=utf8},
+}
+```
 
 
 Contributing
