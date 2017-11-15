@@ -1,7 +1,7 @@
 context("utf8_width")
 
 test_that("'utf8_width' computes widths correctly", {
-  ctype <- switch_ctype("Unicode")
+  ctype <- switch_ctype("UTF-8")
   on.exit(Sys.setlocale("LC_CTYPE", ctype))
 
   expect_equal(
@@ -14,7 +14,7 @@ test_that("'utf8_width' computes widths correctly", {
 
 
 test_that("'utf8_width' computes widths for extended unicode correctly", {
-  ctype <- switch_ctype("Unicode")
+  ctype <- switch_ctype("UTF-8")
   on.exit(Sys.setlocale("LC_CTYPE", ctype))
   skip_on_os("windows") # no extended Unicode
 

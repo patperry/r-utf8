@@ -2,7 +2,7 @@ context("utf8_print")
 
 test_that("'utf8_print' can print unicode", {
   skip_on_os("windows")
-  ctype <- switch_ctype("Unicode")
+  ctype <- switch_ctype("UTF-8")
   on.exit(Sys.setlocale("LC_CTYPE", ctype))
 
   x <- c(
@@ -417,7 +417,7 @@ test_that("'utf8_print' handles Unicode correctly", {
   # R can't print all UTF-8 on windows:
   # https://stat.ethz.ch/pipermail/r-devel/2017-June/074556.html
   skip_on_os("windows")
-  ctype <- switch_ctype("Unicode")
+  ctype <- switch_ctype("UTF-8")
   on.exit(Sys.setlocale("LC_CTYPE", ctype))
 
   x <- chartype_matrix()
