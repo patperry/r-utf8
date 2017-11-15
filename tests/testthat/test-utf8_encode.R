@@ -19,7 +19,7 @@ test_that("'utf8_encode' preserves attributes", {
     dimnames(x) <- list(c("foo", "bar"), as.character(1:13))
     class(x) <- "my_class"
 
-    ctype <- switch_ctype("Unicode")
+    ctype <- switch_ctype("UTF-8")
     on.exit(Sys.setlocale("LC_CTYPE", ctype))
 
     expect_equal(utf8_encode(x), enc2utf8(x))
@@ -30,7 +30,7 @@ test_that("'utf8_encode' can encode basic Unicode", {
     x <- "\u200b"
     Encoding(x) <- "UTF-8"
 
-    ctype <- switch_ctype("Unicode")
+    ctype <- switch_ctype("UTF-8")
     on.exit(Sys.setlocale("LC_CTYPE", ctype))
 
     expect_equal(utf8_encode(x), x)
@@ -43,7 +43,7 @@ test_that("'utf8_encode' can encode extended Unicode", {
     x <- intToUtf8(0x0001f60d)
     Encoding(x) <- "UTF-8"
 
-    ctype <- switch_ctype("Unicode")
+    ctype <- switch_ctype("UTF-8")
     on.exit(Sys.setlocale("LC_CTYPE", ctype))
 
     expect_equal(utf8_encode(x), x)
@@ -77,7 +77,7 @@ test_that("'utf8_encode' can handle latin-1", {
 
     expect_equal(utf8_encode(x), "her \\u00a320")
 
-    switch_ctype("Unicode")
+    switch_ctype("UTF-8")
     expect_equal(utf8_encode(x), "her \u00a320")
 })
 
@@ -86,7 +86,7 @@ test_that("'utf8_encode' can handle bytes", {
     x <- c("fa\u00E7ile", "fa\xE7ile", "fa\xC3\xA7ile")
     Encoding(x) <- c("UTF-8", "UTF-8", "bytes")
 
-    ctype <- switch_ctype("Unicode")
+    ctype <- switch_ctype("UTF-8")
     on.exit(Sys.setlocale("LC_CTYPE", ctype))
 
     y <- c("fa\u00e7ile", "fa\\xe7ile", "fa\\xc3\\xa7ile")
@@ -97,7 +97,7 @@ test_that("'utf8_encode' can handle bytes", {
 
 
 test_that("'utf8_encode escapes controls in UTF-8 text", {
-    ctype <- switch_ctype("Unicode")
+    ctype <- switch_ctype("UTF-8")
     on.exit(Sys.setlocale("LC_CTYPE", ctype))
 
     x <- '\n\u2026'; Encoding(x) <- "UTF-8"
