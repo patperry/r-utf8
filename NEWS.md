@@ -1,6 +1,11 @@
 utf8 1.0.0.9000
 ===============
 
+### NEW FEATURES
+
+  * Added `output_ansi()` and `output_utf8()` functions to test for
+    output capabilities.
+
 ### MINOR IMPROVEMENTS
 
   * Add ability to style backslash escapes with the `escapes` arguments
