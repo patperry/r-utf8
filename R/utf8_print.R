@@ -304,15 +304,12 @@ print_table <- function(x, width, quote, na.print, print.gap, right, max,
         colnames(x)[is.na(colnames(x))] <- na.name.print
     }
 
-    if (!isatty(stdout())) {
-        if (is.na(as.numeric(Sys.getenv("RSTUDIO_CONSOLE_COLOR")))
-            || sink.number() != 0) {
-            style <- FALSE
-        }
+    if (!output_ansi()) {
+        style <- FALSE
     }
 
     linewidth <- getOption("width")
-    utf8 <- (Sys.getlocale("LC_CTYPE") != "C")
+    utf8 <- output_utf8()
     str <- .Call(rutf8_render_table, x, width, quote, na.print, print.gap,
                  right, max, names, rownames, escapes, display, style,
                  linewidth, utf8)
