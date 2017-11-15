@@ -5,7 +5,7 @@
 Compute the display widths of the elements of a character object.
 }
 \usage{
-utf8_width(x, encode = TRUE, quote = FALSE)
+utf8_width(x, encode = TRUE, quote = FALSE, utf8 = NULL)
 }
 \arguments{
     \item{x}{character object.}
@@ -15,6 +15,11 @@ utf8_width(x, encode = TRUE, quote = FALSE)
 
     \item{quote}{whether to quote the object before measuring its
         width.}
+
+    \item{utf8}{logical scalar indicating whether to determine widths
+        assuming a UTF-8 capable display (ASCII-only otherwise), or
+        \code{NULL} to format for output capabilities as determined
+        by \code{output_utf8()}.}
 }
 \details{
     \code{utf8_width} returns the printed widths of the elements of

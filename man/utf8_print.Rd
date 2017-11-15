@@ -8,7 +8,7 @@
 utf8_print(x, chars = NULL, quote = TRUE, na.print = NULL,
            print.gap = NULL, right = FALSE, max = NULL,
            names = NULL, rownames = NULL, escapes = NULL,
-           display = TRUE, style = TRUE, ...)
+           display = TRUE, style = TRUE, utf8 = NULL, ...)
 }
 \arguments{
     \item{x}{character object.}
@@ -53,9 +53,13 @@ utf8_print(x, chars = NULL, quote = TRUE, na.print = NULL,
         encoding for display, not byte-for-byte data transmission.}
 
     \item{style}{logical scalar indicating whether to apply ANSI
-        terminal escape codes to style the output.  Ignore when
-        \code{isatty(stdout())} is \code{FALSE}, unless printing
-        without output redirection from RStudio v1.1 or later.}
+        terminal escape codes to style the output.  Ignored when
+        \code{output_ansi()} is \code{FALSE}.}
+
+    \item{utf8}{logical scalar indicating whether to optimize results
+        for a UTF-8 capable display, or \code{NULL} to set as the
+        result of \code{output_utf8()}. Ignored when \code{output_utf8()}
+        is \code{FALSE}.}
 
     \item{...}{further arguments passed from other methods. Ignored.}
 }

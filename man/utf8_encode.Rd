@@ -7,7 +7,7 @@
 }
 \usage{
 utf8_encode(x, width = 0L, quote = FALSE, justify = "left", escapes = NULL,
-            display = FALSE)
+            display = FALSE, utf8 = NULL)
 }
 \arguments{
     \item{x}{character object.}
@@ -27,6 +27,11 @@ utf8_encode(x, width = 0L, quote = FALSE, justify = "left", escapes = NULL,
 
     \item{display}{logical scalar indicating whether to optimize the
         encoding for display, not byte-for-byte data transmission.}
+
+    \item{utf8}{logical scalar indicating whether to encode for a UTF-8
+        capable display (ASCII-only otherwise), or \code{NULL} to
+        encode for output capabilities as determined by
+        \code{output_utf8()}.}
 }
 \details{
     \code{utf8_encode} encodes a character object for printing on a UTF-8
