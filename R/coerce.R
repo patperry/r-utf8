@@ -152,3 +152,10 @@ as_style <- function(name, value) {
   }
   value
 }
+
+as_output_utf8 <- function(name, value) {
+  if (is.null(value)) {
+    return(output_utf8())
+  }
+  as_option(name, value)
+}

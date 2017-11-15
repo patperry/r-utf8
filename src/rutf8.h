@@ -186,7 +186,7 @@ int rutf8_is_render(SEXP x);
 SEXP rutf8_render_table(SEXP x, SEXP width, SEXP quote, SEXP na_print,
 			SEXP print_gap, SEXP right, SEXP max, SEXP names,
 			SEXP rownames, SEXP escapes, SEXP display, SEXP style,
-			SEXP linewidth, SEXP utf8);
+			SEXP utf8, SEXP linewidth);
 
 /* utf8 */
 SEXP rutf8_as_utf8(SEXP x);

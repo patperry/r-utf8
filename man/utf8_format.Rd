@@ -7,7 +7,7 @@ Format a character object for UTF-8 printing.
 \usage{
 utf8_format(x, trim = FALSE, chars = NULL, justify = "left",
             width = NULL, na.encode = TRUE, quote = FALSE,
-            na.print = NULL, print.gap = NULL, ...)
+            na.print = NULL, print.gap = NULL, utf8 = NULL, ...)
 }
 \arguments{
 \item{x}{character object.}
@@ -43,6 +43,10 @@ utf8_format(x, trim = FALSE, chars = NULL, justify = "left",
 \item{print.gap}{non-negative integer (or \code{NULL}) giving the
     number of spaces in gaps between columns; set to \code{NULL}
     or \code{1} for a single space.}
+
+\item{utf8}{logical scalar indicating whether to format for a UTF-8
+    capable display (ASCII-only otherwise), or \code{NULL} to
+    format for output capabilities as determined by \code{output_utf8()}.}
 
 \item{...}{further arguments passed from other methods. Ignored.}
 }

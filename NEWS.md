@@ -8,6 +8,10 @@ utf8 1.0.0.9000
 
 ### MINOR IMPROVEMENTS
 
+  * Add `utf8` argument to `utf8_encode()`, `utf8_format()`, `utf8_print()`,
+    and `utf8_width()` for precise control over assumed output capabilities;
+    defaults to the result of `output_utf8()`.
+
   * Add ability to style backslash escapes with the `escapes` arguments
     to `utf8_encode()` and `utf8_print()`. Switch from "faint" styling
     to no styling by default.

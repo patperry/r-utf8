@@ -28,12 +28,12 @@ utf8_valid <- function(x) {
 }
 
 # gets the width; NA for invalid or nonprintable sequences
-utf8_width <- function(x, encode = TRUE, quote = FALSE) {
+utf8_width <- function(x, encode = TRUE, quote = FALSE, utf8 = NULL) {
   with_rethrow({
     encode <- as_option("encode", encode)
     quote <- as_option("quote", quote)
+    utf8 <- as_output_utf8("utf8", utf8)
   })
-  utf8 <- output_utf8()
   .Call(rutf8_utf8_width, x, encode, quote, utf8)
 }
 

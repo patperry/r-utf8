@@ -249,8 +249,8 @@ exit:
 SEXP rutf8_render_table(SEXP sx, SEXP swidth, SEXP squote, SEXP sna_print,
 			SEXP sprint_gap, SEXP sright, SEXP smax,
 			SEXP snames, SEXP srownames, SEXP sescapes,
-			SEXP sdisplay, SEXP sstyle, SEXP slinewidth,
-			SEXP sutf8)
+			SEXP sdisplay, SEXP sstyle, SEXP sutf8,
+			SEXP slinewidth)
 {
 	SEXP ans, na_print, str, srender, elt, dim_names, row_names, col_names;
 	struct utf8lite_render *render;
@@ -278,8 +278,8 @@ SEXP rutf8_render_table(SEXP sx, SEXP swidth, SEXP squote, SEXP sna_print,
 	max = INTEGER(smax)[0];
 	display = LOGICAL(sdisplay)[0] == TRUE;
 	style = LOGICAL(sstyle)[0] == TRUE;
-	linewidth = INTEGER(slinewidth)[0];
 	utf8 = LOGICAL(sutf8)[0] == TRUE;
+	linewidth = INTEGER(slinewidth)[0];
 
 	s.flags.entry = (UTF8LITE_ESCAPE_CONTROL | UTF8LITE_ENCODE_C);
 	if (quote) {
