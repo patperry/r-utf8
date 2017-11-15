@@ -34,8 +34,9 @@ utf8_encode(x, width = 0L, quote = FALSE, justify = "left", escapes = NULL,
     characters. When \code{display = TRUE}, the function optimizes the
     encoding for display by removing default ignorable characters (soft
     hyphens, zero-width spaces, etc.) and placing zero-width spaces after
-    wide emoji. When \code{LC_CTYPE = "C"}, the function escapes all
-    non-ASCII characters and gives the same results on all platforms.
+    wide emoji. When \code{output_utf8()} is \code{FALSE} the function
+    escapes all non-ASCII characters and gives the same results on all
+    platforms.
 }
 \value{
     A character object with the same attributes as \code{x} but with
