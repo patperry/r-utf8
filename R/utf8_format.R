@@ -34,7 +34,7 @@ utf8_format <- function(x, trim = FALSE, chars = NULL, justify = "left",
     print.gap <- as_print_gap("print_gap", print.gap)
   })
 
-  utf8 <- Sys.getlocale("LC_CTYPE") != "C"
+  utf8 <- output_utf8()
 
   if (is.null(chars) && length(x) > 0) {
     linewidth <- getOption("width")

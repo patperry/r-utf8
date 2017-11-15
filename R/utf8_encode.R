@@ -30,7 +30,7 @@ utf8_encode <- function(x, width = 0L, quote = FALSE, justify = "left",
     display <- as_option("display", display)
   })
 
-  utf8 <- (Sys.getlocale("LC_CTYPE") != "C")
+  utf8 <- output_utf8()
 
   .Call(rutf8_utf8_encode, x, width, quote, justify, escapes, display, utf8)
 }
