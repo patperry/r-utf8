@@ -63,9 +63,9 @@ utf8_print(x, chars = NULL, quote = TRUE, na.print = NULL,
     \code{utf8_print} prints a character object after formatting it with
     \code{utf8_format}.
 
-    For ANSI terminal output (non-Windows only), you can style the row and
-    column names with the \code{rownames} and \code{names} parameters,
-    specifying an ANSI SGR parameter string; see
+    For ANSI terminal output (when \code{output_ansi()} is \code{TRUE}),
+    you can style the row and column names with the \code{rownames} and
+    \code{names} parameters, specifying an ANSI SGR parameter string; see
     \url{https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_(Select_Graphic_Rendition)_parameters}.
 }
 \value{

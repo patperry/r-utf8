@@ -18,13 +18,14 @@ utf8_width(x, encode = TRUE, quote = FALSE)
 }
 \details{
     \code{utf8_width} returns the printed widths of the elements of
-    a character object on a UTF-8 device or, when \code{LC_CTYPE = "C"},
-    on an ASCII device, when printed with \code{utf8_print}. If the
-    string is not printable on the device, for example if it contains
-    a control code like \code{"\n"}, then the result is \code{NA}. If
-    \code{encode = TRUE}, the default, then the function returns the
-    widths of the encoded elements (via \code{utf8_encode}); otherwise,
-    the function returns the widths of the original elements.
+    a character object on a UTF-8 device (or on an ASCII device
+    when \code{output_utf8()} is \code{FALSE}), when printed with
+    \code{utf8_print}. If the string is not printable on the device,
+    for example if it contains a control code like \code{"\n"}, then
+    the result is \code{NA}. If \code{encode = TRUE}, the default,
+    then the function returns the widths of the encoded elements
+    via \code{utf8_encode}); otherwise, the function returns the
+    widths of the original elements.
 }
 \value{
     An integer object,  with the same \code{names}, \code{dim}, and
