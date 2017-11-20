@@ -57,7 +57,7 @@ function alerts you if the input text has the wrong declared encoding:
 x <- c("fa\u00E7ile", "fa\xE7ile", "fa\xC3\xA7ile")
 Encoding(x) <- c("UTF-8", "UTF-8", "bytes")
 as_utf8(x) # fails
-#> Error in as_utf8(x): argument entry 2 is incorrectly marked as "UTF-8": leading byte 0xE7 followed by invalid continuation byte (0x69) at position 4
+#> Error in as_utf8(x): entry 2 has wrong Encoding; marked as "UTF-8" but leading byte 0xE7 followed by invalid continuation byte (0x69) at position 4
 
 # mark the correct encoding
 Encoding(x[2]) <- "latin1"
@@ -119,8 +119,8 @@ Cite *utf8* with the following BibTeX entry:
   title = {utf8: Unicode Text Processing},
   author = {Patrick O. Perry},
   year = {2017},
-  note = {R package version 1.0.0},
-  url = {https://CRAN.R-project.org/package=utf8},
+  note = {R package version 1.1.0},
+  url = {https://github.com/patperry/r-utf8},
 }
 ```
 
