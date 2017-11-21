@@ -46,6 +46,7 @@ static const char *encoding_name(cetype_t ce)
 SEXP rutf8_as_utf8(SEXP sx)
 {
 	SEXP ans, sstr;
+	PROTECT_INDEX ipx;
 	struct utf8lite_message msg;
 	struct utf8lite_text text;
 	const uint8_t *str;
@@ -61,7 +62,8 @@ SEXP rutf8_as_utf8(SEXP sx)
 		error("argument is not a character object");
 	}
 
-	PROTECT(ans = sx); nprot++; // rchk warning otherwise
+	// reserve a protection slot for ans in case we need to duplicate
+	PROTECT_WITH_INDEX(ans = sx, &ipx); nprot++;
 
 	n = XLENGTH(sx);
 	for (i = 0; i < n; i++) {
@@ -110,7 +112,7 @@ SEXP rutf8_as_utf8(SEXP sx)
 
 		if (!raw || ce == CE_BYTES || ce == CE_NATIVE) {
 			if (!duped) {
-				PROTECT(ans = duplicate(ans)); nprot++;
+				REPROTECT(ans = duplicate(ans), ipx);
 				duped = 1;
 			}
 			SET_STRING_ELT(ans, i,

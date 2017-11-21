@@ -1,7 +1,9 @@
 utf8 1.1.0.9000
 ===============
 
-(no changes)
+### BUG FIXES
+
+  * Fix PROTECT bug in `as_utf8()`.
 
 
 utf8 1.1.0 (2017-11-20)
