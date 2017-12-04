@@ -1,7 +1,9 @@
 utf8 1.1.1.9000
 ===============
 
-(no changes)
+### BUG FIXES
+
+  * Fix bug in `utf8_format()` with non-`NULL` `width` argument.
 
 
 utf8 1.1.1 (2017-11-28)
