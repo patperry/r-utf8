@@ -314,3 +314,10 @@ test_that("'utf8_format' works on bytes", {
     expect_equal(l, x)
     expect_equal(r, x)
 })
+
+
+test_that("'utf8_format' can right justify", {
+    x <- " (3322 rows total)"
+    expect_equal(utf8_format(x, width = 79, justify = "right"),
+                 format(x, width = 79, justify = "right"))
+})

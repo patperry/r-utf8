@@ -134,8 +134,7 @@ SEXP rutf8_utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify,
 			width_max = width;
 		}
 
-		if (width_max >= chars + ellipsis + quotes) {
-			width_max = chars + ellipsis + quotes;
+		if (width >= chars + ellipsis + quotes) {
 			break;
 		}
 
