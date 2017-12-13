@@ -1,5 +1,5 @@
 Package: utf8
-Version: 1.1.1.9000
+Version: 1.1.2
 Title: Unicode Text Processing
 Authors@R: c(
   person(c("Patrick", "O."), "Perry",

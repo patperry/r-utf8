@@ -119,7 +119,7 @@ Cite *utf8* with the following BibTeX entry:
   title = {utf8: Unicode Text Processing},
   author = {Patrick O. Perry},
   year = {2017},
-  note = {R package version 1.1.0},
+  note = {R package version 1.1.2},
   url = {https://github.com/patperry/r-utf8},
 }
 ```
