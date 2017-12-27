@@ -120,7 +120,7 @@ Cite *utf8* with the following BibTeX entry:
   author = {Patrick O. Perry},
   year = {2017},
   note = {R package version 1.1.2},
-  url = {https://github.com/patperry/r-utf8},
+  url = {https://CRAN.R-project.org/package=utf8},
 }
 ```
 

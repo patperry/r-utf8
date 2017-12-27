@@ -25,14 +25,17 @@
 
 SEXP rutf8_utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify,
 		       SEXP swidth, SEXP sna_encode, SEXP squote,
-		       SEXP sna_print, SEXP sutf8)
+		       SEXP sna_print, SEXP sellipsis, SEXP swellipsis,
+		       SEXP sutf8)
 {
 	SEXP ans, selt, srender, na_print, ans_i = NA_STRING;
 	struct utf8lite_render *render;
 	enum rutf8_justify_type justify;
 	struct rutf8_string elt, na;
+	const char *ellipsis;
+	size_t nellipsis;
 	R_xlen_t i, n;
-	int chars, chars_i, ellipsis, width, width_max, trim, na_encode,
+	int chars, chars_i, wellipsis, width, width_max, trim, na_encode,
 	    quote, quote_i, quotes, na_width, utf8, nprot, flags;
 
 	nprot = 0;
@@ -54,9 +57,15 @@ SEXP rutf8_utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify,
 	quote = (LOGICAL(squote)[0] == TRUE);
 	quotes = quote ? 2 : 0;
 
+	PROTECT(sellipsis = STRING_ELT(sellipsis, 0)); nprot++;
+	ellipsis = CHAR(sellipsis);
+	nellipsis = strlen(ellipsis);
+
+	PROTECT(swellipsis = coerceVector(swellipsis, INTSXP)); nprot++;
+	wellipsis = INTEGER(swellipsis)[0];
+
 	PROTECT(sutf8 = coerceVector(sutf8, LGLSXP)); nprot++;
 	utf8 = (LOGICAL(sutf8)[0] == TRUE);
-	ellipsis = utf8 ? 1 : 3;
 
 	if (schars == R_NilValue) {
 		chars = NA_INTEGER;
@@ -65,8 +74,8 @@ SEXP rutf8_utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify,
 		chars = INTEGER(schars)[0];
 	}
 
-	if (chars == NA_INTEGER || chars > INT_MAX - ellipsis - quotes) {
-		chars = INT_MAX - ellipsis - quotes;
+	if (chars == NA_INTEGER || chars > INT_MAX - wellipsis - quotes) {
+		chars = INT_MAX - wellipsis - quotes;
 	} else if (chars < 0) {
 		chars = 0;
 	}
@@ -122,11 +131,11 @@ SEXP rutf8_utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify,
 			width = na_encode ? na_width : 0;
 		} else if (justify == RUTF8_JUSTIFY_RIGHT) {
 			width = (rutf8_string_rwidth(&elt, flags, chars,
-						     ellipsis)
+						     wellipsis)
 				 + quotes);
 		} else {
 			width = (rutf8_string_lwidth(&elt, flags, chars,
-						     ellipsis)
+						     wellipsis)
 				 + quotes);
 		}
 
@@ -134,7 +143,7 @@ SEXP rutf8_utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify,
 			width_max = width;
 		}
 
-		if (width >= chars + ellipsis + quotes) {
+		if (width >= chars + wellipsis + quotes) {
 			break;
 		}
 
@@ -163,7 +172,8 @@ SEXP rutf8_utf8_format(SEXP sx, SEXP strim, SEXP schars, SEXP sjustify,
 		}
 
 		ans_i = rutf8_string_format(render, &elt, trim, chars_i,
-					    justify, quote_i, utf8, flags,
+					    justify, quote_i, ellipsis,
+					    nellipsis, wellipsis, flags,
 					    width_max);
 		UNPROTECT(1); nprot--;
 		SET_STRING_ELT(ans, i, ans_i);

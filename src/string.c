@@ -90,8 +90,7 @@ int rutf8_string_lwidth(const struct rutf8_string *str, int flags,
 		return rutf8_text_lwidth(&str->value.text, flags, limit,
 					 ellipsis);
 	case RUTF8_STRING_BYTES:
-		return rutf8_bytes_lwidth(&str->value.bytes, flags, limit,
-					  ellipsis);
+		return rutf8_bytes_lwidth(&str->value.bytes, flags, limit);
 	default:
 		return -1;
 	}
@@ -106,8 +105,7 @@ int rutf8_string_rwidth(const struct rutf8_string *str, int flags,
 		return rutf8_text_rwidth(&str->value.text, flags,
 					 limit, ellipsis);
 	case RUTF8_STRING_BYTES:
-		return rutf8_bytes_rwidth(&str->value.bytes, flags,
-					  limit, ellipsis);
+		return rutf8_bytes_rwidth(&str->value.bytes, flags, limit);
 	default:
 		return -1;
 	}
@@ -134,18 +132,19 @@ void rutf8_string_render(struct utf8lite_render *r,
 SEXP rutf8_string_format(struct utf8lite_render *r,
 			 const struct rutf8_string *str,
 			 int trim, int chars, enum rutf8_justify_type justify,
-			 int quote, int utf8, int flags, int width_max)
+			 int quote, const char *ellipsis, size_t nellipsis,
+			 int wellipsis, int flags, int width_max)
 {
 	switch (str->type) {
 	case RUTF8_STRING_TEXT:
 		return rutf8_text_format(r, &str->value.text, trim, chars,
-					 justify, quote, utf8, flags,
-					 width_max);
+					 justify, quote, ellipsis, nellipsis,
+					 wellipsis, flags, width_max);
 
 	case RUTF8_STRING_BYTES:
+		// always use ASCII for byte formatting; UTF-8 isn't allowed
 		return rutf8_bytes_format(r, &str->value.bytes, trim, chars,
-					  justify, quote, utf8, flags,
-					  width_max);
+					  justify, quote, flags, width_max);
 	default:
 		return NA_STRING;
 	}

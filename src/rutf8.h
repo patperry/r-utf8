@@ -22,7 +22,6 @@
 #include <Rdefines.h>
 #include "utf8lite/src/utf8lite.h"
 
-#define RUTF8_ELLIPSIS "\xE2\x80\xA6" /* U+2026 */
 #define RUTF8_STYLE_CLOSE "\033[0m"
 #define RUTF8_STYLE_CLOSE_SIZE 4
 
@@ -141,7 +140,8 @@ void rutf8_string_render(struct utf8lite_render *r,
 SEXP rutf8_string_format(struct utf8lite_render *r,
 			 const struct rutf8_string *str,
 			 int trim, int chars, enum rutf8_justify_type justify,
-			 int quote, int utf8, int flags, int width_max);
+			 int quote, const char *ellipsis, size_t nellipsis,
+			 int wellipsis, int flags, int width_max);
 
 int rutf8_text_width(const struct utf8lite_text *text, int flags);
 int rutf8_text_lwidth(const struct utf8lite_text *text, int flags,
@@ -154,13 +154,12 @@ void rutf8_text_render(struct utf8lite_render *r,
 SEXP rutf8_text_format(struct utf8lite_render *r,
 		       const struct utf8lite_text *text,
 		       int trim, int chars, enum rutf8_justify_type justify,
-		       int quote, int utf8, int flags, int width_max);
+		       int quote, const char *ellipsis, size_t nellipsis,
+		       int wellipsis, int flags, int width_max);
 
 int rutf8_bytes_width(const struct rutf8_bytes *bytes, int flags);
-int rutf8_bytes_lwidth(const struct rutf8_bytes *bytes, int flags,
-		       int limit, int ellipsis);
-int rutf8_bytes_rwidth(const struct rutf8_bytes *bytes, int flags,
-		       int limit, int ellipsis);
+int rutf8_bytes_lwidth(const struct rutf8_bytes *bytes, int flags, int limit);
+int rutf8_bytes_rwidth(const struct rutf8_bytes *bytes, int flags, int limit);
 void rutf8_bytes_render(struct utf8lite_render *r,
 			const struct rutf8_bytes *bytes,
 			int width_min, int quote,
@@ -168,7 +167,7 @@ void rutf8_bytes_render(struct utf8lite_render *r,
 SEXP rutf8_bytes_format(struct utf8lite_render *r,
 			const struct rutf8_bytes *bytes,
 			int trim, int chars, enum rutf8_justify_type justify,
-			int quote, int utf8, int flags, int width_max);
+			int quote, int flags, int width_max);
 
 /* context */
 SEXP rutf8_alloc_context(size_t size, void (*destroy_func)(void *));
@@ -194,7 +193,8 @@ SEXP rutf8_utf8_encode(SEXP x, SEXP width, SEXP quote, SEXP justify,
 		       SEXP escapes, SEXP display, SEXP utf8);
 SEXP rutf8_utf8_format(SEXP x, SEXP trim, SEXP chars, SEXP justify,
 		       SEXP width, SEXP na_encode, SEXP quote,
-		       SEXP na_print, SEXP utf8);
+		       SEXP na_print, SEXP ellipsis, SEXP wellipsis,
+		       SEXP utf8);
 SEXP rutf8_utf8_normalize(SEXP x, SEXP map_case, SEXP map_compat,
 			  SEXP map_quote, SEXP remove_ignorable);
 SEXP rutf8_utf8_valid(SEXP x);

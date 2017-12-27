@@ -321,3 +321,16 @@ test_that("'utf8_format' can right justify", {
     expect_equal(utf8_format(x, width = 79, justify = "right"),
                  format(x, width = 79, justify = "right"))
 })
+
+
+test_that("'utf8_format' use ... ellipsis for bytes", {
+    ctype <- switch_ctype("UTF-8")
+    on.exit(Sys.setlocale("LC_CTYPE", ctype))
+
+    x <- "fa\xC3\xA7ile"
+    Encoding(x) <- "bytes"
+    y <- "fa\xC3..."
+    Encoding(y) <- "bytes"
+
+    expect_equal(utf8_format(x, chars = 6), y)
+})
