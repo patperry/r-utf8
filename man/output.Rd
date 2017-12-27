@@ -29,11 +29,19 @@ we proceed as follows:
   \item otherwise, if \code{l10n_info()$`UTF-8`} is \code{TRUE},
       then the result is \code{TRUE};
 
-  \item if running on Windows in RGui or RStudio, then the result
-    is \code{TRUE} unless \code{stdout()} has been redirected;
+  \item if running on Windows, then the result is \code{TRUE};
     
   \item in all other cases the result is \code{FALSE}.
 }
+Strictly speaking, UTF-8 support is always available on Windows GUI,
+but only a subset of UTF-8 is available (defined by the current character
+locale) when the output is redirected by \code{knitr} or another process.
+Unfortunately, it is impossible to set the character locale to UTF-8 on
+Windows. Further, the \code{utf8} package only handles two character
+locales: C and UTF-8.  To get around this, on Windows, we treat all
+non-C locales on that platform as UTF-8. This liberal approach means that
+characters in the user's locale never get escaped; others will get output
+as \code{<U+XXXX>}, with incorrect values for \code{utf8_width}.
 }
 \value{
 A logical scalar indicating whether the output connection supports the
