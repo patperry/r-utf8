@@ -1,7 +1,13 @@
 utf8 1.1.2.9000
 ===============
 
-(no changes)
+### MINOR IMPROVEMENTS
+
+  * Make `output_utf8()` always return `TRUE` on Windows, so that characters
+    in the user's native locale don't get escaped by `utf8_encode()`. The
+    downside of this change is that on Windows, `utf8_width()` reports the
+    wrong values for characters outside the user's locale when `stdout()`
+    is redirected by `knitr` or another process.
 
 
 utf8 1.1.2 (2017-12-14)

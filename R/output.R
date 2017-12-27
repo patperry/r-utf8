@@ -43,11 +43,13 @@ output_utf8 <- function()
         return(TRUE)
     }
 
-    # Windows, RGui or RStudio?
-    if (.Platform$OS.type == "windows"
-            && .Platform$GUI %in% c("Rgui", "RStudio")) {
-        # and output is stdout?
-        return(stdout() == 1)
+    # Windows?
+    if (.Platform$OS.type == "windows") {
+        # This isn't really the case, but there's no way to set the
+        # locale to UTF-8 on Windows. In RGui and RStudio, UTF-8 is
+        # always supported on stdout(); output through connections
+        # gets translated through the native locale.
+        return(TRUE)
     }
 
     FALSE
