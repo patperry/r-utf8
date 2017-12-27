@@ -35,11 +35,11 @@ utf8_format <- function(x, trim = FALSE, chars = NULL, justify = "left",
     utf8 <- as_output_utf8("utf8", utf8)
   })
 
-  if (!utf8 || is.na(iconv("\u2026", "UTF-8", ""))) {
+  ellipsis <- "\u2026"
+  if (is.na(iconv(ellipsis, "UTF-8", ""))) {
     ellipsis <- "..."
     wellipsis <- 3L
   } else {
-    ellipsis <- "\u2026"
     wellipsis <- 1L
   }
 
