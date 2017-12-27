@@ -47,13 +47,12 @@ int rutf8_bytes_width(const struct rutf8_bytes *bytes, int flags)
 }
 
 
-int rutf8_bytes_lwidth(const struct rutf8_bytes *bytes, int flags,
-		       int limit, int ellipsis)
+int rutf8_bytes_lwidth(const struct rutf8_bytes *bytes, int flags, int limit)
 {
 	const uint8_t *ptr = bytes->ptr;
 	const uint8_t *end = ptr + bytes->size;
 	uint8_t byte;
-	int width, w;
+	int width, w, ellipsis = 3;
 
 	width = 0;
 	while (ptr != end) {
@@ -70,13 +69,12 @@ int rutf8_bytes_lwidth(const struct rutf8_bytes *bytes, int flags,
 }
 
 
-int rutf8_bytes_rwidth(const struct rutf8_bytes *bytes, int flags,
-		       int limit, int ellipsis)
+int rutf8_bytes_rwidth(const struct rutf8_bytes *bytes, int flags, int limit)
 {
 	const uint8_t *ptr = bytes->ptr;
 	const uint8_t *end = ptr + bytes->size;
 	uint8_t byte;
-	int width, w;
+	int width, w, ellipsis = 3;
 
 	width = 0;
 	while (ptr != end) {
@@ -209,23 +207,19 @@ void rutf8_bytes_render(struct utf8lite_render *r,
 
 static SEXP rutf8_bytes_lformat(struct utf8lite_render *r,
 				const struct rutf8_bytes *bytes,
-				int trim, int chars, int quote, int utf8,
+				int trim, int chars, int quote,
 				int flags, int width_max, int centre)
 {
 	SEXP ans = R_NilValue;
 	const uint8_t *ptr, *end;
-	const char *ellipsis_str;
 	uint8_t byte;
-	int err = 0, w, trunc, bfill, efill, fullwidth, width, quotes, ellipsis;
+	int err = 0, w, trunc, bfill, efill, fullwidth, width, quotes;
 
 	quotes = quote ? 2 : 0;
-	ellipsis = utf8 ? 1 : 3;
-	ellipsis_str = utf8 ? RUTF8_ELLIPSIS : "...";
 
 	bfill = 0;
 	if (centre && !trim) {
-		fullwidth = (rutf8_bytes_lwidth(bytes, flags, chars, ellipsis)
-			     + quotes);
+		fullwidth = (rutf8_bytes_lwidth(bytes, flags, chars) + quotes);
 		if (fullwidth < width_max) {
 			bfill = (width_max - fullwidth) / 2;
 			TRY(utf8lite_render_chars(r, ' ', bfill));
@@ -242,8 +236,8 @@ static SEXP rutf8_bytes_lformat(struct utf8lite_render *r,
 		w = byte_width(byte, flags);
 
 		if (width > chars - w) {
-			w = ellipsis;
-			TRY(utf8lite_render_string(r, ellipsis_str));
+			w = 3;
+			TRY(utf8lite_render_raw(r, "...", 3));
 			trunc = 1;
 		} else {
 			render_byte(r, byte);
@@ -267,18 +261,15 @@ exit:
 
 static SEXP rutf8_bytes_rformat(struct utf8lite_render *r,
 				const struct rutf8_bytes *bytes,
-				int trim, int chars, int quote, int utf8,
+				int trim, int chars, int quote,
 				int flags, int width_max)
 {
 	SEXP ans = R_NilValue;
 	const uint8_t *ptr, *end;
-	const char *ellipsis_str;
 	uint8_t byte;
-	int err = 0, w, width, quotes, ellipsis, trunc;
+	int err = 0, w, width, quotes, trunc;
 
 	quotes = quote ? 2 : 0;
-	ellipsis = utf8 ? 1 : 3;
-	ellipsis_str = utf8 ? RUTF8_ELLIPSIS : "...";
 
 	end = bytes->ptr + bytes->size;
 	ptr = end;
@@ -290,7 +281,7 @@ static SEXP rutf8_bytes_rformat(struct utf8lite_render *r,
 		w = byte_width(byte, flags);
 
 		if (width > chars - w) {
-			w = ellipsis;
+			w = 3; // ...
 			trunc = 1;
 		}
 
@@ -302,7 +293,7 @@ static SEXP rutf8_bytes_rformat(struct utf8lite_render *r,
 	}
 
 	if (trunc) {
-		TRY(utf8lite_render_string(r, ellipsis_str));
+		TRY(utf8lite_render_raw(r, "...", 3));
 	}
 
 	while (ptr < end) {
@@ -321,17 +312,17 @@ exit:
 SEXP rutf8_bytes_format(struct utf8lite_render *r,
 			const struct rutf8_bytes *bytes,
 			int trim, int chars, enum rutf8_justify_type justify,
-			int quote, int utf8, int flags, int width_max)
+			int quote, int flags, int width_max)
 {
 	int centre;
 
 	if (justify == RUTF8_JUSTIFY_RIGHT) {
 		return rutf8_bytes_rformat(r, bytes, trim, chars, quote,
-					   utf8, flags, width_max);
+					   flags, width_max);
 	} else {
 		centre = (justify == RUTF8_JUSTIFY_CENTRE);
 		return rutf8_bytes_lformat(r, bytes, trim, chars, quote,
-					   utf8, flags, width_max, centre);
+					   flags, width_max, centre);
 	}
 }
 

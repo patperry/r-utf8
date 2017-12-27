@@ -19,9 +19,10 @@ utf8_format(x, trim = FALSE, chars = NULL, justify = "left",
     character units to display.  Wide characters like emoji take
     two character units; combining marks and default ignorables
     take none. Longer strings get truncated and suffixed or prefixed
-    with an ellipsis (\code{"..."} when \code{output_utf8()} is false,
-    \code{"\u2026"} otherwise). Set to \code{NULL} to limit output to
-    the line width as determined by \code{getOption("width")}.}
+    with an ellipsis (\code{"..."} or \code{"\u2026"}, whichever is most
+    appropriate for the current character locale). Set to \code{NULL} to
+    limit output to the line width as determined by
+    \code{getOption("width")}.}
 
 \item{justify}{justification; one of \code{"left"}, \code{"right"},
     \code{"centre"}, or \code{"none"}. Can be abbreviated.}

@@ -194,20 +194,19 @@ void rutf8_text_render(struct utf8lite_render *r,
 static SEXP rutf8_text_lformat(struct utf8lite_render *r,
 			       const struct utf8lite_text *text,
 			       int trim, int chars, int quote,
-			       int utf8, int flags, int width_max, int centre)
+			       const char *ellipsis, size_t nellipsis,
+			       int wellipsis, int flags, int width_max,
+			       int centre)
 {
 	SEXP ans = R_NilValue;
 	struct utf8lite_graphscan scan;
-	const char *ellipsis_str;
-	int err = 0, w, trunc, bfill, efill, fullwidth, width, quotes, ellipsis;
+	int err = 0, w, trunc, bfill, efill, fullwidth, width, quotes;
 
 	quotes = quote ? 2 : 0;
-	ellipsis = utf8 ? 1 : 3;
-	ellipsis_str = utf8 ? RUTF8_ELLIPSIS : "...";
 
 	bfill = 0;
 	if (centre && !trim) {
-		fullwidth = (rutf8_text_lwidth(text, flags, chars, ellipsis)
+		fullwidth = (rutf8_text_lwidth(text, flags, chars, wellipsis)
 			     + quotes);
 		if (fullwidth < width_max) {
 			bfill = (width_max - fullwidth) / 2;
@@ -223,8 +222,8 @@ static SEXP rutf8_text_lformat(struct utf8lite_render *r,
 		TRY(utf8lite_graph_measure(&scan.current, flags, &w));
 
 		if (width > chars - w) {
-			w = ellipsis;
-			TRY(utf8lite_render_string(r, ellipsis_str));
+			w = wellipsis;
+			TRY(utf8lite_render_raw(r, ellipsis, nellipsis));
 			trunc = 1;
 		} else {
 			TRY(utf8lite_render_graph(r, &scan.current));
@@ -249,16 +248,14 @@ exit:
 static SEXP rutf8_text_rformat(struct utf8lite_render *r,
 			       const struct utf8lite_text *text,
 			       int trim, int chars, int quote,
-			       int utf8, int flags, int width_max)
+			       const char *ellipsis, size_t nellipsis,
+			       int wellipsis, int flags, int width_max)
 {
 	SEXP ans = R_NilValue;
 	struct utf8lite_graphscan scan;
-	const char *ellipsis_str;
-	int err = 0, w, width, quotes, ellipsis, trunc;
+	int err = 0, w, width, quotes, trunc;
 
 	quotes = quote ? 2 : 0;
-	ellipsis = utf8 ? 1 : 3;
-	ellipsis_str = utf8 ? RUTF8_ELLIPSIS : "...";
 
 	utf8lite_graphscan_make(&scan, text);
 	utf8lite_graphscan_skip(&scan);
@@ -269,7 +266,7 @@ static SEXP rutf8_text_rformat(struct utf8lite_render *r,
 		TRY(utf8lite_graph_measure(&scan.current, flags, &w));
 
 		if (width > chars - w) {
-			w = ellipsis;
+			w = wellipsis;
 			trunc = 1;
 		}
 
@@ -281,7 +278,7 @@ static SEXP rutf8_text_rformat(struct utf8lite_render *r,
 	}
 
 	if (trunc) {
-		TRY(utf8lite_render_string(r, ellipsis_str));
+		TRY(utf8lite_render_raw(r, ellipsis, nellipsis));
 	}
 
 	while (utf8lite_graphscan_advance(&scan)) {
@@ -299,16 +296,19 @@ exit:
 SEXP rutf8_text_format(struct utf8lite_render *r,
 		       const struct utf8lite_text *text,
 		       int trim, int chars, enum rutf8_justify_type justify,
-		       int quote, int utf8, int flags, int width_max)
+		       int quote, const char *ellipsis, size_t nellipsis,
+		       int wellipsis, int flags, int width_max)
 {
 	int centre;
 
 	if (justify == RUTF8_JUSTIFY_RIGHT) {
 		return rutf8_text_rformat(r, text, trim, chars, quote,
-					  utf8, flags, width_max);
+					  ellipsis, nellipsis, wellipsis,
+					  flags, width_max);
 	} else {
 		centre = (justify == RUTF8_JUSTIFY_CENTRE);
 		return rutf8_text_lformat(r, text, trim, chars, quote,
-					  utf8, flags, width_max, centre);
+					  ellipsis, nellipsis, wellipsis,
+					  flags, width_max, centre);
 	}
 }

@@ -35,9 +35,16 @@ utf8_format <- function(x, trim = FALSE, chars = NULL, justify = "left",
     utf8 <- as_output_utf8("utf8", utf8)
   })
 
+  if (!utf8 || is.na(iconv("\u2026", "UTF-8", ""))) {
+    ellipsis <- "..."
+    wellipsis <- 3L
+  } else {
+    ellipsis <- "\u2026"
+    wellipsis <- 1L
+  }
+
   if (is.null(chars) && length(x) > 0) {
     linewidth <- getOption("width")
-    ellipsis <- if (utf8) 1 else 3
     quotes <- if (quote) 2 else 0
     gap <- if (is.null(print.gap)) 1 else NULL
 
@@ -54,12 +61,12 @@ utf8_format <- function(x, trim = FALSE, chars = NULL, justify = "left",
       namewidth <- 0
     }
 
-    chars <- (linewidth - ellipsis - quotes - gap - namewidth)
+    chars <- (linewidth - wellipsis - quotes - gap - namewidth)
     chars <- max(chars, 12)
   }
 
   .Call(
     rutf8_utf8_format, x, trim, chars, justify, width, na.encode,
-    quote, na.print, utf8
+    quote, na.print, ellipsis, wellipsis, utf8
   )
 }
