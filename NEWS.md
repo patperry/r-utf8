@@ -9,6 +9,9 @@ utf8 1.1.2.9000
     wrong values for characters outside the user's locale when `stdout()`
     is redirected by `knitr` or another process.
 
+  * When truncating long strings strings via `utf8_format()`, use an ellipsis
+    that is printable in the user's native locale (`"\u2026" or `"..."`).
+
 
 utf8 1.1.2 (2017-12-14)
 =======================
