@@ -107,6 +107,18 @@ START_TEST(test_emoji_modifier)
 END_TEST
 
 
+START_TEST(test_emoji_zwj_sequence)
+{
+	// \U0001F469\u200D\u2764\uFE0F\u200D\U0001F48B\u200D\U0001F469
+	start(JS("\\ud83d\\udc69\\u200d\\u2764\\ufe0f\\u200d\\ud83d\\udc8b\\u200d\\ud83d\\udc69"));
+
+	assert_text_eq(next(), JS("\\ud83d\\udc69\\u200d\\u2764\\ufe0f\\u200d\\ud83d\\udc8b\\u200d\\ud83d\\udc69"));
+
+	ck_assert(next() == NULL);
+}
+END_TEST
+
+
 // Unicode Grapheme Break Test
 // http://www.unicode.org/Public/UCD/latest/ucd/auxiliary/GraphemeBreakTest.txt
 struct unitest {
@@ -330,6 +342,7 @@ Suite *graphscan_suite(void)
         tcase_add_test(tc, test_empty);
         tcase_add_test(tc, test_single);
         tcase_add_test(tc, test_emoji_modifier);
+	tcase_add_test(tc, test_emoji_zwj_sequence);
         suite_add_tcase(s, tc);
 
         tc = tcase_create("Unicode GraphemeBreakTest.txt");
