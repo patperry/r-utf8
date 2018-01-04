@@ -9,10 +9,10 @@
 /* Begin PBXBuildFile section */
 		880244841FA1469F000AEC71 /* graphscan.c in Sources */ = {isa = PBXBuildFile; fileRef = 880244821FA14699000AEC71 /* graphscan.c */; };
 		880244861FA146AA000AEC71 /* graphbreak.h in Headers */ = {isa = PBXBuildFile; fileRef = 880244851FA146AA000AEC71 /* graphbreak.h */; };
-		88406FC21FAE072900B7469B /* check_text.c in Sources */ = {isa = PBXBuildFile; fileRef = 88BAFA171F97ACE8006A5A78 /* check_text.c */; };
 		884582DB1FA7622000C1CF23 /* graph.c in Sources */ = {isa = PBXBuildFile; fileRef = 884582DA1FA7622000C1CF23 /* graph.c */; };
 		884582DC1FA7622700C1CF23 /* graph.c in Sources */ = {isa = PBXBuildFile; fileRef = 884582DA1FA7622000C1CF23 /* graph.c */; };
 		88B6BB601FA60A5100BFF06E /* graphscan.c in Sources */ = {isa = PBXBuildFile; fileRef = 880244821FA14699000AEC71 /* graphscan.c */; };
+		88B9B6961FFEC656000EC8DD /* check_graphscan.c in Sources */ = {isa = PBXBuildFile; fileRef = 888FDA111FA5367600E2FD27 /* check_graphscan.c */; };
 		88BAFA031F97AC75006A5A78 /* encode.c in Sources */ = {isa = PBXBuildFile; fileRef = 88BAF9FB1F97AC74006A5A78 /* encode.c */; };
 		88BAFA041F97AC75006A5A78 /* text.c in Sources */ = {isa = PBXBuildFile; fileRef = 88BAF9FC1F97AC74006A5A78 /* text.c */; };
 		88BAFA051F97AC75006A5A78 /* char.c in Sources */ = {isa = PBXBuildFile; fileRef = 88BAF9FD1F97AC74006A5A78 /* char.c */; };
@@ -299,13 +299,13 @@
 				88BAFA311F97AD36006A5A78 /* testutil.c in Sources */,
 				88CF04971F9D54EE00AA3475 /* array.c in Sources */,
 				88BAFA2C1F97AD32006A5A78 /* error.c in Sources */,
+				88B9B6961FFEC656000EC8DD /* check_graphscan.c in Sources */,
 				88BAFA2A1F97AD32006A5A78 /* char.c in Sources */,
 				88BAFA2F1F97AD32006A5A78 /* text.c in Sources */,
 				88E5EB201F982D5000E98123 /* textmap.c in Sources */,
 				88BAFA2E1F97AD32006A5A78 /* normalize.c in Sources */,
 				88DA8D681F97F59E00125B42 /* textiter.c in Sources */,
 				88BAFA301F97AD32006A5A78 /* textassign.c in Sources */,
-				88406FC21FAE072900B7469B /* check_text.c in Sources */,
 				88CF04981F9D54F500AA3475 /* render.c in Sources */,
 				880244841FA1469F000AEC71 /* graphscan.c in Sources */,
 			);
