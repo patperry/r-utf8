@@ -468,7 +468,8 @@ int utf8lite_render_code(struct utf8lite_render *r, int32_t ch, int *attrptr)
 		break;
 
 	case UTF8LITE_CHARWIDTH_IGNORABLE:
-		if (r->flags & UTF8LITE_ENCODE_RMDI) {
+		if ((r->flags & UTF8LITE_ENCODE_RMDI)
+				&& (!(*attrptr & CODE_EMOJI))) {
 			return 0;
 		}
 		break;
