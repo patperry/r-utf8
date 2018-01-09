@@ -117,7 +117,7 @@ SEXP rutf8_as_utf8(SEXP sx)
 			}
 			SET_STRING_ELT(ans, i,
 				       mkCharLenCE((const char *)str,
-					           size, CE_UTF8));
+					           (int)size, CE_UTF8));
 		}
 
 		UNPROTECT(1); nprot--;

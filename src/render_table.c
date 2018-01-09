@@ -291,10 +291,10 @@ SEXP rutf8_render_table(SEXP sx, SEXP swidth, SEXP squote, SEXP sna_print,
         }
 	if (style) {
 		if ((s.names = rutf8_as_style(snames))) {
-			s.names_len = strlen(s.names);
+			s.names_len = (int)strlen(s.names);
 		}
 		if ((s.rownames = rutf8_as_style(srownames))) {
-			s.rownames_len = strlen(s.rownames);
+			s.rownames_len = (int)strlen(s.rownames);
 		}
 	}
         if (!utf8) {
