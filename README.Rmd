@@ -59,7 +59,7 @@ Usage
 Use `as_utf8` to validate input text and convert to UTF-8 encoding. The
 function alerts you if the input text has the wrong declared encoding:
 
-```{r}
+```{r, error = TRUE}
 # second entry is encoded in latin-1, but declared as UTF-8
 x <- c("fa\u00E7ile", "fa\xE7ile", "fa\xC3\xA7ile")
 Encoding(x) <- c("UTF-8", "UTF-8", "bytes")
