@@ -1,7 +1,9 @@
-utf8 1.1.3.9000
-===============
+utf8 1.1.4 (2018-05-24)
+=======================
 
 ### BUG FIXES
+
+  * Fix build on Solaris (#7, reported by @krlmlr).
 
   * Fix rendering of emoji ZWJ sequences like `"\U1F469\U200D\U2764\UFE0F\U200D\U1F48B\U200D\U1F469"`.
 
