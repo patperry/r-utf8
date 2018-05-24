@@ -10,7 +10,6 @@ Authors@R: c(
          comment = "Unicode Character Database"))
 Depends: R (>= 2.10)
 Suggests:
-  corpus,
   knitr,
   rmarkdown,
   testthat
