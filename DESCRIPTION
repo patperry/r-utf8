@@ -4,7 +4,7 @@ Title: Unicode Text Processing
 Authors@R: c(
   person(c("Patrick", "O."), "Perry",
          role = c("aut", "cph", "cre"),
-         email = "pperry@stern.nyu.edu"),
+         email = "patperry@gmail.com"),
   person("Unicode, Inc.",
          role = c("cph", "dtc"),
          comment = "Unicode Character Database"))
