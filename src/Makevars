@@ -20,7 +20,6 @@ $(SHLIB): libcutf8lite.a
 
 libcutf8lite.a: $(LIBUTF8LITE)
 	$(AR) rcs $@ $(LIBUTF8LITE)
-	$(RANLIB) $@
 
 clean:
 	rm -f $(LIBUTF8LITE) $(SHLIB) $(OBJECTS) libcutf8lite.a
