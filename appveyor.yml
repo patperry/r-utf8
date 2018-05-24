@@ -11,8 +11,8 @@ install:
   - ps: Bootstrap
   - git submodule update --init --recursive
 
-cache:
-  - C:\RLibrary
+#cache:
+#  - C:\RLibrary
 
 # Adapt as necessary starting from here
 
