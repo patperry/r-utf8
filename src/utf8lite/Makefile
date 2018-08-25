@@ -39,27 +39,30 @@ UNICODE = http://www.unicode.org/Public/10.0.0
 
 CORPUS_A = libutf8lite.a
 LIB_O	= src/array.o src/char.o src/encode.o src/error.o src/escape.o \
-		  src/graph.o src/graphscan.o src/normalize.o src/render.o src/text.o \
-		  src/textassign.o src/textiter.o src/textmap.o
+	  src/graph.o src/graphscan.o src/normalize.o src/render.o src/text.o \
+	  src/textassign.o src/textiter.o src/textmap.o src/wordscan.o
 
 DATA    = data/emoji/emoji-data.txt \
-		  data/ucd/CaseFolding.txt \
-		  data/ucd/CompositionExclusions.txt \
-		  data/ucd/DerivedCoreProperties.txt \
-		  data/ucd/EastAsianWidth.txt \
-		  data/ucd/PropList.txt \
-		  data/ucd/Scripts.txt \
-		  data/ucd/UnicodeData.txt \
-		  data/ucd/auxiliary/GraphemeBreakProperty.txt
+	  data/ucd/CaseFolding.txt \
+	  data/ucd/CompositionExclusions.txt \
+	  data/ucd/DerivedCoreProperties.txt \
+	  data/ucd/EastAsianWidth.txt \
+	  data/ucd/PropList.txt \
+	  data/ucd/Scripts.txt \
+	  data/ucd/UnicodeData.txt \
+	  data/ucd/auxiliary/GraphemeBreakProperty.txt \
+	  data/ucd/auxiliary/WordBreakProperty.txt
 
 TESTS_T = tests/check_charwidth tests/check_graphscan tests/check_render \
-		  tests/check_text tests/check_textmap tests/check_unicode
+	  tests/check_text tests/check_textmap tests/check_unicode \
+	  tests/check_wordscan
 TESTS_O = tests/check_charwidth.o tests/check_graphscan.o tests/check_render.o \
-		  tests/check_text.o test/check_textmap.o tests/check_unicode.o \
-		  tests/testutil.o
+	  tests/check_text.o test/check_textmap.o tests/check_unicode.o \
+	  tests/check_wordscan.o tests/testutil.o
 
 TESTS_DATA = data/ucd/NormalizationTest.txt \
-			 data/ucd/auxiliary/GraphemeBreakTest.txt
+	     data/ucd/auxiliary/GraphemeBreakTest.txt \
+	     data/ucd/auxiliary/WordBreakTest.txt
 
 ALL_O = $(LIB_O) $(CORPUS_O) $(STEMMER_O)
 ALL_T = $(CORPUS_A) $(CORPUS_T)
@@ -100,6 +103,10 @@ data/ucd/EastAsianWidth.txt:
 	$(MKDIR_P) data/ucd
 	$(CURL) -o $@ $(UNICODE)/ucd/EastAsianWidth.txt
 
+data/ucd/PropList.txt:
+	$(MKDIR_P) data/ucd
+	$(CURL) -o $@ $(UNICODE)/ucd/PropList.txt
+
 data/ucd/NormalizationTest.txt:
 	$(MKDIR_P) data/ucd
 	$(CURL) -o $@ $(UNICODE)/ucd/NormalizationTest.txt
@@ -115,6 +122,14 @@ data/ucd/auxiliary/GraphemeBreakProperty.txt:
 data/ucd/auxiliary/GraphemeBreakTest.txt:
 	$(MKDIR_P) data/ucd/auxiliary
 	$(CURL) -o $@ $(UNICODE)/ucd/auxiliary/GraphemeBreakTest.txt
+
+data/ucd/auxiliary/WordBreakProperty.txt:
+	$(MKDIR_P) data/ucd/auxiliary
+	$(CURL) -o $@ $(UNICODE)/ucd/auxiliary/WordBreakProperty.txt
+
+data/ucd/auxiliary/WordBreakTest.txt:
+	$(MKDIR_P) data/ucd/auxiliary
+	$(CURL) -o $@ $(UNICODE)/ucd/auxiliary/WordBreakTest.txt
 
 # Generated Sources
 
@@ -154,6 +169,12 @@ src/private/normalization.h: util/gen-normalization.py \
 	$(MKDIR_P) src/private
 	./util/gen-normalization.py > $@
 
+src/private/wordbreak.h: util/gen-wordbreak.py util/gen-wordbreak.py \
+		data/ucd/PropList.txt \
+		data/ucd/auxiliary/WordBreakProperty.txt
+	$(MKDIR_P) src/private
+	./util/gen-wordbreak.py > $@
+
 
 # Tests
 
@@ -177,6 +198,11 @@ tests/check_textmap: tests/check_textmap.o tests/testutil.o $(CORPUS_A)
 tests/check_unicode: tests/check_unicode.o $(CORPUS_A) \
 		data/ucd/NormalizationTest.txt
 	$(CC) -o $@ tests/check_unicode.o $(CORPUS_A) \
+		$(LIBS) $(TEST_LIBS) $(LDFLAGS)
+
+tests/check_wordscan: tests/check_wordscan.o tests/testutil.o $(CORPUS_A) \
+		data/ucd/auxiliary/WordBreakTest.txt
+	$(CC) -o $@ tests/check_wordscan.o tests/testutil.o $(CORPUS_A) \
 		$(LIBS) $(TEST_LIBS) $(LDFLAGS)
 
 
@@ -219,6 +245,7 @@ src/text.o: src/text.c src/utf8lite.h
 src/textassign.o: src/textassign.c src/utf8lite.h
 src/textiter.o: src/textiter.c src/utf8lite.h
 src/textmap.o: src/textmap.c src/utf8lite.h
+src/wordscan.o: src/wordscan.c src/private/wordbreak.h src/utf8lite.h
 
 tests/check_charwidth.o: tests/check_charwidth.c src/utf8lite.h tests/testutil.h
 tests/check_graphscan.o: tests/check_graphscan.c src/utf8lite.h tests/testutil.h
@@ -226,4 +253,5 @@ tests/check_render.o: tests/check_render.c src/utf8lite.h tests/testutil.h
 tests/check_text.o: tests/check_text.c src/utf8lite.h tests/testutil.h
 tests/check_textmap.o: tests/check_text.c src/utf8lite.h tests/testutil.h
 tests/check_unicode.o: tests/check_unicode.c src/utf8lite.h tests/testutil.h
+tests/check_wordscan.o: tests/check_wordscan.c src/utf8lite.h tests/testutil.h
 tests/testutil.o: tests/testutil.c src/utf8lite.h tests/testutil.h
