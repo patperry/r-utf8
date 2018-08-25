@@ -11,3 +11,4 @@ xcuserdata
 /tests/check_text
 /tests/check_textmap
 /tests/check_unicode
+/tests/check_wordscan
