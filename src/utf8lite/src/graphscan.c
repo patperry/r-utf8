@@ -100,26 +100,17 @@ Start:
 		NEXT();
 		goto Prepend;
 
-	case GRAPH_BREAK_E_BASE:
-	case GRAPH_BREAK_E_BASE_GAZ:
+	case GRAPH_BREAK_EXTENDED_PICTOGRAPHIC:
 		NEXT();
-		goto E_Base;
-
-	case GRAPH_BREAK_ZWJ:
-		NEXT();
-		goto ZWJ;
+		goto Extended_Pictographic;
 
 	case GRAPH_BREAK_REGIONAL_INDICATOR:
 		NEXT();
 		goto Regional_Indicator;
 
-	case GRAPH_BREAK_E_MODIFIER:
-	case GRAPH_BREAK_GLUE_AFTER_ZWJ:
-		NEXT();
-		goto MaybeBreak;
-
 	case GRAPH_BREAK_EXTEND:
 	case GRAPH_BREAK_SPACINGMARK:
+	case GRAPH_BREAK_ZWJ:
 	case GRAPH_BREAK_OTHER:
 		NEXT();
 		goto MaybeBreak;
@@ -194,32 +185,22 @@ Prepend:
 		goto Start;
 	}
 
-E_Base:
+Extended_Pictographic:
 	// GB9:  Do not break before extending characters
-	// GB10: Do not break within emoji modifier sequences
 	while (scan->prop == GRAPH_BREAK_EXTEND) {
 		NEXT();
 	}
-	if (scan->prop == GRAPH_BREAK_E_MODIFIER) {
-		NEXT();
-	}
+    // GB9: Do not break before ZWJ
+    if (scan->prop == GRAPH_BREAK_ZWJ) {
+        NEXT();
+        // GB11: Do not break within emoji modifier sequences
+        // or emoji zwj sequences.
+        if (scan->prop == GRAPH_BREAK_EXTENDED_PICTOGRAPHIC) {
+            NEXT();
+            goto Extended_Pictographic;
+        }
+    }
 	goto MaybeBreak;
-
-ZWJ:
-	// Do not break within emoji zwj sequences
-	// GB11: ZWJ * (Glue_After_Zwj | EBG)
-	switch (scan->prop) {
-	case GRAPH_BREAK_GLUE_AFTER_ZWJ:
-		NEXT();
-		goto MaybeBreak;
-
-	case GRAPH_BREAK_E_BASE_GAZ:
-		NEXT();
-		goto E_Base;
-
-	default:
-		goto MaybeBreak;
-	}
 
 Regional_Indicator:
 	// Do not break within emoji flag sequences. That is, do not break
@@ -238,12 +219,9 @@ MaybeBreak:
 	switch (scan->prop) {
 	case GRAPH_BREAK_EXTEND:
 	case GRAPH_BREAK_SPACINGMARK:
-		NEXT();
-		goto MaybeBreak;
-
 	case GRAPH_BREAK_ZWJ:
 		NEXT();
-		goto ZWJ;
+		goto MaybeBreak;
 
 	default:
 		goto Break;
@@ -282,7 +260,7 @@ static int regional_indicator_odd(const struct utf8lite_text_iter *prev)
 }
 
 
-static int follows_e_base(const struct utf8lite_text_iter *prev)
+static int follows_extended_pictographic(const struct utf8lite_text_iter *prev)
 {
 	struct utf8lite_text_iter it = *prev;
 	int prop;
@@ -290,8 +268,7 @@ static int follows_e_base(const struct utf8lite_text_iter *prev)
 	while (utf8lite_text_iter_retreat(&it)) {
 		prop = graph_break(it.current);
 		switch (prop) {
-		case GRAPH_BREAK_E_BASE:
-		case GRAPH_BREAK_E_BASE_GAZ:
+		case GRAPH_BREAK_EXTENDED_PICTOGRAPHIC:
 			return 1;
 		case GRAPH_BREAK_EXTEND:
 			break;
@@ -377,20 +354,14 @@ Start:
 		PREV();
 		goto Extend;
 
-	case GRAPH_BREAK_E_MODIFIER:
+	case GRAPH_BREAK_EXTENDED_PICTOGRAPHIC:
 		PREV();
-		goto E_Modifier;
-
-	case GRAPH_BREAK_GLUE_AFTER_ZWJ:
-	case GRAPH_BREAK_E_BASE_GAZ:
-		PREV();
-		goto Glue_After_ZWJ;
+		goto Extended_Pictographic;
 
 	case GRAPH_BREAK_REGIONAL_INDICATOR:
 		PREV();
 		goto Regional_Indicator;
 
-	case GRAPH_BREAK_E_BASE:
 	case GRAPH_BREAK_PREPEND:
 	case GRAPH_BREAK_OTHER:
 		PREV();
@@ -467,34 +438,19 @@ Extend:
 		goto Start;
 	}
 
-E_Modifier:
-	// GB10: Do not break within emoji modifier sequences
-	if (prop == GRAPH_BREAK_EXTEND && follows_e_base(&prev)) {
-		while (prop == GRAPH_BREAK_EXTEND) {
+Extended_Pictographic:
+    // GB11: Do not break within emoji modifier sequences or
+    // emoji zwj sequences.
+	if (prop == GRAPH_BREAK_ZWJ && follows_extended_pictographic(&prev)) {
+        PREV(); // ZWJ
+		while (prop == GRAPH_BREAK_EXTEND) { // Extend*
 			PREV();
 		}
+
+        PREV();
+        goto Extended_Pictographic;
 	}
-
-	switch (prop) {
-	case GRAPH_BREAK_E_BASE:
-		PREV();
-		goto MaybeBreak;
-
-	case GRAPH_BREAK_E_BASE_GAZ:
-		PREV();
-		goto Glue_After_ZWJ;
-
-	default:
-		goto MaybeBreak;
-	}
-
-Glue_After_ZWJ:
-	// GB11 Dro not break within emoji zwj sequences
-	if (prop == GRAPH_BREAK_ZWJ) {
-		PREV();
-		goto Extend;
-	}
-	goto MaybeBreak;
+    goto MaybeBreak;
 
 Regional_Indicator:
 	// GB12, GB13: Do not break within emoji flag sequences

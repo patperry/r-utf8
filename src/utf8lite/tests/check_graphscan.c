@@ -95,13 +95,9 @@ END_TEST
 
 START_TEST(test_emoji_modifier)
 {
-	// This is an emoji followed by E_Modifier, but the emoji does not
-	// have Grapheme Break Property 'E_Base' or 'E_Base_GAZ'
-	// Any + E_Modifier
+	// This is an Extended_Pictographic followed by Extend
 	start(JS("\\uD83D\\uDE0A\\uD83C\\uDFFB")); // U+1F60A U+1F3FB
-	// assert_text_eq(next(), (JS("\\uD83D\\uDE0A\\uD83C\\uDFFB"));
-	assert_text_eq(next(), JS("\\uD83D\\uDE0A"));
-	assert_text_eq(next(), JS("\\uD83C\\uDFFB"));
+	assert_text_eq(next(), JS("\\uD83D\\uDE0A\\uD83C\\uDFFB"));
 	ck_assert(next() == NULL);
 }
 END_TEST
