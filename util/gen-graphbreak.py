@@ -21,12 +21,18 @@ try:
 except ModuleNotFoundError:
     from util import property
 
+EMOJI_DATA = "data/emoji/emoji-data.txt"
 GRAPHEME_BREAK_PROPERTY = "data/ucd/auxiliary/GraphemeBreakProperty.txt"
 code_props = property.read(GRAPHEME_BREAK_PROPERTY)
+emoji_props = property.read(EMOJI_DATA, sets=True)
 
 for i in range(len(code_props)):
     if code_props[i] is None:
         code_props[i] = 'Other'
+
+for i in emoji_props['Extended_Pictographic']:
+    assert code_props[i] == 'Other'
+    code_props[i] = 'Extended_Pictographic'
 
 prop_names = set(code_props)
 prop_names.remove('Other')
