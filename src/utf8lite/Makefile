@@ -34,10 +34,10 @@ TEST_CFLAGS = $(shell pkg-config --cflags check) \
 TEST_LIBS = $(shell pkg-config --libs check)
 
 CLDR = https://raw.githubusercontent.com/unicode-cldr/cldr-segments-modern/master
-EMOJI = http://www.unicode.org/Public/emoji/5.0
-UNICODE = http://www.unicode.org/Public/10.0.0
+EMOJI = http://www.unicode.org/Public/emoji/12.0
+UNICODE = http://www.unicode.org/Public/12.0.0
 
-CORPUS_A = libutf8lite.a
+UTF8LITE_A = libutf8lite.a
 LIB_O	= src/array.o src/char.o src/encode.o src/error.o src/escape.o \
 	  src/graph.o src/graphscan.o src/normalize.o src/render.o src/text.o \
 	  src/textassign.o src/textiter.o src/textmap.o src/wordscan.o
@@ -64,21 +64,21 @@ TESTS_DATA = data/ucd/NormalizationTest.txt \
 	     data/ucd/auxiliary/GraphemeBreakTest.txt \
 	     data/ucd/auxiliary/WordBreakTest.txt
 
-ALL_O = $(LIB_O) $(CORPUS_O) $(STEMMER_O)
-ALL_T = $(CORPUS_A) $(CORPUS_T)
-ALL_A = $(CORPUS_A)
+ALL_O = $(LIB_O) $(UTF8LITE_O) $(STEMMER_O)
+ALL_T = $(UTF8LITE_A) $(UTF8LITE_T)
+ALL_A = $(UTF8LITE_A)
 
 
 # Products
 
 all: $(ALL_T)
 
-$(CORPUS_A): $(LIB_O) $(STEMMER_O)
+$(UTF8LITE_A): $(LIB_O) $(STEMMER_O)
 	$(AR) $@ $(LIB_O) $(STEMMER_O)
 	$(RANLIB) $@
 
-$(CORPUS_T): $(CORPUS_O) $(CORPUS_A)
-	$(CC) -o $@ $(CORPUS_O) $(CORPUS_A) $(LIBS) $(LDFLAGS)
+$(UTF8LITE_T): $(UTF8LITE_O) $(UTF8LITE_A)
+	$(CC) -o $@ $(UTF8LITE_O) $(UTF8LITE_A) $(LIBS) $(LDFLAGS)
 
 
 # Data
@@ -159,7 +159,12 @@ src/private/decompose.h: util/gen-decompose.py util/unicode_data.py \
 	$(MKDIR_P) src/private
 	./util/gen-decompose.py > $@
 
+src/private/emojiprop.h: util/gen-emojiprop.py data/emoji/emoji-data.txt
+	$(MKDIR_P) src/private
+	./util/gen-emojiprop.py > $@
+
 src/private/graphbreak.h: util/gen-graphbreak.py util/gen-graphbreak.py \
+		data/ucd/PropList.txt \
 		data/ucd/auxiliary/GraphemeBreakProperty.txt
 	$(MKDIR_P) src/private
 	./util/gen-graphbreak.py > $@
@@ -169,8 +174,7 @@ src/private/normalization.h: util/gen-normalization.py \
 	$(MKDIR_P) src/private
 	./util/gen-normalization.py > $@
 
-src/private/wordbreak.h: util/gen-wordbreak.py util/gen-wordbreak.py \
-		data/ucd/PropList.txt \
+src/private/wordbreak.h: util/gen-wordbreak.py \
 		data/ucd/auxiliary/WordBreakProperty.txt
 	$(MKDIR_P) src/private
 	./util/gen-wordbreak.py > $@
@@ -178,31 +182,31 @@ src/private/wordbreak.h: util/gen-wordbreak.py util/gen-wordbreak.py \
 
 # Tests
 
-tests/check_charwidth: tests/check_charwidth.o tests/testutil.o $(CORPUS_A)
+tests/check_charwidth: tests/check_charwidth.o tests/testutil.o $(UTF8LITE_A)
 	$(CC) -o $@ $^ $(LIBS) $(TEST_LIBS) $(LDFLAGS)
 
-tests/check_graphscan: tests/check_graphscan.o tests/testutil.o $(CORPUS_A) \
+tests/check_graphscan: tests/check_graphscan.o tests/testutil.o $(UTF8LITE_A) \
 		data/ucd/auxiliary/GraphemeBreakTest.txt
-	$(CC) -o $@ tests/check_graphscan.o tests/testutil.o $(CORPUS_A) \
+	$(CC) -o $@ tests/check_graphscan.o tests/testutil.o $(UTF8LITE_A) \
 		$(LIBS) $(TEST_LIBS) $(LDFLAGS)
 
-tests/check_render: tests/check_render.o tests/testutil.o $(CORPUS_A)
+tests/check_render: tests/check_render.o tests/testutil.o $(UTF8LITE_A)
 	$(CC) -o $@ $^ $(LIBS) $(TEST_LIBS) $(LDFLAGS)
 
-tests/check_text: tests/check_text.o tests/testutil.o $(CORPUS_A)
+tests/check_text: tests/check_text.o tests/testutil.o $(UTF8LITE_A)
 	$(CC) -o $@ $^ $(LIBS) $(TEST_LIBS) $(LDFLAGS)
 
-tests/check_textmap: tests/check_textmap.o tests/testutil.o $(CORPUS_A)
+tests/check_textmap: tests/check_textmap.o tests/testutil.o $(UTF8LITE_A)
 	$(CC) -o $@ $^ $(LIBS) $(TEST_LIBS) $(LDFLAGS)
 
-tests/check_unicode: tests/check_unicode.o $(CORPUS_A) \
+tests/check_unicode: tests/check_unicode.o $(UTF8LITE_A) \
 		data/ucd/NormalizationTest.txt
-	$(CC) -o $@ tests/check_unicode.o $(CORPUS_A) \
+	$(CC) -o $@ tests/check_unicode.o $(UTF8LITE_A) \
 		$(LIBS) $(TEST_LIBS) $(LDFLAGS)
 
-tests/check_wordscan: tests/check_wordscan.o tests/testutil.o $(CORPUS_A) \
+tests/check_wordscan: tests/check_wordscan.o tests/testutil.o $(UTF8LITE_A) \
 		data/ucd/auxiliary/WordBreakTest.txt
-	$(CC) -o $@ tests/check_wordscan.o tests/testutil.o $(CORPUS_A) \
+	$(CC) -o $@ tests/check_wordscan.o tests/testutil.o $(UTF8LITE_A) \
 		$(LIBS) $(TEST_LIBS) $(LDFLAGS)
 
 
@@ -236,7 +240,8 @@ src/encode.o: src/encode.c src/utf8lite.h
 src/error.o: src/error.c src/utf8lite.h
 src/escape.o: src/escape.c src/utf8lite.h
 src/graph.o: src/graph.c src/utf8lite.h
-src/graphscan.o: src/graphscan.c src/private/graphbreak.h src/utf8lite.h
+src/graphscan.o: src/graphscan.c src/private/emojiprop.h \
+	src/private/graphbreak.h src/utf8lite.h
 src/normalize.o: src/normalize.c src/private/casefold.h \
 	src/private/combining.h src/private/compose.h src/private/decompose.h \
 	src/utf8lite.h
