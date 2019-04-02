@@ -72,7 +72,7 @@ START_TEST(test_wcwidth9)
 
 		if (!ok) {
 			nfail++;
-			printf("U+%04X wcwidth9: %d corpus: %d\n", code, prop0, prop);
+			printf("U+%04X wcwidth9: %d utf8lite: %d\n", code, prop0, prop);
 		}
 	}
 
