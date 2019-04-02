@@ -164,7 +164,7 @@ src/private/emojiprop.h: util/gen-emojiprop.py data/emoji/emoji-data.txt
 	./util/gen-emojiprop.py > $@
 
 src/private/graphbreak.h: util/gen-graphbreak.py util/gen-graphbreak.py \
-		data/ucd/PropList.txt \
+		data/emoji/emoji-data.txt \
 		data/ucd/auxiliary/GraphemeBreakProperty.txt
 	$(MKDIR_P) src/private
 	./util/gen-graphbreak.py > $@
@@ -175,6 +175,8 @@ src/private/normalization.h: util/gen-normalization.py \
 	./util/gen-normalization.py > $@
 
 src/private/wordbreak.h: util/gen-wordbreak.py \
+		data/ucd/DerivedCoreProperties.txt \
+		data/ucd/PropList.txt \
 		data/ucd/auxiliary/WordBreakProperty.txt
 	$(MKDIR_P) src/private
 	./util/gen-wordbreak.py > $@
@@ -240,8 +242,7 @@ src/encode.o: src/encode.c src/utf8lite.h
 src/error.o: src/error.c src/utf8lite.h
 src/escape.o: src/escape.c src/utf8lite.h
 src/graph.o: src/graph.c src/utf8lite.h
-src/graphscan.o: src/graphscan.c src/private/emojiprop.h \
-	src/private/graphbreak.h src/utf8lite.h
+src/graphscan.o: src/graphscan.c src/private/graphbreak.h src/utf8lite.h
 src/normalize.o: src/normalize.c src/private/casefold.h \
 	src/private/combining.h src/private/compose.h src/private/decompose.h \
 	src/utf8lite.h
@@ -250,7 +251,8 @@ src/text.o: src/text.c src/utf8lite.h
 src/textassign.o: src/textassign.c src/utf8lite.h
 src/textiter.o: src/textiter.c src/utf8lite.h
 src/textmap.o: src/textmap.c src/utf8lite.h
-src/wordscan.o: src/wordscan.c src/private/wordbreak.h src/utf8lite.h
+src/wordscan.o: src/wordscan.c src/private/emojiprop.h \
+	src/private/wordbreak.h src/utf8lite.h
 
 tests/check_charwidth.o: tests/check_charwidth.c src/utf8lite.h tests/testutil.h
 tests/check_graphscan.o: tests/check_graphscan.c src/utf8lite.h tests/testutil.h
