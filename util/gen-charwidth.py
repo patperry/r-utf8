@@ -40,45 +40,8 @@ east_asian_width = property.read(EAST_ASIAN_WIDTH)
 
 emoji_props = property.read(EMOJI_DATA, sets=True)
 
-# text presentation (MacOS)
-emoji_text = set([
-    # number sign, asterisk
-    0x0023, 0x002A,
-
-    # digit zero..digit nine
-    0x0030, 0x0031, 0x0032, 0x0033, 0x0034,
-    0x0035, 0x0036, 0x0037, 0x0038, 0x0039,
-
-    # copyright, reserved
-    0x00A9, 0x00AE,
-
-    # double exclamation, exclamation question mark
-    0x203C, 0x2049,
-
-    # trade mark
-    0x2122,
-
-    # arrows
-    0x2194, 0x2195, 0x2196, 0x2197, 0x2198, 0x2199,
-
-    # black, white small square
-    0x25AA, 0x25AB,
-
-    # play, reverse button
-    0x25B6, 0x25C0,
-
-    # male, female sign
-    0x2640, 0x2642,
-
-    # spade, club, heart, diamond suit
-    0x2660, 0x2663, 0x2665, 0x2666
-    ])
-
-# emoji presentation
-emoji = set()
-for code in emoji_props['Emoji']:
-    if code not in emoji_text:
-        emoji.add(code)
+emoji = ((emoji_props['Emoji'] - emoji_props['Emoji_Component'])
+         | emoji_props['Emoji_Presentation'])
 
 # The following makes more sense according to the spec, but doesn't catch
 # all presentation emoji (at least, not on MacOS):
