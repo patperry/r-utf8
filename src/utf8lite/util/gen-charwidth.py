@@ -40,14 +40,9 @@ east_asian_width = property.read(EAST_ASIAN_WIDTH)
 
 emoji_props = property.read(EMOJI_DATA, sets=True)
 
+# https://www.unicode.org/reports/tr51/#def_basic_emoji_set
 emoji = ((emoji_props['Emoji'] - emoji_props['Emoji_Component'])
          | emoji_props['Emoji_Presentation'])
-
-# The following makes more sense according to the spec, but doesn't catch
-# all presentation emoji (at least, not on MacOS):
-# emoji = emoji_props['Emoji_Presentation']
-# for code in emoji_props['Emoji_Modifier_Base']:
-#     emoji.add(code)
 
 # Treat ignorables as invisible
 derived_core_properties = property.read(DERIVED_CORE_PROPERTIES, sets=True)
