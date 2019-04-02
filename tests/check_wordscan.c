@@ -105,148 +105,37 @@ START_TEST(test_quote)
 END_TEST
 
 
-START_TEST(test_url)
-{
-	start(S("http://ptrckprry.com/."));
-	assert_text_eq(next(), S("http://ptrckprry.com/"));
-	assert_text_eq(next(), S("."));
-	ck_assert(next() == NULL);
-}
-END_TEST
-
-
-START_TEST(test_url_punct)
-{
-	start(S("https://url.com/with-dash?query&%%20?"));
-	assert_text_eq(next(), S("https://url.com/with-dash?query&%%20"));
-	assert_text_eq(next(), S("?"));
-	ck_assert(next() == NULL);
-}
-END_TEST
-
-
-START_TEST(test_twitter)
-{
-	start(S(".@ptrckprry #rstats!"));
-	assert_text_eq(next(), S("."));
-	assert_text_eq(next(), S("@ptrckprry"));
-	assert_text_eq(next(), S(" "));
-	assert_text_eq(next(), S("#rstats"));
-	assert_text_eq(next(), S("!"));
-	ck_assert(next() == NULL);
-}
-END_TEST
-
-
 START_TEST(test_extendnumlet)
 {
 	start(S("_"));
 	assert_text_eq(next(), S("_"));
-	ck_assert_int_eq(scan.type, UTF8LITE_WORD_PUNCT);
 
 	start(S("__"));
 	assert_text_eq(next(), S("__"));
-	ck_assert_int_eq(scan.type, UTF8LITE_WORD_PUNCT);
 
 	start(S("___"));
 	assert_text_eq(next(), S("___"));
-	ck_assert_int_eq(scan.type, UTF8LITE_WORD_PUNCT);
 
 	start(JS("\\u202f"));
 	assert_text_eq(next(), JS("\\u202f"));
-	ck_assert_int_eq(scan.type, UTF8LITE_WORD_NONE);
 
 	start(JS("\\u202f\\u202f"));
 	assert_text_eq(next(), JS("\\u202f\\u202f"));
-	ck_assert_int_eq(scan.type, UTF8LITE_WORD_NONE);
 
 	start(JS("\\u202f_"));
 	assert_text_eq(next(), JS("\\u202f_"));
-	ck_assert_int_eq(scan.type, UTF8LITE_WORD_PUNCT);
 
 	start(S("_1"));
 	assert_text_eq(next(), S("_1"));
-	ck_assert_int_eq(scan.type, UTF8LITE_WORD_NUMBER);
 
 	start(S("__1"));
 	assert_text_eq(next(), S("__1"));
-	ck_assert_int_eq(scan.type, UTF8LITE_WORD_NUMBER);
 
 	start(S("_A"));
 	assert_text_eq(next(), S("_A"));
-	ck_assert_int_eq(scan.type, UTF8LITE_WORD_LETTER);
 
 	start(S("__A"));
 	assert_text_eq(next(), S("__A"));
-	ck_assert_int_eq(scan.type, UTF8LITE_WORD_LETTER);
-}
-END_TEST
-
-
-START_TEST(test_hyphen)
-{
-	start(S("--"));
-	assert_text_eq(next(), S("-"));
-	assert_text_eq(next(), S("-"));
-	ck_assert(next() == NULL);
-
-	// starts with number
-	start(S("2-gram-"));
-	assert_text_eq(next(), S("2-gram"));
-	assert_text_eq(next(), S("-"));
-	ck_assert(next() == NULL);
-
-	start(S("1-2-3"));
-	assert_text_eq(next(), S("1-2-3"));
-	ck_assert(next() == NULL);
-
-	start(JS("0-\\u05D0"));
-	assert_text_eq(next(), JS("0-\\u05D0"));
-	ck_assert(next() == NULL);
-
-	start(S("1--"));
-	assert_text_eq(next(), S("1"));
-	assert_text_eq(next(), S("-"));
-	assert_text_eq(next(), S("-"));
-	ck_assert(next() == NULL);
-
-	// starts with hebrew letter
-	start(JS("\\u05D0-\\u05D0"));
-	assert_text_eq(next(), JS("\\u05D0-\\u05D0"));
-	ck_assert(next() == NULL);
-
-	start(JS("\\u05D0-0"));
-	assert_text_eq(next(), JS("\\u05D0-0"));
-	ck_assert(next() == NULL);
-
-	start(JS("\\u05D0-A"));
-	assert_text_eq(next(), JS("\\u05D0-A"));
-	ck_assert(next() == NULL);
-
-	start(JS("\\u05D0--"));
-	assert_text_eq(next(), JS("\\u05D0"));
-	assert_text_eq(next(), S("-"));
-	assert_text_eq(next(), S("-"));
-	ck_assert(next() == NULL);
-
-	// starts with letter
-	start(JS("A-\\u05D0"));
-	assert_text_eq(next(), JS("A-\\u05D0"));
-	ck_assert(next() == NULL);
-
-	start(S("A-1"));
-	assert_text_eq(next(), S("A-1"));
-	ck_assert(next() == NULL);
-
-	start(S("A-B-C"));
-	assert_text_eq(next(), S("A-B-C"));
-	ck_assert(next() == NULL);
-
-	start(S("A--"));
-	assert_text_eq(next(), S("A"));
-	assert_text_eq(next(), S("-"));
-	assert_text_eq(next(), S("-"));
-	ck_assert(next() == NULL);
 }
 END_TEST
 
@@ -435,11 +324,7 @@ Suite *wordscan_suite(void)
         tcase_add_checked_fixture(tc, setup_scan, teardown_scan);
         tcase_add_test(tc, test_figure1);
         tcase_add_test(tc, test_quote);
-        tcase_add_test(tc, test_url);
-        tcase_add_test(tc, test_url_punct);
-        tcase_add_test(tc, test_twitter);
-	tcase_add_test(tc, test_extendnumlet);
-        tcase_add_test(tc, test_hyphen);
+        tcase_add_test(tc, test_extendnumlet);
         suite_add_tcase(s, tc);
 
         tc = tcase_create("Unicode WordBreakTest.txt");

@@ -756,17 +756,6 @@ void utf8lite_graphscan_skip(struct utf8lite_graphscan *scan);
  */
 
 /**
- * The word type as determined by the first character.
- */
-enum utf8lite_word_type {
-	UTF8LITE_WORD_NONE = -1,/**< EOT, white space, control, mark */
-	UTF8LITE_WORD_LETTER,	/**< word that contains letters */
-	UTF8LITE_WORD_NUMBER,	/**< word that appears to be a number */
-	UTF8LITE_WORD_PUNCT,	/**< punctuation */
-	UTF8LITE_WORD_SYMBOL	/**< symbol */
-};
-
-/**
  * A word scanner, for iterating over the words in a text. Word boundaries
  * are determined according to [UAX #29, Unicode Text Segmentation][uax29].
  * You can test the word boundary rules in an interactive
@@ -787,7 +776,6 @@ struct utf8lite_wordscan {
 	const uint8_t *iter_ptr;/**< iterator code's start */
 
 	struct utf8lite_text current;	/**< the current word */
-	enum utf8lite_word_type type;	/**< the type of the current word */
 };
 
 /**
