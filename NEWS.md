@@ -1,3 +1,12 @@
+utf8 1.2.0 (2019-04-02)
+=======================
+
+### MINOR IMPROVEMENTS
+
+  * Upgrade to latest `utf8lite`, which conforms to Unicode and Emoji
+    standards version 12.0.
+
+
 utf8 1.1.4 (2018-05-24)
 =======================
 
