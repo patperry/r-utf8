@@ -103,10 +103,8 @@ int assign_esc(struct utf8lite_text *text, const uint8_t *ptr, size_t size,
 	       struct utf8lite_message *msg)
 {
 	const uint8_t *input = ptr;
-	const uint8_t *start;
 	const uint8_t *end = ptr + size;
 	size_t attr = 0;
-	int32_t code;
 	uint_fast8_t ch;
 	int err;
 
@@ -117,12 +115,9 @@ int assign_esc(struct utf8lite_text *text, const uint8_t *ptr, size_t size,
 		if (ch == '\\') {
 			attr |= UTF8LITE_TEXT_ESC_BIT;
 
-			start = ptr;
 			if ((err = utf8lite_scan_escape(&ptr, end, msg))) {
 				goto error;
 			}
-
-			utf8lite_decode_escape(&start, &code);
 		} else if (ch & 0x80) {
 			ptr--;
 			if ((err = utf8lite_scan_utf8(&ptr, end, msg))) {
