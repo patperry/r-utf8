@@ -34,15 +34,14 @@ TEST_CFLAGS = $(shell pkg-config --cflags check) \
 TEST_LIBS = $(shell pkg-config --libs check)
 
 CLDR = https://raw.githubusercontent.com/unicode-cldr/cldr-segments-modern/master
-EMOJI = http://www.unicode.org/Public/emoji/12.0
-UNICODE = http://www.unicode.org/Public/12.0.0
+UNICODE = http://www.unicode.org/Public/13.0.0
 
 UTF8LITE_A = libutf8lite.a
 LIB_O	= src/array.o src/char.o src/encode.o src/error.o src/escape.o \
 	  src/graph.o src/graphscan.o src/normalize.o src/render.o src/text.o \
 	  src/textassign.o src/textiter.o src/textmap.o src/wordscan.o
 
-DATA    = data/emoji/emoji-data.txt \
+DATA    = data/ucd/emoji/emoji-data.txt \
 	  data/ucd/CaseFolding.txt \
 	  data/ucd/CompositionExclusions.txt \
 	  data/ucd/DerivedCoreProperties.txt \
@@ -83,9 +82,9 @@ $(UTF8LITE_T): $(UTF8LITE_O) $(UTF8LITE_A)
 
 # Data
 
-data/emoji/emoji-data.txt:
-	$(MKDIR_P) data/emoji
-	$(CURL) -o $@ $(EMOJI)/emoji-data.txt
+data/ucd/emoji/emoji-data.txt:
+	$(MKDIR_P) data/ucd/emoji
+	$(CURL) -o $@ $(UNICODE)/ucd/emoji/emoji-data.txt
 
 data/ucd/CaseFolding.txt:
 	$(MKDIR_P) data/ucd
@@ -106,6 +105,10 @@ data/ucd/EastAsianWidth.txt:
 data/ucd/PropList.txt:
 	$(MKDIR_P) data/ucd
 	$(CURL) -o $@ $(UNICODE)/ucd/PropList.txt
+
+data/ucd/Scripts.txt:
+	$(MKDIR_P) data/ucd
+	$(CURL) -o $@ $(UNICODE)/ucd/Scripts.txt
 
 data/ucd/NormalizationTest.txt:
 	$(MKDIR_P) data/ucd
@@ -139,7 +142,7 @@ src/private/casefold.h: util/gen-casefold.py \
 	./util/gen-casefold.py > $@
 
 src/private/charwidth.h: util/gen-charwidth.py util/property.py util/unicode_data.py \
-		data/emoji/emoji-data.txt data/ucd/DerivedCoreProperties.txt \
+		data/ucd/emoji/emoji-data.txt data/ucd/DerivedCoreProperties.txt \
 		data/ucd/EastAsianWidth.txt data/ucd/UnicodeData.txt
 	$(MKDIR_P) src/private
 	./util/gen-charwidth.py > $@
@@ -159,12 +162,12 @@ src/private/decompose.h: util/gen-decompose.py util/unicode_data.py \
 	$(MKDIR_P) src/private
 	./util/gen-decompose.py > $@
 
-src/private/emojiprop.h: util/gen-emojiprop.py data/emoji/emoji-data.txt
+src/private/emojiprop.h: util/gen-emojiprop.py data/ucd/emoji/emoji-data.txt
 	$(MKDIR_P) src/private
 	./util/gen-emojiprop.py > $@
 
 src/private/graphbreak.h: util/gen-graphbreak.py util/gen-graphbreak.py \
-		data/emoji/emoji-data.txt \
+		data/ucd/emoji/emoji-data.txt \
 		data/ucd/auxiliary/GraphemeBreakProperty.txt
 	$(MKDIR_P) src/private
 	./util/gen-graphbreak.py > $@

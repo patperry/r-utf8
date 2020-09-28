@@ -26,7 +26,7 @@ except ModuleNotFoundError:
 
 DERIVED_CORE_PROPERTIES = "data/ucd/DerivedCoreProperties.txt"
 EAST_ASIAN_WIDTH = "data/ucd/EastAsianWidth.txt"
-EMOJI_DATA = "data/emoji/emoji-data.txt"
+EMOJI_DATA = "data/ucd/emoji/emoji-data.txt"
 
 
 east_asian_width = property.read(EAST_ASIAN_WIDTH)
