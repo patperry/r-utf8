@@ -27,7 +27,6 @@ matrix:
     - os: linux
       r: oldrel
     - os: linux
-      dist: trusty
       r: release
       env: R_CODECOV=true
     - os: linux
