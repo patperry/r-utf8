@@ -36,6 +36,13 @@ START_TEST(test_wcwidth9)
 		prop0 = (code < 0x10FFFE) ? wcwidth9(code) : -3;
 		prop = utf8lite_charwidth(code);
 
+		if (code == 0x1F93B || code == 0x1F946) {
+			// These characters changed from East Asian Wide
+			// to Narrow in Unicode 13.0
+			ok = prop == UTF8LITE_CHARWIDTH_NARROW;
+			goto Check;
+		}
+
 		switch (prop) {
 		case UTF8LITE_CHARWIDTH_NONE:
 			ok = prop0 == -1 || prop0 == -3 || prop0 == 1;
@@ -69,7 +76,7 @@ START_TEST(test_wcwidth9)
 			ok = 0;
 			break;
 		}
-
+Check:
 		if (!ok) {
 			nfail++;
 			printf("U+%04X wcwidth9: %d utf8lite: %d\n", code, prop0, prop);

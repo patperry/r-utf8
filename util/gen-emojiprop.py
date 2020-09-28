@@ -23,7 +23,7 @@ except ModuleNotFoundError:
     from util import property
     from util import unicode_data
 
-EMOJI_DATA = "data/emoji/emoji-data.txt"
+EMOJI_DATA = "data/ucd/emoji/emoji-data.txt"
 
 emoji_props = property.read(EMOJI_DATA, sets=True)
 

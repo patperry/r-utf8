@@ -21,7 +21,7 @@ try:
 except ModuleNotFoundError:
     from util import property
 
-EMOJI_DATA = "data/emoji/emoji-data.txt"
+EMOJI_DATA = "data/ucd/emoji/emoji-data.txt"
 GRAPHEME_BREAK_PROPERTY = "data/ucd/auxiliary/GraphemeBreakProperty.txt"
 code_props = property.read(GRAPHEME_BREAK_PROPERTY)
 emoji_props = property.read(EMOJI_DATA, sets=True)
