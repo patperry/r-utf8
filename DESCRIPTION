@@ -3,8 +3,10 @@ Version: 1.2.0.9000
 Title: Unicode Text Processing
 Authors@R: c(
   person(c("Patrick", "O."), "Perry",
-         role = c("aut", "cph", "cre"),
-         email = "patperry@gmail.com"),
+         role = c("aut", "cph")),
+  person("Kirill", "Müller",
+         role = "cre",
+         email = "krlmlr+r@mailbox.org"),
   person("Unicode, Inc.",
          role = c("cph", "dtc"),
          comment = "Unicode Character Database"))
