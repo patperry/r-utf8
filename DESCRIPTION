@@ -10,9 +10,9 @@ Authors@R: c(
          comment = "Unicode Character Database"))
 Depends: R (>= 2.10)
 Suggests:
-  knitr,
-  rmarkdown,
-  testthat
+    knitr,
+    rmarkdown,
+    testthat (>= 3.0.0)
 Description: Process and print 'UTF-8' encoded international text (Unicode). Input, validate, normalize, encode, format, and display.
 License: Apache License (== 2.0) | file LICENSE
 URL: https://github.com/patperry/r-utf8
@@ -20,3 +20,4 @@ BugReports: https://github.com/patperry/r-utf8/issues
 LazyData: Yes
 Encoding: UTF-8
 VignetteBuilder: knitr, rmarkdown
+Config/testthat/edition: 3
