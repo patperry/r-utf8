@@ -19,3 +19,5 @@
 ^src/utf8lite/data$
 ^vignettes/.*[.]in$
 ^_pkgdown\.yml$
+^utf8\.Rproj$
+^\.Rproj\.user$
