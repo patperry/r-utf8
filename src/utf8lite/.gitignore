@@ -1,0 +1,14 @@
+*.a
+*.o
+__pycache__
+a.out
+project.xcworkspace
+xcuserdata
+/doc/html
+/tests/check_charwidth
+/tests/check_graphscan
+/tests/check_render
+/tests/check_text
+/tests/check_textmap
+/tests/check_unicode
+/tests/check_wordscan
