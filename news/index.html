@@ -89,7 +89,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">utf8</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.0.9000</span>
       </span>
     </div>
 
@@ -129,25 +129,22 @@
       <small>Source: <a href='https://github.com/patperry/r-utf8/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
-    <div id="utf8-120-2019-04-02" class="section level1">
-<h1 class="page-header" data-toc-text="1.2.0">
-<a href="#utf8-120-2019-04-02" class="anchor"></a>utf8 1.2.0 (2019-04-02)<small> Unreleased </small>
+    <div id="utf8-1209000-2021-03-08" class="section level1">
+<h1 class="page-header" data-toc-text="1.2.0.9000">
+<a href="#utf8-1209000-2021-03-08" class="anchor"></a>utf8 1.2.0.9000 (2021-03-08)<small> Unreleased </small>
 </h1>
-<div id="minor-improvements" class="section level3">
-<h3 class="hasAnchor">
-<a href="#minor-improvements" class="anchor"></a>MINOR IMPROVEMENTS</h3>
 <ul>
-<li>Upgrade to latest <code>utf8lite</code>, which conforms to Unicode and Emoji standards version 12.0.</li>
+<li><p>‘master’ of github.com:patperry/r-utf8:</p></li>
+<li><p>Upgrade to latest <code>utf8lite</code>, which conforms to Unicode and Emoji standards version 12.0.</p></li>
 </ul>
-</div>
 </div>
     <div id="utf8-114-2018-05-24" class="section level1">
 <h1 class="page-header" data-toc-text="1.1.4">
 <a href="#utf8-114-2018-05-24" class="anchor"></a>utf8 1.1.4 (2018-05-24)<small> 2018-05-24 </small>
 </h1>
-<div id="bug-fixes" class="section level3">
-<h3 class="hasAnchor">
-<a href="#bug-fixes" class="anchor"></a>BUG FIXES</h3>
+<div id="bug-fixes" class="section level2">
+<h2 class="hasAnchor">
+<a href="#bug-fixes" class="anchor"></a>BUG FIXES</h2>
 <ul>
 <li><p>Fix build on Solaris (<a href='https://github.com/patperry/r-utf8/issues/7'>#7</a>, reported by <a href='https://github.com/krlmlr'>@krlmlr</a>).</p></li>
 <li><p>Fix rendering of emoji ZWJ sequences like <code>"\U1F469\U200D\U2764\UFE0F\U200D\U1F48B\U200D\U1F469"</code>.</p></li>
@@ -158,9 +155,9 @@
 <h1 class="page-header" data-toc-text="1.1.3">
 <a href="#utf8-113-2018-01-03" class="anchor"></a>utf8 1.1.3 (2018-01-03)<small> 2018-01-03 </small>
 </h1>
-<div id="minor-improvements-1" class="section level3">
-<h3 class="hasAnchor">
-<a href="#minor-improvements-1" class="anchor"></a>MINOR IMPROVEMENTS</h3>
+<div id="minor-improvements" class="section level2">
+<h2 class="hasAnchor">
+<a href="#minor-improvements" class="anchor"></a>MINOR IMPROVEMENTS</h2>
 <ul>
 <li><p>Make <code><a href="../reference/output_utf8.html">output_utf8()</a></code> always return <code>TRUE</code> on Windows, so that characters in the user’s native locale don’t get escaped by <code><a href="../reference/utf8_encode.html">utf8_encode()</a></code>. The downside of this change is that on Windows, <code><a href="../reference/utf8_width.html">utf8_width()</a></code> reports the wrong values for characters outside the user’s locale when <code><a href="https://rdrr.io/r/base/showConnections.html" class="external-link">stdout()</a></code> is redirected by <code>knitr</code> or another process.</p></li>
 <li><p>When truncating long strings strings via <code><a href="../reference/utf8_format.html">utf8_format()</a></code>, use an ellipsis that is printable in the user’s native locale (<code>"\u2026" or</code>“…”`).</p></li>
@@ -171,9 +168,9 @@
 <h1 class="page-header" data-toc-text="1.1.2">
 <a href="#utf8-112-2017-12-14" class="anchor"></a>utf8 1.1.2 (2017-12-14)<small> 2017-12-14 </small>
 </h1>
-<div id="bug-fixes-1" class="section level3">
-<h3 class="hasAnchor">
-<a href="#bug-fixes-1" class="anchor"></a>BUG FIXES</h3>
+<div id="bug-fixes-1" class="section level2">
+<h2 class="hasAnchor">
+<a href="#bug-fixes-1" class="anchor"></a>BUG FIXES</h2>
 <ul>
 <li>Fix bug in <code><a href="../reference/utf8_format.html">utf8_format()</a></code> with non-<code>NULL</code> <code>width</code> argument.</li>
 </ul>
@@ -183,9 +180,9 @@
 <h1 class="page-header" data-toc-text="1.1.1">
 <a href="#utf8-111-2017-11-28" class="anchor"></a>utf8 1.1.1 (2017-11-28)<small> 2017-11-29 </small>
 </h1>
-<div id="bug-fixes-2" class="section level3">
-<h3 class="hasAnchor">
-<a href="#bug-fixes-2" class="anchor"></a>BUG FIXES</h3>
+<div id="bug-fixes-2" class="section level2">
+<h2 class="hasAnchor">
+<a href="#bug-fixes-2" class="anchor"></a>BUG FIXES</h2>
 <ul>
 <li>Fix PROTECT bug in <code><a href="../reference/as_utf8.html">as_utf8()</a></code>.</li>
 </ul>
@@ -195,16 +192,16 @@
 <h1 class="page-header" data-toc-text="1.1.0">
 <a href="#utf8-110-2017-11-20" class="anchor"></a>utf8 1.1.0 (2017-11-20)<small> 2017-11-20 </small>
 </h1>
-<div id="new-features" class="section level3">
-<h3 class="hasAnchor">
-<a href="#new-features" class="anchor"></a>NEW FEATURES</h3>
+<div id="new-features" class="section level2">
+<h2 class="hasAnchor">
+<a href="#new-features" class="anchor"></a>NEW FEATURES</h2>
 <ul>
 <li>Added <code><a href="../reference/output_utf8.html">output_ansi()</a></code> and <code><a href="../reference/output_utf8.html">output_utf8()</a></code> functions to test for output capabilities.</li>
 </ul>
 </div>
-<div id="minor-improvements-2" class="section level3">
-<h3 class="hasAnchor">
-<a href="#minor-improvements-2" class="anchor"></a>MINOR IMPROVEMENTS</h3>
+<div id="minor-improvements-1" class="section level2">
+<h2 class="hasAnchor">
+<a href="#minor-improvements-1" class="anchor"></a>MINOR IMPROVEMENTS</h2>
 <ul>
 <li><p>Add <code>utf8</code> argument to <code><a href="../reference/utf8_encode.html">utf8_encode()</a></code>, <code><a href="../reference/utf8_format.html">utf8_format()</a></code>, <code><a href="../reference/utf8_print.html">utf8_print()</a></code>, and <code><a href="../reference/utf8_width.html">utf8_width()</a></code> for precise control over assumed output capabilities; defaults to the result of <code><a href="../reference/output_utf8.html">output_utf8()</a></code>.</p></li>
 <li><p>Add ability to style backslash escapes with the <code>escapes</code> arguments to <code><a href="../reference/utf8_encode.html">utf8_encode()</a></code> and <code><a href="../reference/utf8_print.html">utf8_print()</a></code>. Switch from “faint” styling to no styling by default.</p></li>
@@ -212,16 +209,16 @@
 <li><p>Fix (spurious) <code>rchk</code> warnings.</p></li>
 </ul>
 </div>
-<div id="bug-fixes-3" class="section level3">
-<h3 class="hasAnchor">
-<a href="#bug-fixes-3" class="anchor"></a>BUG FIXES</h3>
+<div id="bug-fixes-3" class="section level2">
+<h2 class="hasAnchor">
+<a href="#bug-fixes-3" class="anchor"></a>BUG FIXES</h2>
 <ul>
 <li>Fix bug in <code><a href="../reference/utf8_width.html">utf8_width()</a></code> determining width of non-ASCII strings when <code>LC_CTYPE=C</code>.</li>
 </ul>
 </div>
-<div id="deprecated-and-defunct" class="section level3">
-<h3 class="hasAnchor">
-<a href="#deprecated-and-defunct" class="anchor"></a>DEPRECATED AND DEFUNCT</h3>
+<div id="deprecated-and-defunct" class="section level2">
+<h2 class="hasAnchor">
+<a href="#deprecated-and-defunct" class="anchor"></a>DEPRECATED AND DEFUNCT</h2>
 <ul>
 <li>No longer export the C version of <code><a href="../reference/as_utf8.html">as_utf8()</a></code> (the R version is still present).</li>
 </ul>
@@ -231,9 +228,9 @@
 <h1 class="page-header" data-toc-text="1.0.0">
 <a href="#utf8-100-2017-11-06" class="anchor"></a>utf8 1.0.0 (2017-11-06)<small> 2017-11-07 </small>
 </h1>
-<div id="new-features-1" class="section level3">
-<h3 class="hasAnchor">
-<a href="#new-features-1" class="anchor"></a>NEW FEATURES</h3>
+<div id="new-features-1" class="section level2">
+<h2 class="hasAnchor">
+<a href="#new-features-1" class="anchor"></a>NEW FEATURES</h2>
 <ul>
 <li><p>Split off functions <code><a href="../reference/as_utf8.html">as_utf8()</a></code>, <code><a href="../reference/as_utf8.html">utf8_valid()</a></code>, <code><a href="../reference/utf8_normalize.html">utf8_normalize()</a></code>, <code><a href="../reference/utf8_encode.html">utf8_encode()</a></code>, <code><a href="../reference/utf8_format.html">utf8_format()</a></code>, <code><a href="../reference/utf8_print.html">utf8_print()</a></code>, and <code><a href="../reference/utf8_width.html">utf8_width()</a></code> from <a href="http://corpustext.com/" title="corpus: Text Corpus Analysis" class="external-link">corpus</a> package.</p></li>
 <li><p>Added special handling for Unicode grapheme clusters in formatting and width measurement functions.</p></li>
