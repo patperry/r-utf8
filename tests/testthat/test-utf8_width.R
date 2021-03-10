@@ -1,5 +1,3 @@
-context("utf8_width")
-
 test_that("'utf8_width' computes widths correctly", {
   ctype <- switch_ctype("UTF-8")
   on.exit(Sys.setlocale("LC_CTYPE", ctype))

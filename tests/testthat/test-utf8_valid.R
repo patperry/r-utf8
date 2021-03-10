@@ -1,5 +1,3 @@
-context("utf8_valid")
-
 test_that("'as_utf8' errors on latin1 declared to be UTF-8", {
   x <- c("a", "b", "the command of her beauty, and her \xa320,000", "d")
   Encoding(x) <- "UTF-8"

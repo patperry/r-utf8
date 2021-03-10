@@ -1,5 +1,3 @@
-context("utf8_normalize")
-
 # From http://unicode.org/reports/tr15/
 test_that("'utf8_normalize' can reproduce Fig. 3", {
   src <- c("\u212b", "\u2126")

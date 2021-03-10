@@ -1,6 +1,3 @@
-context("utf8_encode")
-
-
 test_that("'utf8_encode' can encode an ASCII string", {
   expect_equal(utf8_encode("hello"), "hello")
 })

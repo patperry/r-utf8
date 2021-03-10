@@ -1,6 +1,3 @@
-context("utf8_format")
-
-
 test_that("'format' can handle short text", {
   raw <- c(NA, "", "a", "foo", "short text")
 
