@@ -1,5 +1,10 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# utf8 1.2.1 (2021-03-10)
+
+- Internal changes only.
+
+
 # utf8 1.2.0.9001 (2021-03-10)
 
 - Silence test on macOS.
