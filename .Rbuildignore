@@ -21,3 +21,4 @@
 ^codecov\.yml$
 ^README\.html$
 ^CRAN-RELEASE$
+^cran-comments\.md$
