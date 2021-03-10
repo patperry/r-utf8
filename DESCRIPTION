@@ -6,7 +6,7 @@ Authors@R:
              family = "Perry",
              role = c("aut", "cph")),
       person(given = "Kirill",
-             family = "Müller",
+             family = "M\u00fcller",
              role = "cre",
              email = "krlmlr+r@mailbox.org"),
       person(given = "Unicode, Inc.",
