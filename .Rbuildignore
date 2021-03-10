@@ -1,7 +1,6 @@
 [.]a$
 [.]o$
 [.]so$
-[.]html$
 ^[.]Rprofile$
 ^[.]git
 ^_pkgdown[.]yml$
@@ -20,3 +19,4 @@
 ^utf8\.Rproj$
 ^\.Rproj\.user$
 ^codecov\.yml$
+^README\.html$
