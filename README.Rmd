@@ -1,3 +1,6 @@
+---
+output: downlit::readme_document
+---
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 ```{r, echo = FALSE}
@@ -7,18 +10,18 @@ knitr::opts_chunk$set(
     fig.path = "README-"
 )
 options(width = 95)
-library(utf8)
 ```
 
 utf8
 ====
 
-[![Build Status (Linux)][travis-badge]][travis]
-[![Build Status (Windows)][appveyor-badge]][appveyor]
+<!-- badges: start -->
+[![rcc](https://github.com/patperry/r-utf8/workflows/rcc/badge.svg)](https://github.com/patperry/r-utf8/actions)
 [![Coverage Status][codecov-badge]][codecov]
 [![CRAN Status][cran-badge]][cran]
 [![License][apache-badge]][apache]
 [![CRAN RStudio Mirror Downloads][cranlogs-badge]][cran]
+<!-- badges: end -->
 
 
 *utf8* is an R package for manipulating and printing UTF-8 text that fixes
@@ -42,21 +45,20 @@ install.packages("utf8")
 To install the latest development version, run the following:
 
 ```r
-tmp <- tempfile()
-system2("git", c("clone", "--recursive", shQuote("https://github.com/patperry/r-utf8.git"), shQuote(tmp)))
-devtools::install(tmp)
+devtools::install_github("patperry/r-utf8")
 ```
-
-Note that *utf8* uses a git submodule, so you cannot use
-`devtools::install_github`.
 
 
 Usage
 -----
 
+```{r}
+library(utf8)
+```
+
 ### Validate character data and convert to UTF-8
 
-Use `as_utf8` to validate input text and convert to UTF-8 encoding. The
+Use `as_utf8()` to validate input text and convert to UTF-8 encoding. The
 function alerts you if the input text has the wrong declared encoding:
 
 ```{r, error = TRUE}
@@ -72,7 +74,7 @@ as_utf8(x) # succeeds
 
 ### Normalize data
 
-Use `utf8_normalize` to convert to Unicode composed normal form (NFC).
+Use `utf8_normalize()` to convert to Unicode composed normal form (NFC).
 Optionally apply compatibility maps for NFKC normal form or case-fold.
 
 ```{r}
@@ -91,9 +93,9 @@ utf8_normalize("𝖸𝗈 𝐔𝐧𝐢𝐜𝐨𝐝𝐞 𝗅 𝗁𝖾𝗋𝖽 𝕌
 
 ### Print emoji
 
-On some platforms (including MacOS), the R implementation of `print` uses an
+On some platforms (including MacOS), the R implementation of `print()` uses an
 outdated version of the Unicode standard to determine which characters are
-printable. Use `utf8_print` for an updated print function:
+printable. Use `utf8_print()` for an updated print function:
 
 ```{r}
 print(intToUtf8(0x1F600 + 0:79)) # with default R print function
@@ -121,12 +123,11 @@ The project maintainer welcomes contributions in the form of feature requests,
 bug reports, comments, unit tests, vignettes, or other code.  If you'd like to
 contribute, either
 
- + fork the repository and submit a pull request (note the nonstandard
-   instructions for [building from source][building]);
+- fork the repository and submit a pull request
 
- + [file an issue][issues];
+- [file an issue][issues];
 
- + or contact the maintainer via e-mail.
+- or contact the maintainer via e-mail.
 
 This project is released with a [Contributor Code of Conduct][conduct],
 and if you choose to contribute, you must adhere to its terms.
@@ -134,8 +135,6 @@ and if you choose to contribute, you must adhere to its terms.
 
 [apache]: https://www.apache.org/licenses/LICENSE-2.0.html "Apache License, Version 2.0"
 [apache-badge]: https://img.shields.io/badge/License-Apache%202.0-blue.svg "Apache License, Version 2.0"
-[appveyor]: https://ci.appveyor.com/project/patperry/r-utf8/branch/master "Continuous Integration (Windows)"
-[appveyor-badge]: https://ci.appveyor.com/api/projects/status/github/patperry/r-utf8?branch=master&svg=true "Continuous Inegration (Windows)"
 [building]: #development-version "Building from Source"
 [codecov]: https://codecov.io/github/patperry/r-utf8?branch=master "Code Coverage"
 [codecov-badge]: https://codecov.io/github/patperry/r-utf8/coverage.svg?branch=master "Code Coverage"
@@ -145,6 +144,4 @@ and if you choose to contribute, you must adhere to its terms.
 [cranlogs-badge]: http://cranlogs.r-pkg.org/badges/utf8 "CRAN Downloads"
 [emoji-print]: https://twitter.com/ptrckprry/status/887732831161425920 "MacOS Emoji Printing"
 [issues]: https://github.com/patperry/r-utf8/issues "Issues"
-[travis]: https://travis-ci.org/patperry/r-utf8 "Continuous Integration (Linux)"
-[travis-badge]: https://api.travis-ci.org/patperry/r-utf8.svg?branch=master "Continuous Integration (Linux)"
 [windows-enc2utf8]: https://twitter.com/ptrckprry/status/901494853758054401 "Windows enc2utf8 Bug"
