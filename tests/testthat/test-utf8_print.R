@@ -1,5 +1,3 @@
-context("utf8_print")
-
 test_that("'utf8_print' can print unicode", {
   skip_on_os("windows")
   ctype <- switch_ctype("UTF-8")
