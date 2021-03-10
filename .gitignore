@@ -8,3 +8,4 @@
 /dist/
 /docs/articles/*.Rmd.in
 .Rproj.user
+CRAN-RELEASE

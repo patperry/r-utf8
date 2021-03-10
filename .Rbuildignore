@@ -20,3 +20,4 @@
 ^\.Rproj\.user$
 ^codecov\.yml$
 ^README\.html$
+^CRAN-RELEASE$
