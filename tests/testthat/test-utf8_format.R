@@ -23,51 +23,39 @@ test_that("'format' can handle short text", {
 })
 
 
-test_that("'format' can handle long text in Unicode locale", {
-  raw <- c(
-    NA, "", "a", "ab", "foo", "food", "short text",
-    "\u6027", "\u6027\u6027", "\u6027?"
-  )
-  Encoding(raw) <- "UTF-8"
+# Run opposite test to snapshot output but not alter it
+if (!l10n_info()$`UTF-8`) {
+  test_that("'format' can handle long text in Unicode locale: UTF-8 is TRUE", {
+    skip("Symmetry")
+  })
+}
 
-  short <- c(
-    NA, "", "a", "ab", "fo\u2026", "fo\u2026", "sh\u2026",
-    "\u6027", "\u6027\u2026", "\u6027\u2026"
-  )
-  Encoding(short) <- "UTF-8"
+test_that(paste0("'format' can handle long text in Unicode locale: UTF-8 is ", l10n_info()$`UTF-8`), {
+  if (l10n_info()$`UTF-8`) {
+    local_utf8()
+    expect_true(cli::is_utf8_output())
+  }
 
-  rshort <- c(
-    NA, "", "a", "ab", "\u2026oo", "\u2026od", "\u2026xt",
-    "\u6027", "\u2026\u6027", "\u2026?"
-  )
-  Encoding(rshort) <- "UTF-8"
+  expect_snapshot({
+    raw <- c(
+      NA, "", "a", "ab", "foo", "food", "short text",
+      "\u6027", "\u6027\u6027", "\u6027?"
+    )
+    Encoding(raw) <- "UTF-8"
 
-  ctype <- switch_ctype("UTF-8")
-  on.exit(Sys.setlocale("LC_CTYPE", ctype))
-  skip_on_os("windows") # windows can't format \u6027
-  skip_on_os("mac") # format() bug in macOS?
-
-  expect_equal(
-    utf8_format(raw, chars = 2, justify = "none", na.print = "NA"),
-    format(short, justify = "none")
-  )
-
-  expect_equal(
-    utf8_format(raw, chars = 2, justify = "left", na.print = "NA"),
-    format(short, justify = "left")
-  )
-
-  expect_equal(
-    utf8_format(raw, chars = 2, justify = "centre", na.print = "NA"),
-    format(short, justify = "centre")
-  )
-
-  expect_equal(
-    utf8_format(raw, chars = 2, justify = "right", na.print = "NA"),
-    format(rshort, justify = "right")
-  )
+    utf8_format(raw, chars = 2, justify = "none", na.print = "NA")
+    utf8_format(raw, chars = 2, justify = "left", na.print = "NA")
+    utf8_format(raw, chars = 2, justify = "centre", na.print = "NA")
+    utf8_format(raw, chars = 2, justify = "right", na.print = "NA")
+  })
 })
 
+# Run opposite test to snapshot output but not alter it
+if (l10n_info()$`UTF-8`) {
+  test_that("'format' can handle long text in Unicode locale: UTF-8 is FALSE", {
+    skip("Symmetry")
+  })
+}
 
 test_that("'format' can handle long text in UTF-8 locale, part 2", {
   raw <- c(
