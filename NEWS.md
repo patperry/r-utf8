@@ -2,17 +2,8 @@
 
 # utf8 1.2.1 (2021-03-10)
 
-- Internal changes only.
-
-
-# utf8 1.2.0.9001 (2021-03-10)
-
+- Use Unicode and Emoji standards version 13.0 via upgrade to latest `utf8lite`.
 - Silence test on macOS.
-
-
-# utf8 1.2.0.9000 (2021-03-08)
-
-- Upgrade to latest `utf8lite`, which conforms to Unicode and Emoji standards version 13.0.
 
 
 # utf8 1.1.4 (2018-05-24)
