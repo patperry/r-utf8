@@ -1,5 +1,10 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# utf8 1.2.0.9001 (2021-03-10)
+
+- Silence test on macOS.
+
+
 # utf8 1.2.0.9000 (2021-03-08)
 
 - Upgrade to latest `utf8lite`, which conforms to Unicode and Emoji standards version 13.0.
