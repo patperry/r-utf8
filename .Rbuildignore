@@ -19,3 +19,4 @@
 ^_pkgdown\.yml$
 ^utf8\.Rproj$
 ^\.Rproj\.user$
+^codecov\.yml$
