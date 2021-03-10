@@ -3,17 +3,14 @@
 [.]so$
 ^[.]Rprofile$
 ^[.]git
-^[.]travis[.]yml$
 ^_pkgdown[.]yml$
 ^CONDUCT[.]md$
 ^Makefile$
 ^NEWS[.]md$
 ^README[.]Rmd$
 ^TODO[.]md$
-^appveyor[.]yml$
 ^dist$
 ^docs$
-^src/utf8lite/[.]git$
 ^src/utf8lite/[.]travis[.]yml$
 ^src/utf8lite/Makefile$
 ^src/utf8lite/data$
