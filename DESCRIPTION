@@ -1,27 +1,34 @@
 Package: utf8
-Version: 1.2.0.9000
 Title: Unicode Text Processing
-Authors@R: c(
-  person(c("Patrick", "O."), "Perry",
-         role = c("aut", "cph")),
-  person("Kirill", "Müller",
-         role = "cre",
-         email = "krlmlr+r@mailbox.org"),
-  person("Unicode, Inc.",
-         role = c("cph", "dtc"),
-         comment = "Unicode Character Database"))
-Depends: R (>= 2.10)
+Version: 1.2.0.9000
+Authors@R: 
+    c(person(given = c("Patrick", "O."),
+             family = "Perry",
+             role = c("aut", "cph")),
+      person(given = "Kirill",
+             family = "Müller",
+             role = "cre",
+             email = "krlmlr+r@mailbox.org"),
+      person(given = "Unicode, Inc.",
+             role = c("cph", "dtc"),
+             comment = "Unicode Character Database"))
+Description: Process and print 'UTF-8' encoded international
+    text (Unicode). Input, validate, normalize, encode, format, and
+    display.
+License: Apache License (== 2.0) | file LICENSE
+URL: https://github.com/patperry/r-utf8
+BugReports: https://github.com/patperry/r-utf8/issues
+Depends: 
+    R (>= 2.10)
 Suggests:
     covr,
     knitr,
     rlang,
     rmarkdown,
     testthat (>= 3.0.0)
-Description: Process and print 'UTF-8' encoded international text (Unicode). Input, validate, normalize, encode, format, and display.
-License: Apache License (== 2.0) | file LICENSE
-URL: https://github.com/patperry/r-utf8
-BugReports: https://github.com/patperry/r-utf8/issues
-LazyData: Yes
-Encoding: UTF-8
-VignetteBuilder: knitr, rmarkdown
+VignetteBuilder: 
+    knitr,
+    rmarkdown
 Config/testthat/edition: 3
+Encoding: UTF-8
+LazyData: Yes
