@@ -77,7 +77,9 @@
 <div id="utf8" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#utf8" class="anchor"></a>utf8</h1></div>
+<!-- badges: start -->
 
+<!-- badges: end -->
 <p><em>utf8</em> is an R package for manipulating and printing UTF-8 text that fixes <a href="https://twitter.com/ptrckprry/status/901494853758054401" title="Windows enc2utf8 Bug" class="external-link">multiple</a> <a href="https://twitter.com/ptrckprry/status/887732831161425920" title="MacOS Emoji Printing" class="external-link">bugs</a> in R’s UTF-8 handling.</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
@@ -86,93 +88,92 @@
 <h3 class="hasAnchor">
 <a href="#stable-version" class="anchor"></a>Stable version</h3>
 <p><em>utf8</em> is <a href="https://cran.r-project.org/package=utf8" title="CRAN Page" class="external-link">available on CRAN</a>. To install the latest released version, run the following command in R:</p>
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"utf8"</span><span class="op">)</span></code></pre></div>
+<pre class="chroma">
+<span class="nf"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="o">(</span><span class="s">"utf8"</span><span class="o">)</span></pre>
 </div>
 <div id="development-version" class="section level3">
 <h3 class="hasAnchor">
 <a href="#development-version" class="anchor"></a>Development version</h3>
 <p>To install the latest development version, run the following:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">tmp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/tempfile.html" class="external-link">tempfile</a></span><span class="op">(</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/system2.html" class="external-link">system2</a></span><span class="op">(</span><span class="st">"git"</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"clone"</span>, <span class="st">"--recursive"</span>, <span class="fu"><a href="https://rdrr.io/r/base/shQuote.html" class="external-link">shQuote</a></span><span class="op">(</span><span class="st">"https://github.com/patperry/r-utf8.git"</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/shQuote.html" class="external-link">shQuote</a></span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>
-<span class="fu">devtools</span><span class="fu">::</span><span class="fu">install</span><span class="op">(</span><span class="va">tmp</span><span class="op">)</span></code></pre></div>
-<p>Note that <em>utf8</em> uses a git submodule, so you cannot use <code>devtools::install_github</code>.</p>
+<pre class="chroma">
+<span class="nf">devtools</span><span class="nf">::</span><span class="nf"><a href="https://devtools.r-lib.org//reference/remote-reexports.html" class="external-link">install_github</a></span><span class="o">(</span><span class="s">"patperry/r-utf8"</span><span class="o">)</span></pre>
 </div>
 </div>
 <div id="usage" class="section level2">
 <h2 class="hasAnchor">
 <a href="#usage" class="anchor"></a>Usage</h2>
+<pre class="chroma">
+<span class="kr"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="o">(</span><span class="nv"><a href="https://github.com/patperry/r-utf8" class="external-link">utf8</a></span><span class="o">)</span></pre>
 <div id="validate-character-data-and-convert-to-utf-8" class="section level3">
 <h3 class="hasAnchor">
 <a href="#validate-character-data-and-convert-to-utf-8" class="anchor"></a>Validate character data and convert to UTF-8</h3>
-<p>Use <code>as_utf8</code> to validate input text and convert to UTF-8 encoding. The function alerts you if the input text has the wrong declared encoding:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># second entry is encoded in latin-1, but declared as UTF-8</span>
-<span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fa\u00E7ile"</span>, <span class="st">"fa\xE7ile"</span>, <span class="st">"fa\xC3\xA7ile"</span><span class="op">)</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Encoding.html" class="external-link">Encoding</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"UTF-8"</span>, <span class="st">"UTF-8"</span>, <span class="st">"bytes"</span><span class="op">)</span>
-<span class="fu"><a href="reference/as_utf8.html">as_utf8</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="co"># fails</span>
-<span class="co">#&gt; Error in as_utf8(x): entry 2 has wrong Encoding; marked as "UTF-8" but leading byte 0xE7 followed by invalid continuation byte (0x69) at position 4</span>
+<p>Use <a href="https://rdrr.io/pkg/utf8/man/as_utf8.html" class="external-link"><code>as_utf8()</code></a> to validate input text and convert to UTF-8 encoding. The function alerts you if the input text has the wrong declared encoding:</p>
+<pre class="chroma">
+<span class="c"># second entry is encoded in latin-1, but declared as UTF-8</span>
+<span class="nv">x</span> <span class="o">&lt;-</span> <span class="nf"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="o">(</span><span class="s">"fa\u00E7ile"</span>, <span class="s">"fa\xE7ile"</span>, <span class="s">"fa\xC3\xA7ile"</span><span class="o">)</span>
+<span class="nf"><a href="https://rdrr.io/r/base/Encoding.html" class="external-link">Encoding</a></span><span class="o">(</span><span class="nv">x</span><span class="o">)</span> <span class="o">&lt;-</span> <span class="nf"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="o">(</span><span class="s">"UTF-8"</span>, <span class="s">"UTF-8"</span>, <span class="s">"bytes"</span><span class="o">)</span>
+<span class="nf"><a href="https://rdrr.io/pkg/utf8/man/as_utf8.html" class="external-link">as_utf8</a></span><span class="o">(</span><span class="nv">x</span><span class="o">)</span> <span class="c"># fails</span>
+<span class="c">#&gt; Error in as_utf8(x): entry 2 has wrong Encoding; marked as "UTF-8" but leading byte 0xE7 followed by invalid continuation byte (0x69) at position 4</span>
 
-<span class="co"># mark the correct encoding</span>
-<span class="fu"><a href="https://rdrr.io/r/base/Encoding.html" class="external-link">Encoding</a></span><span class="op">(</span><span class="va">x</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"latin1"</span>
-<span class="fu"><a href="reference/as_utf8.html">as_utf8</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="co"># succeeds</span>
-<span class="co">#&gt; [1] "façile" "façile" "façile"</span></code></pre></div>
+<span class="c"># mark the correct encoding</span>
+<span class="nf"><a href="https://rdrr.io/r/base/Encoding.html" class="external-link">Encoding</a></span><span class="o">(</span><span class="nv">x</span><span class="o">[</span><span class="m">2</span><span class="o">]</span><span class="o">)</span> <span class="o">&lt;-</span> <span class="s">"latin1"</span>
+<span class="nf"><a href="https://rdrr.io/pkg/utf8/man/as_utf8.html" class="external-link">as_utf8</a></span><span class="o">(</span><span class="nv">x</span><span class="o">)</span> <span class="c"># succeeds</span>
+<span class="c">#&gt; [1] "façile" "façile" "façile"</span></pre>
 </div>
 <div id="normalize-data" class="section level3">
 <h3 class="hasAnchor">
 <a href="#normalize-data" class="anchor"></a>Normalize data</h3>
-<p>Use <code>utf8_normalize</code> to convert to Unicode composed normal form (NFC). Optionally apply compatibility maps for NFKC normal form or case-fold.</p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># three ways to encode an angstrom character</span>
-<span class="op">(</span><span class="va">angstrom</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"\u00c5"</span>, <span class="st">"\u0041\u030a"</span>, <span class="st">"\u212b"</span><span class="op">)</span><span class="op">)</span>
-<span class="co">#&gt; [1] "Å" "Å" "Å"</span>
-<span class="fu"><a href="reference/utf8_normalize.html">utf8_normalize</a></span><span class="op">(</span><span class="va">angstrom</span><span class="op">)</span> <span class="op">==</span> <span class="st">"\u00c5"</span>
-<span class="co">#&gt; [1] TRUE TRUE TRUE</span>
+<p>Use <a href="https://rdrr.io/pkg/utf8/man/utf8_normalize.html" class="external-link"><code>utf8_normalize()</code></a> to convert to Unicode composed normal form (NFC). Optionally apply compatibility maps for NFKC normal form or case-fold.</p>
+<pre class="chroma">
+<span class="c"># three ways to encode an angstrom character</span>
+<span class="o">(</span><span class="nv">angstrom</span> <span class="o">&lt;-</span> <span class="nf"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="o">(</span><span class="s">"\u00c5"</span>, <span class="s">"\u0041\u030a"</span>, <span class="s">"\u212b"</span><span class="o">)</span><span class="o">)</span>
+<span class="c">#&gt; [1] "Å" "Å" "Å"</span>
+<span class="nf"><a href="https://rdrr.io/pkg/utf8/man/utf8_normalize.html" class="external-link">utf8_normalize</a></span><span class="o">(</span><span class="nv">angstrom</span><span class="o">)</span> <span class="o">==</span> <span class="s">"\u00c5"</span>
+<span class="c">#&gt; [1] TRUE TRUE TRUE</span>
 
-<span class="co"># perform full Unicode case-folding</span>
-<span class="fu"><a href="reference/utf8_normalize.html">utf8_normalize</a></span><span class="op">(</span><span class="st">"Größe"</span>, map_case <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="co">#&gt; [1] "grösse"</span>
+<span class="c"># perform full Unicode case-folding</span>
+<span class="nf"><a href="https://rdrr.io/pkg/utf8/man/utf8_normalize.html" class="external-link">utf8_normalize</a></span><span class="o">(</span><span class="s">"Größe"</span>, map_case <span class="o">=</span> <span class="kc">TRUE</span><span class="o">)</span>
+<span class="c">#&gt; [1] "grösse"</span>
 
-<span class="co"># apply compatibility maps to NFKC normal form</span>
-<span class="co"># (example from https://twitter.com/aprilarcus/status/367557195186970624)</span>
-<span class="fu"><a href="reference/utf8_normalize.html">utf8_normalize</a></span><span class="op">(</span><span class="st">"𝖸𝗈 𝐔𝐧𝐢𝐜𝐨𝐝𝐞 𝗅 𝗁𝖾𝗋𝖽 𝕌 𝗅𝗂𝗄𝖾 𝑡𝑦𝑝𝑒𝑓𝑎𝑐𝑒𝑠 𝗌𝗈 𝗐𝖾 𝗉𝗎𝗍 𝗌𝗈𝗆𝖾 𝚌𝚘𝚍𝚎𝚙𝚘𝚒𝚗𝚝𝚜 𝗂𝗇 𝗒𝗈𝗎𝗋 𝔖𝔲𝔭𝔭𝔩𝔢𝔪𝔢𝔫𝔱𝔞𝔯𝔶 𝔚𝔲𝔩𝔱𝔦𝔩𝔦𝔫𝔤𝔳𝔞𝔩 𝔓𝔩𝔞𝔫𝔢 𝗌𝗈 𝗒𝗈𝗎 𝖼𝖺𝗇 𝓮𝓷𝓬𝓸𝓭𝓮 𝕗𝕠𝕟𝕥𝕤 𝗂𝗇 𝗒𝗈𝗎𝗋 𝒇𝒐𝒏𝒕𝒔."</span>,
-               map_compat <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
-<span class="co">#&gt; [1] "Yo Unicode l herd U like typefaces so we put some codepoints in your Supplementary Wultilingval Plane so you can encode fonts in your fonts."</span></code></pre></div>
+<span class="c"># apply compatibility maps to NFKC normal form</span>
+<span class="c"># (example from https://twitter.com/aprilarcus/status/367557195186970624)</span>
+<span class="nf"><a href="https://rdrr.io/pkg/utf8/man/utf8_normalize.html" class="external-link">utf8_normalize</a></span><span class="o">(</span><span class="s">"𝖸𝗈 𝐔𝐧𝐢𝐜𝐨𝐝𝐞 𝗅 𝗁𝖾𝗋𝖽 𝕌 𝗅𝗂𝗄𝖾 𝑡𝑦𝑝𝑒𝑓𝑎𝑐𝑒𝑠 𝗌𝗈 𝗐𝖾 𝗉𝗎𝗍 𝗌𝗈𝗆𝖾 𝚌𝚘𝚍𝚎𝚙𝚘𝚒𝚗𝚝𝚜 𝗂𝗇 𝗒𝗈𝗎𝗋 𝔖𝔲𝔭𝔭𝔩𝔢𝔪𝔢𝔫𝔱𝔞𝔯𝔶 𝔚𝔲𝔩𝔱𝔦𝔩𝔦𝔫𝔤𝔳𝔞𝔩 𝔓𝔩𝔞𝔫𝔢 𝗌𝗈 𝗒𝗈𝗎 𝖼𝖺𝗇 𝓮𝓷𝓬𝓸𝓭𝓮 𝕗𝕠𝕟𝕥𝕤 𝗂𝗇 𝗒𝗈𝗎𝗋 𝒇𝒐𝒏𝒕𝒔."</span>,
+               map_compat <span class="o">=</span> <span class="kc">TRUE</span><span class="o">)</span>
+<span class="c">#&gt; [1] "Yo Unicode l herd U like typefaces so we put some codepoints in your Supplementary Wultilingval Plane so you can encode fonts in your fonts."</span></pre>
 </div>
 <div id="print-emoji" class="section level3">
 <h3 class="hasAnchor">
 <a href="#print-emoji" class="anchor"></a>Print emoji</h3>
-<p>On some platforms (including MacOS), the R implementation of <code>print</code> uses an outdated version of the Unicode standard to determine which characters are printable. Use <code>utf8_print</code> for an updated print function:</p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/utf8Conversion.html" class="external-link">intToUtf8</a></span><span class="op">(</span><span class="fl">0x1F600</span> <span class="op">+</span> <span class="fl">0</span><span class="op">:</span><span class="fl">79</span><span class="op">)</span><span class="op">)</span> <span class="co"># with default R print function</span>
-<span class="co">#&gt; [1] "\U0001f600\U0001f601\U0001f602\U0001f603\U0001f604\U0001f605\U0001f606\U0001f607\U0001f608\U0001f609\U0001f60a\U0001f60b\U0001f60c\U0001f60d\U0001f60e\U0001f60f\U0001f610\U0001f611\U0001f612\U0001f613\U0001f614\U0001f615\U0001f616\U0001f617\U0001f618\U0001f619\U0001f61a\U0001f61b\U0001f61c\U0001f61d\U0001f61e\U0001f61f\U0001f620\U0001f621\U0001f622\U0001f623\U0001f624\U0001f625\U0001f626\U0001f627\U0001f628\U0001f629\U0001f62a\U0001f62b\U0001f62c\U0001f62d\U0001f62e\U0001f62f\U0001f630\U0001f631\U0001f632\U0001f633\U0001f634\U0001f635\U0001f636\U0001f637\U0001f638\U0001f639\U0001f63a\U0001f63b\U0001f63c\U0001f63d\U0001f63e\U0001f63f\U0001f640\U0001f641\U0001f642\U0001f643\U0001f644\U0001f645\U0001f646\U0001f647\U0001f648\U0001f649\U0001f64a\U0001f64b\U0001f64c\U0001f64d\U0001f64e\U0001f64f"</span>
+<p>On some platforms (including MacOS), the R implementation of <a href="https://rdrr.io/r/base/print.html" class="external-link"><code>print()</code></a> uses an outdated version of the Unicode standard to determine which characters are printable. Use <a href="https://rdrr.io/pkg/utf8/man/utf8_print.html" class="external-link"><code>utf8_print()</code></a> for an updated print function:</p>
+<pre class="chroma">
+<span class="nf"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="o">(</span><span class="nf"><a href="https://rdrr.io/r/base/utf8Conversion.html" class="external-link">intToUtf8</a></span><span class="o">(</span><span class="m">0x1F600</span> <span class="o">+</span> <span class="m">0</span><span class="o">:</span><span class="m">79</span><span class="o">)</span><span class="o">)</span> <span class="c"># with default R print function</span>
+<span class="c">#&gt; [1] "😀😁😂😃😄😅😆😇😈😉😊😋😌😍😎😏😐😑😒😓😔😕😖😗😘😙😚😛😜😝😞😟😠😡😢😣😤😥😦😧😨😩😪😫😬😭😮😯😰😱😲😳😴😵😶😷😸😹😺😻😼😽😾😿🙀🙁🙂🙃🙄🙅🙆🙇🙈🙉🙊🙋🙌🙍🙎🙏"</span>
 
-<span class="fu"><a href="reference/utf8_print.html">utf8_print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/utf8Conversion.html" class="external-link">intToUtf8</a></span><span class="op">(</span><span class="fl">0x1F600</span> <span class="op">+</span> <span class="fl">0</span><span class="op">:</span><span class="fl">79</span><span class="op">)</span><span class="op">)</span> <span class="co"># with utf8_print, truncates line</span>
-<span class="co">#&gt; [1] "😀​😁​😂​😃​😄​😅​😆​😇​😈​😉​😊​😋​😌​😍​😎​😏​😐​😑​😒​😓​😔​😕​😖​😗​😘​😙​😚​😛​😜​😝​😞​😟​😠​😡​😢​😣​😤​😥​😦​😧​😨​😩​😪​😫​…"</span>
+<span class="nf"><a href="https://rdrr.io/pkg/utf8/man/utf8_print.html" class="external-link">utf8_print</a></span><span class="o">(</span><span class="nf"><a href="https://rdrr.io/r/base/utf8Conversion.html" class="external-link">intToUtf8</a></span><span class="o">(</span><span class="m">0x1F600</span> <span class="o">+</span> <span class="m">0</span><span class="o">:</span><span class="m">79</span><span class="o">)</span><span class="o">)</span> <span class="c"># with utf8_print, truncates line</span>
+<span class="c">#&gt; [1] "😀​😁​😂​😃​😄​😅​😆​😇​😈​😉​😊​😋​😌​😍​😎​😏​😐​😑​😒​😓​😔​😕​😖​😗​😘​😙​😚​😛​😜​😝​😞​😟​😠​😡​😢​😣​😤​😥​😦​😧​😨​😩​😪​😫​…"</span>
 
-<span class="fu"><a href="reference/utf8_print.html">utf8_print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/utf8Conversion.html" class="external-link">intToUtf8</a></span><span class="op">(</span><span class="fl">0x1F600</span> <span class="op">+</span> <span class="fl">0</span><span class="op">:</span><span class="fl">79</span><span class="op">)</span>, chars <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span> <span class="co"># higher character limit</span>
-<span class="co">#&gt; [1] "😀​😁​😂​😃​😄​😅​😆​😇​😈​😉​😊​😋​😌​😍​😎​😏​😐​😑​😒​😓​😔​😕​😖​😗​😘​😙​😚​😛​😜​😝​😞​😟​😠​😡​😢​😣​😤​😥​😦​😧​😨​😩​😪​😫​😬​😭​😮​😯​😰​😱​😲​😳​😴​😵​😶​😷​😸​😹​😺​😻​😼​😽​😾​😿​🙀​🙁​🙂​🙃​🙄​🙅​🙆​🙇​🙈​🙉​🙊​🙋​🙌​🙍​🙎​🙏​"</span></code></pre></div>
+<span class="nf"><a href="https://rdrr.io/pkg/utf8/man/utf8_print.html" class="external-link">utf8_print</a></span><span class="o">(</span><span class="nf"><a href="https://rdrr.io/r/base/utf8Conversion.html" class="external-link">intToUtf8</a></span><span class="o">(</span><span class="m">0x1F600</span> <span class="o">+</span> <span class="m">0</span><span class="o">:</span><span class="m">79</span><span class="o">)</span>, chars <span class="o">=</span> <span class="m">1000</span><span class="o">)</span> <span class="c"># higher character limit</span>
+<span class="c">#&gt; [1] "😀​😁​😂​😃​😄​😅​😆​😇​😈​😉​😊​😋​😌​😍​😎​😏​😐​😑​😒​😓​😔​😕​😖​😗​😘​😙​😚​😛​😜​😝​😞​😟​😠​😡​😢​😣​😤​😥​😦​😧​😨​😩​😪​😫​😬​😭​😮​😯​😰​😱​😲​😳​😴​😵​😶​😷​😸​😹​😺​😻​😼​😽​😾​😿​🙀​🙁​🙂​🙃​🙄​🙅​🙆​🙇​🙈​🙉​🙊​🙋​🙌​🙍​🙎​🙏​"</span></pre>
 </div>
 </div>
 <div id="citation" class="section level2">
 <h2 class="hasAnchor">
 <a href="#citation" class="anchor"></a>Citation</h2>
 <p>Cite <em>utf8</em> with the following BibTeX entry:</p>
-<pre><code>@Manual{,
-  title = {utf8: Unicode Text Processing},
-  author = {Patrick O. Perry},
-  year = {2018},
-  note = {R package version 1.1.4},
-  url = {https://github.com/patperry/r-utf8},
-}</code></pre>
+<div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="op">@</span>Manual{,</span>
+<span id="cb1-2"><a href="#cb1-2"></a>  title =<span class="st"> </span>{utf8<span class="op">:</span><span class="st"> </span>Unicode Text Processing},</span>
+<span id="cb1-3"><a href="#cb1-3"></a>  author =<span class="st"> </span>{Patrick O. Perry},</span>
+<span id="cb1-4"><a href="#cb1-4"></a>  year =<span class="st"> </span>{<span class="dv">2018</span>},</span>
+<span id="cb1-5"><a href="#cb1-5"></a>  note =<span class="st"> </span>{R package version <span class="dv">1</span>.<span class="fl">1.4</span>},</span>
+<span id="cb1-6"><a href="#cb1-6"></a>  url =<span class="st"> </span>{https<span class="op">:</span><span class="er">//</span>github.com<span class="op">/</span>patperry<span class="op">/</span>r<span class="op">-</span>utf8},</span>
+<span id="cb1-7"><a href="#cb1-7"></a>}</span></code></pre></div>
 </div>
 <div id="contributing" class="section level2">
 <h2 class="hasAnchor">
 <a href="#contributing" class="anchor"></a>Contributing</h2>
 <p>The project maintainer welcomes contributions in the form of feature requests, bug reports, comments, unit tests, vignettes, or other code. If you’d like to contribute, either</p>
 <ul>
-<li><p>fork the repository and submit a pull request (note the nonstandard instructions for <a href="#development-version" title="Building from Source">building from source</a>);</p></li>
+<li><p>fork the repository and submit a pull request</p></li>
 <li><p><a href="https://github.com/patperry/r-utf8/issues" title="Issues" class="external-link">file an issue</a>;</p></li>
 <li><p>or contact the maintainer via e-mail.</p></li>
 </ul>
@@ -215,8 +216,7 @@
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://travis-ci.org/patperry/r-utf8" title="Continuous Integration (Linux)" class="external-link"><img src="https://api.travis-ci.org/patperry/r-utf8.svg?branch=master" title="Continuous Integration (Linux)" alt="Build Status (Linux)"></a></li>
-<li><a href="https://ci.appveyor.com/project/patperry/r-utf8/branch/master" title="Continuous Integration (Windows)" class="external-link"><img src="https://ci.appveyor.com/api/projects/status/github/patperry/r-utf8?branch=master&amp;svg=true" title="Continuous Inegration (Windows)" alt="Build Status (Windows)"></a></li>
+<li><a href="https://github.com/patperry/r-utf8/actions" class="external-link"><img src="https://github.com/patperry/r-utf8/workflows/rcc/badge.svg" alt="rcc"></a></li>
 <li><a href="https://codecov.io/github/patperry/r-utf8?branch=master" title="Code Coverage" class="external-link"><img src="https://codecov.io/github/patperry/r-utf8/coverage.svg?branch=master" title="Code Coverage" alt="Coverage Status"></a></li>
 <li><a href="https://cran.r-project.org/package=utf8" title="CRAN Page" class="external-link"><img src="http://www.r-pkg.org/badges/version/utf8" title="CRAN Page" alt="CRAN Status"></a></li>
 <li><a href="https://www.apache.org/licenses/LICENSE-2.0.html" title="Apache License, Version 2.0" class="external-link"><img src="https://img.shields.io/badge/License-Apache%202.0-blue.svg" title="Apache License, Version 2.0" alt="License"></a></li>
