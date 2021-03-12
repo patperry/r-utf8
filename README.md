@@ -4,7 +4,7 @@
 
 <!-- badges: start -->
 
-[![rcc](https://github.com/patperry/r-utf8/workflows/rcc/badge.svg)](https://github.com/patperry/r-utf8/actions) [![Coverage Status](https://codecov.io/github/patperry/r-utf8/coverage.svg?branch=master "Code Coverage")](https://codecov.io/github/patperry/r-utf8?branch=master "Code Coverage") [![CRAN Status](http://www.r-pkg.org/badges/version/utf8 "CRAN Page")](https://cran.r-project.org/package=utf8 "CRAN Page") [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg "Apache License, Version 2.0")](https://www.apache.org/licenses/LICENSE-2.0.html "Apache License, Version 2.0") [![CRAN RStudio Mirror Downloads](http://cranlogs.r-pkg.org/badges/utf8 "CRAN Downloads")](https://cran.r-project.org/package=utf8 "CRAN Page")
+[![rcc](https://github.com/patperry/r-utf8/workflows/rcc/badge.svg)](https://github.com/patperry/r-utf8/actions) [![Coverage Status](https://codecov.io/github/patperry/r-utf8/coverage.svg?branch=master "Code Coverage")](https://codecov.io/github/patperry/r-utf8?branch=master "Code Coverage") [![CRAN Status](https://www.r-pkg.org/badges/version/utf8 "CRAN Page")](https://cran.r-project.org/package=utf8 "CRAN Page") [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg "Apache License, Version 2.0")](https://www.apache.org/licenses/LICENSE-2.0.html "Apache License, Version 2.0") [![CRAN RStudio Mirror Downloads](https://cranlogs.r-pkg.org/badges/utf8 "CRAN Downloads")](https://cran.r-project.org/package=utf8 "CRAN Page")
 
 <!-- badges: end -->
 
