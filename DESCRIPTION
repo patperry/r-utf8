@@ -6,7 +6,7 @@ Authors@R:
              family = "Perry",
              role = c("aut", "cph")),
       person(given = "Kirill",
-             family = "Müller",
+             family = "M\u00fcller",
              role = "cre",
              email = "krlmlr+r@mailbox.org"),
       person(given = "Unicode, Inc.",
@@ -16,7 +16,7 @@ Description: Process and print 'UTF-8' encoded international
     text (Unicode). Input, validate, normalize, encode, format, and
     display.
 License: Apache License (== 2.0) | file LICENSE
-URL: https://github.com/patperry/r-utf8
+URL: https://ptrckprry.com/r-utf8/, https://github.com/patperry/r-utf8
 BugReports: https://github.com/patperry/r-utf8/issues
 Depends: 
     R (>= 2.10)

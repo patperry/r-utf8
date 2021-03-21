@@ -1,3 +1,10 @@
 template:
   params:
     ganalytics: UA-4636081-3
+
+development:
+  mode: auto
+
+authors:
+  Kirill Müller:
+    href: http://krlmlr.info
