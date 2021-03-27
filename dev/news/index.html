@@ -67,6 +67,7 @@
 </script>
 
 
+
   
 
   
@@ -167,7 +168,7 @@
 <h2 class="hasAnchor">
 <a href="#minor-improvements" class="anchor"></a>MINOR IMPROVEMENTS</h2>
 <ul>
-<li><p>Make <code><a href="../reference/output_utf8.html">output_utf8()</a></code> always return <code>TRUE</code> on Windows, so that characters in the user’s native locale don’t get escaped by <code><a href="../reference/utf8_encode.html">utf8_encode()</a></code>. The downside of this change is that on Windows, <code><a href="../reference/utf8_width.html">utf8_width()</a></code> reports the wrong values for characters outside the user’s locale when <code><a href="https://rdrr.io/r/base/showConnections.html" class="external-link">stdout()</a></code> is redirected by <code>knitr</code> or another process.</p></li>
+<li><p>Make <code><a href="../reference/output.html">output_utf8()</a></code> always return <code>TRUE</code> on Windows, so that characters in the user’s native locale don’t get escaped by <code><a href="../reference/utf8_encode.html">utf8_encode()</a></code>. The downside of this change is that on Windows, <code><a href="../reference/utf8_width.html">utf8_width()</a></code> reports the wrong values for characters outside the user’s locale when <code><a href="https://rdrr.io/r/base/showConnections.html" class="external-link">stdout()</a></code> is redirected by <code>knitr</code> or another process.</p></li>
 <li><p>When truncating long strings strings via <code><a href="../reference/utf8_format.html">utf8_format()</a></code>, use an ellipsis that is printable in the user’s native locale (<code>"\u2026" or</code>“…”`).</p></li>
 </ul>
 </div>
@@ -204,14 +205,14 @@
 <h2 class="hasAnchor">
 <a href="#new-features" class="anchor"></a>NEW FEATURES</h2>
 <ul>
-<li>Added <code><a href="../reference/output_utf8.html">output_ansi()</a></code> and <code><a href="../reference/output_utf8.html">output_utf8()</a></code> functions to test for output capabilities.</li>
+<li>Added <code><a href="../reference/output.html">output_ansi()</a></code> and <code><a href="../reference/output.html">output_utf8()</a></code> functions to test for output capabilities.</li>
 </ul>
 </div>
 <div id="minor-improvements-1" class="section level2">
 <h2 class="hasAnchor">
 <a href="#minor-improvements-1" class="anchor"></a>MINOR IMPROVEMENTS</h2>
 <ul>
-<li><p>Add <code>utf8</code> argument to <code><a href="../reference/utf8_encode.html">utf8_encode()</a></code>, <code><a href="../reference/utf8_format.html">utf8_format()</a></code>, <code><a href="../reference/utf8_print.html">utf8_print()</a></code>, and <code><a href="../reference/utf8_width.html">utf8_width()</a></code> for precise control over assumed output capabilities; defaults to the result of <code><a href="../reference/output_utf8.html">output_utf8()</a></code>.</p></li>
+<li><p>Add <code>utf8</code> argument to <code><a href="../reference/utf8_encode.html">utf8_encode()</a></code>, <code><a href="../reference/utf8_format.html">utf8_format()</a></code>, <code><a href="../reference/utf8_print.html">utf8_print()</a></code>, and <code><a href="../reference/utf8_width.html">utf8_width()</a></code> for precise control over assumed output capabilities; defaults to the result of <code><a href="../reference/output.html">output_utf8()</a></code>.</p></li>
 <li><p>Add ability to style backslash escapes with the <code>escapes</code> arguments to <code><a href="../reference/utf8_encode.html">utf8_encode()</a></code> and <code><a href="../reference/utf8_print.html">utf8_print()</a></code>. Switch from “faint” styling to no styling by default.</p></li>
 <li><p>Slightly reword error messages for <code><a href="../reference/as_utf8.html">as_utf8()</a></code>.</p></li>
 <li><p>Fix (spurious) <code>rchk</code> warnings.</p></li>
@@ -260,11 +261,11 @@
 
       <footer>
       <div class="copyright">
-  <p><p>Developed by Patrick O. Perry, <a href="http://krlmlr.info" class="external-link">Kirill Müller</a>.</p></p>
+  <p><p>Developed by Patrick O. Perry, <a href="https://krlmlr.info" class="external-link">Kirill Müller</a>.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9000.</p></p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
