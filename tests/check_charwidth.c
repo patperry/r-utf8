@@ -21,6 +21,40 @@
 #include "wcwidth9/wcwidth9.h"
 #include "testutil.h"
 
+struct code_width {
+	int32_t code;
+	int width;
+};
+
+START_TEST(test_examples)
+{
+	struct code_width tests[] = {
+		// Examples from https://github.com/patperry/r-utf8/issues/9
+		{.code = 0x2139, .width = UTF8LITE_CHARWIDTH_NARROW},
+		{.code = 0x2600, .width = UTF8LITE_CHARWIDTH_NARROW},
+		{.code = 0x2728, .width = UTF8LITE_CHARWIDTH_EMOJI}
+	};
+	struct code_width *t;
+	int i, n, ok, prop, prop0, nfail;
+
+	n = (int)(sizeof(tests) / sizeof(tests[0]));
+	nfail = 0;
+	for (i = 0; i < n; i++) {
+		t = &tests[i];
+		prop0 = t->width;
+		prop = utf8lite_charwidth(t->code);
+		ok = (prop == prop0);
+
+		if (!ok) {
+			nfail++;
+			printf("U+%04X expected: %d got: %d\n", t->code,
+				prop0, prop);
+		}
+	}
+
+	ck_assert(nfail == 0);
+}
+END_TEST
 
 /*
  * This check is kind of meaningless. wcwidth9 has Unicode 9.0.0, gives
@@ -41,6 +75,10 @@ START_TEST(test_wcwidth9)
 			// to Narrow in Unicode 13.0
 			ok = prop == UTF8LITE_CHARWIDTH_NARROW;
 			goto Check;
+		} else if (0x1F1E6 <= code && code <= 0x1F1FF) {
+			// regional indicators
+			ok = prop == UTF8LITE_CHARWIDTH_NARROW;
+			goto Check;
 		}
 
 		switch (prop) {
@@ -57,7 +95,7 @@ START_TEST(test_wcwidth9)
 			break;
 
 		case UTF8LITE_CHARWIDTH_NARROW:
-			ok = prop0 == 1 || prop0 == -1;
+			ok = prop0 == 1 || prop0 == -1 || code > 0xFFFF;
 			break;
 
 		case UTF8LITE_CHARWIDTH_AMBIGUOUS:
@@ -94,6 +132,10 @@ Suite *charwidth_suite(void)
         TCase *tc;
 
         s = suite_create("charwidth");
+	tc = tcase_create("core");
+        tcase_add_test(tc, test_examples);
+        suite_add_tcase(s, tc);
+
 	tc = tcase_create("wcwidth9");
         tcase_add_test(tc, test_wcwidth9);
         suite_add_tcase(s, tc);
