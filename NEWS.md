@@ -1,5 +1,10 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# utf8 1.2.2.9000 (2021-07-24)
+
+- Same as previous version.
+
+
 # utf8 1.2.2 (2021-07-24)
 
 - Same as previous version.
