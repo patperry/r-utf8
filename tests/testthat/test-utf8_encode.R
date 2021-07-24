@@ -68,9 +68,11 @@ test_that("'utf8_encode' can handle latin-1", {
   x <- "her \xa320"
   Encoding(x) <- "latin1"
 
-  local_ctype("C")
-
-  expect_equal(utf8_encode(x), "her \\u00a320")
+  # https://github.com/r-lib/testthat/issues/1285
+  with_ctype("C", {
+    latin <- utf8_encode(x)
+  })
+  expect_equal(latin, "her \\u00a320")
 
   local_ctype("UTF-8")
   expect_equal(utf8_encode(x), "her \u00a320")

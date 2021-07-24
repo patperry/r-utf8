@@ -450,16 +450,18 @@ test_that("'utf8_print' handles Unicode correctly", {
 
 
 test_that("'utf8_print' works in C locale", {
-  local_ctype("C")
-
   x <- chartype_matrix()
-  actual <- strsplit(
-    capture_output(utf8_print(x,
-      chars = 1000,
-      quote = FALSE
-    )),
-    "\n"
-  )[[1]]
+
+  # https://github.com/r-lib/testthat/issues/1285
+  with_ctype("C", {
+    actual <- strsplit(
+      capture_output(utf8_print(x,
+        chars = 1000,
+        quote = FALSE
+      )),
+      "\n"
+    )[[1]]
+  })
 
   expected <- c(
     "   chars                                                                                     ",

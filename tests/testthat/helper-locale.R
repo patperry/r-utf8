@@ -27,3 +27,8 @@ local_ctype <- function(mode = c("C", "UTF-8"), env = parent.frame()) {
 
   ctype0
 }
+
+with_ctype <- function(mode = c("C", "UTF-8"), code) {
+  local_ctype(mode)
+  force(code)
+}
