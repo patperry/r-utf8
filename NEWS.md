@@ -2,19 +2,8 @@
 
 # utf8 1.2.2 (2021-07-24)
 
-- Same as previous version.
-
-
-# utf8 1.2.1.9001 (2021-07-24)
-
 - Reenable all tests.
 - `utf8_width()` now reports correct widths for narrow emojis (#9).
-* 'master' of github.com:patperry/r-utf8:
-
-
-# utf8 1.2.1.9000 (2021-03-10)
-
-- Internal changes only.
 
 
 # utf8 1.2.1 (2021-03-10)
