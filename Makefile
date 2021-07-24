@@ -40,4 +40,7 @@ install: $(UTF8_LIB)
 site: $(BUILT_VIGNETTES)
 	$(RSCRIPT) -e 'pkgdown::build_site(".")'
 
-.PHONY: all check clean con dist distclean doc install site
+utf8lite:
+	git subtree pull git@github.com:patperry/utf8lite HEAD --prefix src/utf8lite
+
+.PHONY: all check clean con dist distclean doc install site utf8lite
