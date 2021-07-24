@@ -71,8 +71,7 @@ test_that("'format' can handle long text in UTF-8 locale, part 2", {
     "\u2026t", "\u2026", "\u2026", "\u2026?"
   )
 
-  ctype <- switch_ctype("UTF-8")
-  on.exit(Sys.setlocale("LC_CTYPE", ctype))
+  local_ctype("UTF-8")
 
   expect_equal(
     utf8_format(raw,
@@ -118,8 +117,7 @@ test_that("'format' can handle long text in C locale", {
     "...\\u0001"
   )
 
-  ctype <- switch_ctype("C")
-  on.exit(Sys.setlocale("LC_CTYPE", ctype))
+  local_ctype("C")
 
   skip_on_os("windows")
   expect_equal(
@@ -142,8 +140,7 @@ test_that("'format' can handle long text in C locale", {
 
 
 test_that("'format' can handle high code points in C locale", {
-  ctype <- switch_ctype("C")
-  on.exit(Sys.setlocale("LC_CTYPE", ctype))
+  local_ctype("C")
 
   raw <- c(intToUtf8(0x00010000), intToUtf8(0x0010ffff))
 
@@ -153,8 +150,7 @@ test_that("'format' can handle high code points in C locale", {
 
 
 test_that("'format' can handle high code points in Unicode locale", {
-  ctype <- switch_ctype("UTF-8")
-  on.exit(Sys.setlocale("LC_CTYPE", ctype))
+  local_ctype("UTF-8")
   skip_on_os("windows") # no Unicode above 0xFFFF on Windows
 
   raw <- c(intToUtf8(0x00010000), intToUtf8(0x010ffff))
@@ -169,14 +165,13 @@ test_that("'format' can handle high code points in Unicode locale", {
 test_that("'format' can handle ignorable code points", {
   raw <- "\u200B"
 
-  ctype <- switch_ctype("C")
-  on.exit(Sys.setlocale("LC_CTYPE", ctype))
+  local_ctype("C")
 
   expect_equal(utf8_format(raw, justify = "left"), raw)
   expect_equal(utf8_format(raw, justify = "centre"), raw)
   expect_equal(utf8_format(raw, justify = "right"), raw)
 
-  switch_ctype("UTF-8")
+  local_ctype("UTF-8")
 
   expect_equal(utf8_format(raw, justify = "left"), raw)
   expect_equal(utf8_format(raw, justify = "centre"), raw)
@@ -188,8 +183,7 @@ test_that("'format' can handle marks in C locale", {
 
   raw <- "\u1e0d\u0307"
 
-  ctype <- switch_ctype("C")
-  on.exit(Sys.setlocale("LC_CTYPE", ctype))
+  local_ctype("C")
 
   expect_equal(utf8_format(raw, chars = 6, justify = "left"), "...")
 
@@ -201,7 +195,7 @@ test_that("'format' can handle marks in C locale", {
 test_that("'format' can handle marks", {
   raw <- "\u1e0d\u0307"
 
-  switch_ctype("UTF-8")
+  local_ctype("UTF-8")
 
   expect_equal(utf8_format(raw, chars = 1, justify = "left"), raw)
   expect_equal(utf8_format(raw, chars = 1, justify = "centre"), raw)
@@ -212,14 +206,13 @@ test_that("'format' can handle marks", {
 test_that("'format' can handle UTF-8 'Other' codes", {
   raw <- "\u2072" # unassigned
 
-  ctype <- switch_ctype("C")
-  on.exit(Sys.setlocale("LC_CTYPE", ctype))
+  local_ctype("C")
 
   expect_equal(utf8_format(raw, justify = "left"), raw)
   expect_equal(utf8_format(raw, justify = "centre"), raw)
   expect_equal(utf8_format(raw, justify = "right"), raw)
 
-  switch_ctype("UTF-8")
+  local_ctype("UTF-8")
 
   expect_equal(utf8_format(raw, justify = "left"), raw)
   expect_equal(utf8_format(raw, justify = "centre"), raw)
@@ -232,8 +225,7 @@ test_that("'format' can handle zero chars", {
 
   raw <- "foo"
 
-  ctype <- switch_ctype("C")
-  on.exit(Sys.setlocale("LC_CTYPE", ctype))
+  local_ctype("C")
 
   expect_equal(
     as.character(utf8_format(raw, chars = 0, justify = "left")),
@@ -253,8 +245,7 @@ test_that("'format' can handle zero chars", {
 test_that("'format' can handle NULL chars", {
   raw <- "foo"
 
-  ctype <- switch_ctype("C")
-  on.exit(Sys.setlocale("LC_CTYPE", ctype))
+  local_ctype("C")
 
   expect_equal(
     as.character(utf8_format(raw, chars = NULL, justify = "left")),
@@ -417,8 +408,7 @@ test_that("'utf8_format' can right justify", {
 
 
 test_that("'utf8_format' use ... ellipsis for bytes", {
-  ctype <- switch_ctype("UTF-8")
-  on.exit(Sys.setlocale("LC_CTYPE", ctype))
+  local_ctype("UTF-8")
 
   x <- "fa\xC3\xA7ile"
   Encoding(x) <- "bytes"

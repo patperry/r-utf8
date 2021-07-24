@@ -1,7 +1,6 @@
 test_that("'utf8_print' can print unicode", {
   skip_on_os("windows")
-  ctype <- switch_ctype("UTF-8")
-  on.exit(Sys.setlocale("LC_CTYPE", ctype))
+  local_ctype("UTF-8")
 
   x <- c(
     "\u0100\u0101\u0102\u0103\u0104\u0105",
@@ -415,8 +414,7 @@ test_that("'utf8_print' handles Unicode correctly", {
   # R can't print all UTF-8 on windows:
   # https://stat.ethz.ch/pipermail/r-devel/2017-June/074556.html
   skip_on_os("windows")
-  ctype <- switch_ctype("UTF-8")
-  on.exit(Sys.setlocale("LC_CTYPE", ctype))
+  local_ctype("UTF-8")
 
   x <- chartype_matrix()
   actual <- strsplit(
@@ -452,8 +450,7 @@ test_that("'utf8_print' handles Unicode correctly", {
 
 
 test_that("'utf8_print' works in C locale", {
-  ctype <- switch_ctype("C")
-  on.exit(Sys.setlocale("LC_CTYPE", ctype))
+  local_ctype("C")
 
   x <- chartype_matrix()
   actual <- strsplit(
