@@ -23,51 +23,39 @@ test_that("'format' can handle short text", {
 })
 
 
-test_that("'format' can handle long text in Unicode locale", {
-  raw <- c(
-    NA, "", "a", "ab", "foo", "food", "short text",
-    "\u6027", "\u6027\u6027", "\u6027?"
-  )
-  Encoding(raw) <- "UTF-8"
+# Run opposite test to snapshot output but not alter it
+if (!l10n_info()$`UTF-8`) {
+  test_that("'format' can handle long text in Unicode locale: UTF-8 is TRUE", {
+    skip("Symmetry")
+  })
+}
 
-  short <- c(
-    NA, "", "a", "ab", "fo\u2026", "fo\u2026", "sh\u2026",
-    "\u6027", "\u6027\u2026", "\u6027\u2026"
-  )
-  Encoding(short) <- "UTF-8"
+test_that(paste0("'format' can handle long text in Unicode locale: UTF-8 is ", l10n_info()$`UTF-8`), {
+  if (l10n_info()$`UTF-8`) {
+    local_utf8()
+    expect_true(cli::is_utf8_output())
+  }
 
-  rshort <- c(
-    NA, "", "a", "ab", "\u2026oo", "\u2026od", "\u2026xt",
-    "\u6027", "\u2026\u6027", "\u2026?"
-  )
-  Encoding(rshort) <- "UTF-8"
+  expect_snapshot({
+    raw <- c(
+      NA, "", "a", "ab", "foo", "food", "short text",
+      "\u6027", "\u6027\u6027", "\u6027?"
+    )
+    Encoding(raw) <- "UTF-8"
 
-  ctype <- switch_ctype("UTF-8")
-  on.exit(Sys.setlocale("LC_CTYPE", ctype))
-  skip_on_os("windows") # windows can't format \u6027
-  skip_on_os("mac") # format() bug in macOS?
-
-  expect_equal(
-    utf8_format(raw, chars = 2, justify = "none", na.print = "NA"),
-    format(short, justify = "none")
-  )
-
-  expect_equal(
-    utf8_format(raw, chars = 2, justify = "left", na.print = "NA"),
-    format(short, justify = "left")
-  )
-
-  expect_equal(
-    utf8_format(raw, chars = 2, justify = "centre", na.print = "NA"),
-    format(short, justify = "centre")
-  )
-
-  expect_equal(
-    utf8_format(raw, chars = 2, justify = "right", na.print = "NA"),
-    format(rshort, justify = "right")
-  )
+    utf8_format(raw, chars = 2, justify = "none", na.print = "NA")
+    utf8_format(raw, chars = 2, justify = "left", na.print = "NA")
+    utf8_format(raw, chars = 2, justify = "centre", na.print = "NA")
+    utf8_format(raw, chars = 2, justify = "right", na.print = "NA")
+  })
 })
 
+# Run opposite test to snapshot output but not alter it
+if (l10n_info()$`UTF-8`) {
+  test_that("'format' can handle long text in Unicode locale: UTF-8 is FALSE", {
+    skip("Symmetry")
+  })
+}
 
 test_that("'format' can handle long text in UTF-8 locale, part 2", {
   raw <- c(
@@ -83,8 +71,7 @@ test_that("'format' can handle long text in UTF-8 locale, part 2", {
     "\u2026t", "\u2026", "\u2026", "\u2026?"
   )
 
-  ctype <- switch_ctype("UTF-8")
-  on.exit(Sys.setlocale("LC_CTYPE", ctype))
+  local_ctype("UTF-8")
 
   expect_equal(
     utf8_format(raw,
@@ -130,43 +117,45 @@ test_that("'format' can handle long text in C locale", {
     "...\\u0001"
   )
 
-  ctype <- switch_ctype("C")
-  on.exit(Sys.setlocale("LC_CTYPE", ctype))
-
   skip_on_os("windows")
-  expect_equal(
-    utf8_encode(utf8_format(raw, chars = 8, justify = "none")),
-    format(short, justify = "none")
-  )
 
-  left <- utf8_encode(utf8_format(raw, chars = 8, justify = "left"))
+  # https://github.com/r-lib/testthat/issues/1285
+  with_ctype("C", {
+    short_format <- utf8_encode(utf8_format(raw, chars = 8, justify = "none"))
+    left <- utf8_encode(utf8_format(raw, chars = 8, justify = "left"))
+    centre <- utf8_encode(utf8_format(raw, chars = 8, justify = "centre"))
+    right <- utf8_encode(utf8_format(raw, chars = 8, justify = "right"))
+  })
+
+  expect_equal(short_format, format(short, justify = "none"))
+
   expect_equal(sub("\\s+$", "", left), short)
   expect_equal(as.numeric(nchar(left)), rep(10, length(raw)))
 
-  centre <- utf8_encode(utf8_format(raw, chars = 8, justify = "centre"))
   expect_equal(sub("^\\s+", "", sub("\\s+$", "", centre)), short)
   expect_equal(as.numeric(nchar(centre)), rep(10, length(raw)))
 
-  right <- utf8_encode(utf8_format(raw, chars = 8, justify = "right"))
   expect_equal(sub("^\\s+", "", right), rshort)
   expect_equal(as.numeric(nchar(right)), rep(11, length(raw)))
 })
 
 
 test_that("'format' can handle high code points in C locale", {
-  ctype <- switch_ctype("C")
-  on.exit(Sys.setlocale("LC_CTYPE", ctype))
-
   raw <- c(intToUtf8(0x00010000), intToUtf8(0x0010ffff))
 
-  expect_equal(utf8_format(raw, justify = "left"), raw)
-  expect_equal(utf8_format(raw, justify = "right"), raw)
+  # https://github.com/r-lib/testthat/issues/1285
+  with_ctype("C", {
+    left <- utf8_format(raw, justify = "left")
+    right <- utf8_format(raw, justify = "right")
+  })
+
+  expect_equal(left, raw)
+  expect_equal(right, raw)
 })
 
 
 test_that("'format' can handle high code points in Unicode locale", {
-  ctype <- switch_ctype("UTF-8")
-  on.exit(Sys.setlocale("LC_CTYPE", ctype))
+  local_ctype("UTF-8")
   skip_on_os("windows") # no Unicode above 0xFFFF on Windows
 
   raw <- c(intToUtf8(0x00010000), intToUtf8(0x010ffff))
@@ -181,14 +170,18 @@ test_that("'format' can handle high code points in Unicode locale", {
 test_that("'format' can handle ignorable code points", {
   raw <- "\u200B"
 
-  ctype <- switch_ctype("C")
-  on.exit(Sys.setlocale("LC_CTYPE", ctype))
+  # https://github.com/r-lib/testthat/issues/1285
+  with_ctype("C", {
+    left <- utf8_format(raw, justify = "left")
+    centre <- utf8_format(raw, justify = "centre")
+    right <- utf8_format(raw, justify = "right")
+  })
 
-  expect_equal(utf8_format(raw, justify = "left"), raw)
-  expect_equal(utf8_format(raw, justify = "centre"), raw)
-  expect_equal(utf8_format(raw, justify = "right"), raw)
+  expect_equal(as.character(left), raw)
+  expect_equal(as.character(centre), raw)
+  expect_equal(as.character(right), raw)
 
-  switch_ctype("UTF-8")
+  local_ctype("UTF-8")
 
   expect_equal(utf8_format(raw, justify = "left"), raw)
   expect_equal(utf8_format(raw, justify = "centre"), raw)
@@ -200,20 +193,22 @@ test_that("'format' can handle marks in C locale", {
 
   raw <- "\u1e0d\u0307"
 
-  ctype <- switch_ctype("C")
-  on.exit(Sys.setlocale("LC_CTYPE", ctype))
+  # https://github.com/r-lib/testthat/issues/1285
+  with_ctype("C", {
+    left <- utf8_format(raw, chars = 6, justify = "left")
+    centre <- utf8_format(raw, chars = 6, justify = "centre")
+    right <- utf8_format(raw, chars = 6, justify = "right")
+  })
 
-  expect_equal(utf8_format(raw, chars = 6, justify = "left"), "...")
-
-  expect_equal(utf8_format(raw, chars = 6, justify = "centre"), "...")
-
-  expect_equal(utf8_format(raw, chars = 5, justify = "right"), "...")
+  expect_equal(as.character(left), "...")
+  expect_equal(as.character(centre), "...")
+  expect_equal(as.character(right), "...")
 })
 
 test_that("'format' can handle marks", {
   raw <- "\u1e0d\u0307"
 
-  switch_ctype("UTF-8")
+  local_ctype("UTF-8")
 
   expect_equal(utf8_format(raw, chars = 1, justify = "left"), raw)
   expect_equal(utf8_format(raw, chars = 1, justify = "centre"), raw)
@@ -224,14 +219,18 @@ test_that("'format' can handle marks", {
 test_that("'format' can handle UTF-8 'Other' codes", {
   raw <- "\u2072" # unassigned
 
-  ctype <- switch_ctype("C")
-  on.exit(Sys.setlocale("LC_CTYPE", ctype))
+  # https://github.com/r-lib/testthat/issues/1285
+  with_ctype("C", {
+    left <- utf8_format(raw, justify = "left")
+    centre <- utf8_format(raw, justify = "centre")
+    right <- utf8_format(raw, justify = "right")
+  })
 
-  expect_equal(utf8_format(raw, justify = "left"), raw)
-  expect_equal(utf8_format(raw, justify = "centre"), raw)
-  expect_equal(utf8_format(raw, justify = "right"), raw)
+  expect_equal(as.character(left), raw)
+  expect_equal(as.character(centre), raw)
+  expect_equal(as.character(right), raw)
 
-  switch_ctype("UTF-8")
+  local_ctype("UTF-8")
 
   expect_equal(utf8_format(raw, justify = "left"), raw)
   expect_equal(utf8_format(raw, justify = "centre"), raw)
@@ -244,48 +243,32 @@ test_that("'format' can handle zero chars", {
 
   raw <- "foo"
 
-  ctype <- switch_ctype("C")
-  on.exit(Sys.setlocale("LC_CTYPE", ctype))
+  # https://github.com/r-lib/testthat/issues/1285
+  with_ctype("C", {
+    left <- utf8_format(raw, chars = 0, justify = "left")
+    centre <- utf8_format(raw, chars = 0, justify = "centre")
+    right <- utf8_format(raw, chars = 0, justify = "right")
+  })
 
-  expect_equal(
-    as.character(utf8_format(raw, chars = 0, justify = "left")),
-    "..."
-  )
-  expect_equal(
-    as.character(utf8_format(raw, chars = 0, justify = "centre")),
-    "..."
-  )
-  expect_equal(
-    as.character(utf8_format(raw, chars = 0, justify = "right")),
-    "..."
-  )
+  expect_equal(as.character(left), "...")
+  expect_equal(as.character(centre), "...")
+  expect_equal(as.character(right), "...")
 })
 
 
 test_that("'format' can handle NULL chars", {
   raw <- "foo"
 
-  ctype <- switch_ctype("C")
-  on.exit(Sys.setlocale("LC_CTYPE", ctype))
+  # https://github.com/r-lib/testthat/issues/1285
+  with_ctype("C", {
+    left <- utf8_format(raw, chars = NULL, justify = "left")
+    centre <- utf8_format(raw, chars = NULL, justify = "centre")
+    right <- utf8_format(raw, chars = NULL, justify = "right")
+  })
 
-  expect_equal(
-    as.character(utf8_format(raw, chars = NULL, justify = "left")),
-    "foo"
-  )
-  expect_equal(
-    as.character(utf8_format(raw,
-      chars = NULL,
-      justify = "centre"
-    )),
-    "foo"
-  )
-  expect_equal(
-    as.character(utf8_format(raw,
-      chars = NULL,
-      justify = "right"
-    )),
-    "foo"
-  )
+  expect_equal(as.character(left), "foo")
+  expect_equal(as.character(centre), "foo")
+  expect_equal(as.character(right), "foo")
 })
 
 
@@ -429,8 +412,7 @@ test_that("'utf8_format' can right justify", {
 
 
 test_that("'utf8_format' use ... ellipsis for bytes", {
-  ctype <- switch_ctype("UTF-8")
-  on.exit(Sys.setlocale("LC_CTYPE", ctype))
+  local_ctype("UTF-8")
 
   x <- "fa\xC3\xA7ile"
   Encoding(x) <- "bytes"

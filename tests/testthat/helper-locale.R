@@ -1,4 +1,4 @@
-switch_ctype <- function(mode = c("C", "UTF-8")) {
+local_ctype <- function(mode = c("C", "UTF-8"), env = parent.frame()) {
   mode <- match.arg(mode)
 
   if (mode == "UTF-8") {
@@ -16,7 +16,7 @@ switch_ctype <- function(mode = c("C", "UTF-8")) {
 
   ctype0 <- Sys.getlocale("LC_CTYPE")
   suppressWarnings({
-    Sys.setlocale("LC_CTYPE", ctype)
+    withr::local_locale(LC_CTYPE = ctype, .local_envir = env)
   })
   if (Sys.getlocale("LC_CTYPE") != ctype) {
     skip(paste0("Cannot change locale to '", ctype, "'"))
@@ -26,4 +26,9 @@ switch_ctype <- function(mode = c("C", "UTF-8")) {
   }
 
   ctype0
+}
+
+with_ctype <- function(mode = c("C", "UTF-8"), code) {
+  local_ctype(mode)
+  force(code)
 }
