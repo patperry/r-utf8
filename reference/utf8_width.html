@@ -90,7 +90,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">utf8</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.1.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.2</span>
       </span>
     </div>
 
@@ -135,7 +135,7 @@
     <p>Compute the display widths of the elements of a character object.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>utf8_width</span><span class='op'>(</span><span class='va'>x</span>, encode <span class='op'>=</span> <span class='cn'>TRUE</span>, quote <span class='op'>=</span> <span class='cn'>FALSE</span>, utf8 <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>utf8_width</span><span class='op'>(</span><span class='va'>x</span>, encode <span class='op'>=</span> <span class='cn'>TRUE</span>, quote <span class='op'>=</span> <span class='cn'>FALSE</span>, utf8 <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -159,7 +159,7 @@
       <td><p>logical scalar indicating whether to determine widths
         assuming a UTF-8 capable display (ASCII-only otherwise), or
         <code>NULL</code> to format for output capabilities as determined
-        by <code><a href='output_utf8.html'>output_utf8()</a></code>.</p></td>
+        by <code><a href='output.html'>output_utf8()</a></code>.</p></td>
     </tr>
     </table>
 
@@ -167,7 +167,7 @@
 
     <p><code>utf8_width</code> returns the printed widths of the elements of
     a character object on a UTF-8 device (or on an ASCII device
-    when <code><a href='output_utf8.html'>output_utf8()</a></code> is <code>FALSE</code>), when printed with
+    when <code><a href='output.html'>output_utf8()</a></code> is <code>FALSE</code>), when printed with
     <code>utf8_print</code>. If the string is not printable on the device,
     for example if it contains a control code like <code>"\n"</code>, then
     the result is <code>NA</code>. If <code>encode = TRUE</code>, the default,
@@ -183,16 +183,20 @@
     <div class='dont-index'><p><code><a href='utf8_print.html'>utf8_print</a></code>.</p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># the second element is encoded in latin-1, but declared as UTF-8</span>
-<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"fa\u00E7ile"</span>, <span class='st'>"fa\xE7ile"</span>, <span class='st'>"fa\xC3\xA7ile"</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Encoding.html'>Encoding</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"UTF-8"</span>, <span class='st'>"UTF-8"</span>, <span class='st'>"bytes"</span><span class='op'>)</span>
-
-<span class='co'># get widths</span>
-<span class='fu'>utf8_width</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1]  6  9 13</div><div class='input'><span class='fu'>utf8_width</span><span class='op'>(</span><span class='va'>x</span>, encode <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1]  6 NA NA</div><div class='input'><span class='fu'>utf8_width</span><span class='op'>(</span><span class='st'>'"'</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 1</div><div class='input'><span class='fu'>utf8_width</span><span class='op'>(</span><span class='st'>'"'</span>, quote <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] 4</div></pre>
+    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='co'># the second element is encoded in latin-1, but declared as UTF-8</span></span>
+<span class='r-in'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"fa\u00E7ile"</span>, <span class='st'>"fa\xE7ile"</span>, <span class='st'>"fa\xC3\xA7ile"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/Encoding.html'>Encoding</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"UTF-8"</span>, <span class='st'>"UTF-8"</span>, <span class='st'>"bytes"</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># get widths</span></span>
+<span class='r-in'><span class='fu'>utf8_width</span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1]  6  9 13</span>
+<span class='r-in'><span class='fu'>utf8_width</span><span class='op'>(</span><span class='va'>x</span>, encode <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1]  6 NA NA</span>
+<span class='r-in'><span class='fu'>utf8_width</span><span class='op'>(</span><span class='st'>'"'</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 1</span>
+<span class='r-in'><span class='fu'>utf8_width</span><span class='op'>(</span><span class='st'>'"'</span>, quote <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] 4</span>
+</code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -204,11 +208,11 @@
 
       <footer>
       <div class="copyright">
-  <p><p>Developed by Patrick O. Perry, Kirill Müller.</p></p>
+  <p><p>Developed by Patrick O. Perry, <a href="https://krlmlr.info" class="external-link">Kirill Müller</a>.</p></p>
 </div>
 
 <div class="pkgdown">
-  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9000.</p></p>
+  <p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.6.1.9001.</p></p>
 </div>
 
       </footer>
