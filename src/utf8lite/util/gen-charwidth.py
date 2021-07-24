@@ -42,7 +42,7 @@ emoji_props = property.read(EMOJI_DATA, sets=True)
 
 # https://www.unicode.org/reports/tr51/#def_basic_emoji_set
 emoji = ((emoji_props['Emoji'] - emoji_props['Emoji_Component'])
-         | emoji_props['Emoji_Presentation'])
+         & emoji_props['Emoji_Presentation'])
 
 # Treat ignorables as invisible
 derived_core_properties = property.read(DERIVED_CORE_PROPERTIES, sets=True)

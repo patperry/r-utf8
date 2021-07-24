@@ -114,6 +114,27 @@ START_TEST(test_emoji_zwj_sequence)
 }
 END_TEST
 
+// Check that isolated codepoints are single graphemes.
+START_TEST(test_isolated)
+{
+	uint8_t buf[4];
+	uint8_t *end;
+	int32_t code;
+	struct utf8lite_text text;
+
+	for (code = 1; code <= 0x1FFF; code++) {
+		if (!UTF8LITE_IS_UNICODE(code))
+			continue;
+		end = buf;
+		utf8lite_encode_utf8(code, &end);
+		utf8lite_text_assign(&text, buf, end - buf, 0, NULL);
+
+		start(&text);
+		assert_text_eq(next(), &text);
+		ck_assert(next() == NULL);
+	}
+}
+END_TEST
 
 // Unicode Grapheme Break Test
 // http://www.unicode.org/Public/UCD/latest/ucd/auxiliary/GraphemeBreakTest.txt
@@ -339,6 +360,7 @@ Suite *graphscan_suite(void)
         tcase_add_test(tc, test_single);
         tcase_add_test(tc, test_emoji_modifier);
 	tcase_add_test(tc, test_emoji_zwj_sequence);
+	tcase_add_test(tc, test_isolated);
         suite_add_tcase(s, tc);
 
         tc = tcase_create("Unicode GraphemeBreakTest.txt");
