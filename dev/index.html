@@ -79,24 +79,24 @@
   <div class="contents col-md-9">
 <div id="utf8" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#utf8" class="anchor"></a>utf8</h1></div>
+<a href="#utf8" class="anchor" aria-hidden="true"></a>utf8</h1></div>
 <!-- badges: start -->
 
 <!-- badges: end -->
 <p><em>utf8</em> is an R package for manipulating and printing UTF-8 text that fixes <a href="https://twitter.com/ptrckprry/status/901494853758054401" title="Windows enc2utf8 Bug" class="external-link">multiple</a> <a href="https://twitter.com/ptrckprry/status/887732831161425920" title="MacOS Emoji Printing" class="external-link">bugs</a> in R’s UTF-8 handling.</p>
 <div id="installation" class="section level2">
 <h2 class="hasAnchor">
-<a href="#installation" class="anchor"></a>Installation</h2>
+<a href="#installation" class="anchor" aria-hidden="true"></a>Installation</h2>
 <div id="stable-version" class="section level3">
 <h3 class="hasAnchor">
-<a href="#stable-version" class="anchor"></a>Stable version</h3>
+<a href="#stable-version" class="anchor" aria-hidden="true"></a>Stable version</h3>
 <p><em>utf8</em> is <a href="https://cran.r-project.org/package=utf8" title="CRAN Page" class="external-link">available on CRAN</a>. To install the latest released version, run the following command in R:</p>
 <pre class="chroma">
 <span class="nf"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="o">(</span><span class="s">"utf8"</span><span class="o">)</span></pre>
 </div>
 <div id="development-version" class="section level3">
 <h3 class="hasAnchor">
-<a href="#development-version" class="anchor"></a>Development version</h3>
+<a href="#development-version" class="anchor" aria-hidden="true"></a>Development version</h3>
 <p>To install the latest development version, run the following:</p>
 <pre class="chroma">
 <span class="nf">devtools</span><span class="nf">::</span><span class="nf"><a href="https://devtools.r-lib.org//reference/remote-reexports.html" class="external-link">install_github</a></span><span class="o">(</span><span class="s">"patperry/r-utf8"</span><span class="o">)</span></pre>
@@ -104,12 +104,12 @@
 </div>
 <div id="usage" class="section level2">
 <h2 class="hasAnchor">
-<a href="#usage" class="anchor"></a>Usage</h2>
+<a href="#usage" class="anchor" aria-hidden="true"></a>Usage</h2>
 <pre class="chroma">
 <span class="kr"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="o">(</span><span class="nv"><a href="https://github.com/patperry/r-utf8" class="external-link">utf8</a></span><span class="o">)</span></pre>
 <div id="validate-character-data-and-convert-to-utf-8" class="section level3">
 <h3 class="hasAnchor">
-<a href="#validate-character-data-and-convert-to-utf-8" class="anchor"></a>Validate character data and convert to UTF-8</h3>
+<a href="#validate-character-data-and-convert-to-utf-8" class="anchor" aria-hidden="true"></a>Validate character data and convert to UTF-8</h3>
 <p>Use <a href="https://rdrr.io/pkg/utf8/man/as_utf8.html" class="external-link"><code>as_utf8()</code></a> to validate input text and convert to UTF-8 encoding. The function alerts you if the input text has the wrong declared encoding:</p>
 <pre class="chroma">
 <span class="c"># second entry is encoded in latin-1, but declared as UTF-8</span>
@@ -125,7 +125,7 @@
 </div>
 <div id="normalize-data" class="section level3">
 <h3 class="hasAnchor">
-<a href="#normalize-data" class="anchor"></a>Normalize data</h3>
+<a href="#normalize-data" class="anchor" aria-hidden="true"></a>Normalize data</h3>
 <p>Use <a href="https://rdrr.io/pkg/utf8/man/utf8_normalize.html" class="external-link"><code>utf8_normalize()</code></a> to convert to Unicode composed normal form (NFC). Optionally apply compatibility maps for NFKC normal form or case-fold.</p>
 <pre class="chroma">
 <span class="c"># three ways to encode an angstrom character</span>
@@ -146,7 +146,7 @@
 </div>
 <div id="print-emoji" class="section level3">
 <h3 class="hasAnchor">
-<a href="#print-emoji" class="anchor"></a>Print emoji</h3>
+<a href="#print-emoji" class="anchor" aria-hidden="true"></a>Print emoji</h3>
 <p>On some platforms (including MacOS), the R implementation of <a href="https://rdrr.io/r/base/print.html" class="external-link"><code>print()</code></a> uses an outdated version of the Unicode standard to determine which characters are printable. Use <a href="https://rdrr.io/pkg/utf8/man/utf8_print.html" class="external-link"><code>utf8_print()</code></a> for an updated print function:</p>
 <pre class="chroma">
 <span class="nf"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="o">(</span><span class="nf"><a href="https://rdrr.io/r/base/utf8Conversion.html" class="external-link">intToUtf8</a></span><span class="o">(</span><span class="m">0x1F600</span> <span class="o">+</span> <span class="m">0</span><span class="o">:</span><span class="m">79</span><span class="o">)</span><span class="o">)</span> <span class="c"># with default R print function</span>
@@ -161,7 +161,7 @@
 </div>
 <div id="citation" class="section level2">
 <h2 class="hasAnchor">
-<a href="#citation" class="anchor"></a>Citation</h2>
+<a href="#citation" class="anchor" aria-hidden="true"></a>Citation</h2>
 <p>Cite <em>utf8</em> with the following BibTeX entry:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="op">@</span>Manual{,</span>
 <span id="cb1-2"><a href="#cb1-2"></a>  title =<span class="st"> </span>{utf8<span class="op">:</span><span class="st"> </span>Unicode Text Processing},</span>
@@ -173,7 +173,7 @@
 </div>
 <div id="contributing" class="section level2">
 <h2 class="hasAnchor">
-<a href="#contributing" class="anchor"></a>Contributing</h2>
+<a href="#contributing" class="anchor" aria-hidden="true"></a>Contributing</h2>
 <p>The project maintainer welcomes contributions in the form of feature requests, bug reports, comments, unit tests, vignettes, or other code. If you’d like to contribute, either</p>
 <ul>
 <li><p>fork the repository and submit a pull request</p></li>

@@ -68,9 +68,6 @@
 </script>
 
 
-<!-- dependencies from examples -->
-
-
   
 
   
@@ -138,9 +135,9 @@
     <p>Format a character object for UTF-8 printing.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>utf8_format</span><span class='op'>(</span><span class='va'>x</span>, trim <span class='op'>=</span> <span class='cn'>FALSE</span>, chars <span class='op'>=</span> <span class='cn'>NULL</span>, justify <span class='op'>=</span> <span class='st'>"left"</span>,
+    <div class="ref-usage sourceCode"><pre class='sourceCode r'><code><span class='fu'>utf8_format</span><span class='op'>(</span><span class='va'>x</span>, trim <span class='op'>=</span> <span class='cn'>FALSE</span>, chars <span class='op'>=</span> <span class='cn'>NULL</span>, justify <span class='op'>=</span> <span class='st'>"left"</span>,
             width <span class='op'>=</span> <span class='cn'>NULL</span>, na.encode <span class='op'>=</span> <span class='cn'>TRUE</span>, quote <span class='op'>=</span> <span class='cn'>FALSE</span>,
-            na.print <span class='op'>=</span> <span class='cn'>NULL</span>, print.gap <span class='op'>=</span> <span class='cn'>NULL</span>, utf8 <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+            na.print <span class='op'>=</span> <span class='cn'>NULL</span>, print.gap <span class='op'>=</span> <span class='cn'>NULL</span>, utf8 <span class='op'>=</span> <span class='cn'>NULL</span>, <span class='va'>...</span><span class='op'>)</span></code></pre></div>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -163,7 +160,7 @@
     with an ellipsis (<code>"..."</code> or <code>"\u2026"</code>, whichever is most
     appropriate for the current character locale). Set to <code>NULL</code> to
     limit output to the line width as determined by
-    <code><a href='https://rdrr.io/r/base/options.html'>getOption("width")</a></code>.</p></td>
+    <code>getOption("width")</code>.</p></td>
     </tr>
     <tr>
       <th>justify</th>
@@ -224,15 +221,18 @@ converted to valid UTF-8 and <code>"bytes"</code> for others.</p>
     <div class='dont-index'><p><code><a href='utf8_print.html'>utf8_print</a></code>, <code><a href='utf8_encode.html'>utf8_encode</a></code>.</p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># the second element is encoded in latin-1, but declared as UTF-8</span>
-<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"fa\u00E7ile"</span>, <span class='st'>"fa\xE7ile"</span>, <span class='st'>"fa\xC3\xA7ile"</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Encoding.html'>Encoding</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"UTF-8"</span>, <span class='st'>"UTF-8"</span>, <span class='st'>"bytes"</span><span class='op'>)</span>
-
-<span class='co'># formatting</span>
-<span class='fu'>utf8_format</span><span class='op'>(</span><span class='va'>x</span>, chars <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "faç…"  "fa..." "fa..."</div><div class='input'><span class='fu'>utf8_format</span><span class='op'>(</span><span class='va'>x</span>, chars <span class='op'>=</span> <span class='fl'>3</span>, justify <span class='op'>=</span> <span class='st'>"centre"</span>, width <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "   faç…   " "  fa...   " "  fa...   "</div><div class='input'><span class='fu'>utf8_format</span><span class='op'>(</span><span class='va'>x</span>, chars <span class='op'>=</span> <span class='fl'>3</span>, justify <span class='op'>=</span> <span class='st'>"right"</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; [1] "…ile"       "...\\xe7ile" "...\\xa7ile"</div></pre>
+    <div class="ref-examples sourceCode"><pre class='sourceCode r'><code><span class='r-in'><span class='co'># the second element is encoded in latin-1, but declared as UTF-8</span></span>
+<span class='r-in'><span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"fa\u00E7ile"</span>, <span class='st'>"fa\xE7ile"</span>, <span class='st'>"fa\xC3\xA7ile"</span><span class='op'>)</span></span>
+<span class='r-in'><span class='fu'><a href='https://rdrr.io/r/base/Encoding.html'>Encoding</a></span><span class='op'>(</span><span class='va'>x</span><span class='op'>)</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"UTF-8"</span>, <span class='st'>"UTF-8"</span>, <span class='st'>"bytes"</span><span class='op'>)</span></span>
+<span class='r-in'></span>
+<span class='r-in'><span class='co'># formatting</span></span>
+<span class='r-in'><span class='fu'>utf8_format</span><span class='op'>(</span><span class='va'>x</span>, chars <span class='op'>=</span> <span class='fl'>3</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "faç…"  "fa..." "fa..."</span>
+<span class='r-in'><span class='fu'>utf8_format</span><span class='op'>(</span><span class='va'>x</span>, chars <span class='op'>=</span> <span class='fl'>3</span>, justify <span class='op'>=</span> <span class='st'>"centre"</span>, width <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "   faç…   " "  fa...   " "  fa...   "</span>
+<span class='r-in'><span class='fu'>utf8_format</span><span class='op'>(</span><span class='va'>x</span>, chars <span class='op'>=</span> <span class='fl'>3</span>, justify <span class='op'>=</span> <span class='st'>"right"</span><span class='op'>)</span></span>
+<span class='r-out co'><span class='r-pr'>#&gt;</span> [1] "…ile"       "...\\xe7ile" "...\\xa7ile"</span>
+</code></pre></div>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
