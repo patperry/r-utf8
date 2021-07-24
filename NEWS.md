@@ -1,5 +1,12 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# utf8 1.2.1.9001 (2021-07-24)
+
+- Reenable all tests.
+- `utf8_width()` now reports correct widths for narrow emojis (#9).
+* 'master' of github.com:patperry/r-utf8:
+
+
 # utf8 1.2.1.9000 (2021-03-10)
 
 - Internal changes only.
