@@ -38,7 +38,7 @@
   <a href="../news/index.html">Changelog</a>
 </li>
       </ul><ul class="nav navbar-nav navbar-right"><li>
-  <a href="https://github.com/patperry/r-utf8/">
+  <a href="https://github.com/patperry/r-utf8/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -66,100 +66,101 @@
            names <span class="op">=</span> <span class="cn">NULL</span>, rownames <span class="op">=</span> <span class="cn">NULL</span>, escapes <span class="op">=</span> <span class="cn">NULL</span>,
            display <span class="op">=</span> <span class="cn">TRUE</span>, style <span class="op">=</span> <span class="cn">TRUE</span>, utf8 <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
 
+    <div id="ref-sections">
     <div id="arguments">
-    <h2>Arguments<a class="anchor" aria-label="anchor" href="#arguments"></a></h2>
-    <table class="ref-arguments"><colgroup><col class="name"><col class="desc"></colgroup><tr><th>x</th>
-      <td><p>character object.</p></td>
-    </tr><tr><th>chars</th>
-      <td><p>integer scalar indicating the maximum number of
+    <h2>Arguments</h2>
+    <p></p>
+<dl><dt>x</dt><dd><p>character object.</p></dd>
+</dl><p></p>
+<dl><dt>chars</dt><dd><p>integer scalar indicating the maximum number of
         character units to display.  Wide characters like emoji take
         two character units; combining marks and default ignorables
         take none. Longer strings get truncated and suffixed or prefixed
         with an ellipsis (<code>"..."</code> in C locale, <code>"\u2026"</code> in
         others). Set to <code>NULL</code> to limit output to the line width
-        as determined by <code>getOption("width")</code>.</p></td>
-    </tr><tr><th>quote</th>
-      <td><p>logical scalar indicating whether to put surrounding
+        as determined by <code>getOption("width")</code>.</p></dd>
+</dl><p></p>
+<dl><dt>quote</dt><dd><p>logical scalar indicating whether to put surrounding
         double-quotes (<code>'"'</code>) around character strings and escape
-        internal double-quotes.</p></td>
-    </tr><tr><th>na.print</th>
-      <td><p>character string (or <code>NULL</code>) indicating
+        internal double-quotes.</p></dd>
+</dl><p></p>
+<dl><dt>na.print</dt><dd><p>character string (or <code>NULL</code>) indicating
         the encoding for <code>NA</code> values. Ignored when
-        <code>na.encode</code> is <code>FALSE</code>.</p></td>
-    </tr><tr><th>print.gap</th>
-      <td><p>non-negative integer (or <code>NULL</code>) giving the
+        <code>na.encode</code> is <code>FALSE</code>.</p></dd>
+</dl><p></p>
+<dl><dt>print.gap</dt><dd><p>non-negative integer (or <code>NULL</code>) giving the
         number of spaces in gaps between columns; set to <code>NULL</code>
-        or <code>1</code> for a single space.</p></td>
-    </tr><tr><th>right</th>
-      <td><p>logical scalar indicating whether to right-justify
-        character strings.</p></td>
-    </tr><tr><th>max</th>
-      <td><p>non-negative integer (or <code>NULL</code>) indicating the
+        or <code>1</code> for a single space.</p></dd>
+</dl><p></p>
+<dl><dt>right</dt><dd><p>logical scalar indicating whether to right-justify
+        character strings.</p></dd>
+</dl><p></p>
+<dl><dt>max</dt><dd><p>non-negative integer (or <code>NULL</code>) indicating the
         maximum number of elements to print; set to
-        <code>getOption("max.print")</code> if argument is <code>NULL</code>.</p></td>
-    </tr><tr><th>names</th>
-      <td><p>a character string specifying the display style for
-        the (column) names, as an ANSI SGR parameter string.</p></td>
-    </tr><tr><th>rownames</th>
-      <td><p>a character string specifying the display style for
-        the row names, as an ANSI SGR parameter string.</p></td>
-    </tr><tr><th>escapes</th>
-      <td><p>a character string specifying the display style for
-        the backslash escapes, as an ANSI SGR parameter string.</p></td>
-    </tr><tr><th>display</th>
-      <td><p>logical scalar indicating whether to optimize the
-        encoding for display, not byte-for-byte data transmission.</p></td>
-    </tr><tr><th>style</th>
-      <td><p>logical scalar indicating whether to apply ANSI
+        <code>getOption("max.print")</code> if argument is <code>NULL</code>.</p></dd>
+</dl><p></p>
+<dl><dt>names</dt><dd><p>a character string specifying the display style for
+        the (column) names, as an ANSI SGR parameter string.</p></dd>
+</dl><p></p>
+<dl><dt>rownames</dt><dd><p>a character string specifying the display style for
+        the row names, as an ANSI SGR parameter string.</p></dd>
+</dl><p></p>
+<dl><dt>escapes</dt><dd><p>a character string specifying the display style for
+        the backslash escapes, as an ANSI SGR parameter string.</p></dd>
+</dl><p></p>
+<dl><dt>display</dt><dd><p>logical scalar indicating whether to optimize the
+        encoding for display, not byte-for-byte data transmission.</p></dd>
+</dl><p></p>
+<dl><dt>style</dt><dd><p>logical scalar indicating whether to apply ANSI
         terminal escape codes to style the output.  Ignored when
-        <code><a href="output.html">output_ansi()</a></code> is <code>FALSE</code>.</p></td>
-    </tr><tr><th>utf8</th>
-      <td><p>logical scalar indicating whether to optimize results
+        <code><a href="output.html">output_ansi()</a></code> is <code>FALSE</code>.</p></dd>
+</dl><p></p>
+<dl><dt>utf8</dt><dd><p>logical scalar indicating whether to optimize results
         for a UTF-8 capable display, or <code>NULL</code> to set as the
         result of <code><a href="output.html">output_utf8()</a></code>. Ignored when <code><a href="output.html">output_utf8()</a></code>
-        is <code>FALSE</code>.</p></td>
-    </tr><tr><th>...</th>
-      <td><p>further arguments passed from other methods. Ignored.</p></td>
-    </tr></table></div>
-
+        is <code>FALSE</code>.</p></dd>
+</dl><p></p>
+<dl><dt>...</dt><dd><p>further arguments passed from other methods. Ignored.</p></dd>
+</dl></div>
     <div id="details">
-    <h2>Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <h2>Details</h2>
     <p><code>utf8_print</code> prints a character object after formatting it with
     <code>utf8_format</code>.</p>
 <p>For ANSI terminal output (when <code><a href="output.html">output_ansi()</a></code> is <code>TRUE</code>),
     you can style the row and column names with the <code>rownames</code> and
     <code>names</code> parameters, specifying an ANSI SGR parameter string; see
-    <a href="https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_(Select_Graphic_Rendition)_parameters">https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_(Select_Graphic_Rendition)_parameters</a>.</p>
+    <a href="https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_(Select_Graphic_Rendition)_parameters" class="external-link">https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_(Select_Graphic_Rendition)_parameters</a>.</p>
     </div>
     <div id="value">
-    <h2>Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
+    <h2>Value</h2>
     <p>The function returns <code>x</code> invisibly.</p>
     </div>
     <div id="see-also">
-    <h2>See also<a class="anchor" aria-label="anchor" href="#see-also"></a></h2>
+    <h2>See also</h2>
     <div class="dont-index"><p><code><a href="utf8_format.html">utf8_format</a></code>.</p></div>
+    </div>
     </div>
 
     <div id="examples">
-    <h2>Examples<a class="anchor" aria-label="anchor" href="#examples"></a></h2>
+    <h2>Examples</h2>
     <div class="ref-examples sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># printing (assumes that output is capable of displaying Unicode 10.0.0)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/print.html">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/utf8Conversion.html">intToUtf8</a></span><span class="op">(</span><span class="fl">0x1F600</span> <span class="op">+</span> <span class="fl">0</span><span class="op">:</span><span class="fl">79</span><span class="op">)</span><span class="op">)</span> <span class="co"># with default R print function</span></span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/utf8Conversion.html" class="external-link">intToUtf8</a></span><span class="op">(</span><span class="fl">0x1F600</span> <span class="op">+</span> <span class="fl">0</span><span class="op">:</span><span class="fl">79</span><span class="op">)</span><span class="op">)</span> <span class="co"># with default R print function</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "😀😁😂😃😄😅😆😇😈😉😊😋😌😍😎😏😐😑😒😓😔😕😖😗😘😙😚😛😜😝😞😟😠😡😢😣😤😥😦😧😨😩😪😫😬😭😮😯😰😱😲😳😴😵😶😷😸😹😺😻😼😽😾😿🙀🙁🙂🙃🙄🙅🙆🙇🙈🙉🙊🙋🙌🙍🙎🙏"</span>
-<span class="r-in"><span class="fu">utf8_print</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/utf8Conversion.html">intToUtf8</a></span><span class="op">(</span><span class="fl">0x1F600</span> <span class="op">+</span> <span class="fl">0</span><span class="op">:</span><span class="fl">79</span><span class="op">)</span><span class="op">)</span> <span class="co"># with utf8_print, truncates line</span></span>
+<span class="r-in"><span class="fu">utf8_print</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/utf8Conversion.html" class="external-link">intToUtf8</a></span><span class="op">(</span><span class="fl">0x1F600</span> <span class="op">+</span> <span class="fl">0</span><span class="op">:</span><span class="fl">79</span><span class="op">)</span><span class="op">)</span> <span class="co"># with utf8_print, truncates line</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "😀​😁​😂​😃​😄​😅​😆​😇​😈​😉​😊​😋​😌​😍​😎​😏​😐​😑​😒​😓​😔​😕​😖​😗​😘​😙​😚​😛​😜​😝​😞​😟​😠​😡​😢​😣​…"</span>
-<span class="r-in"><span class="fu">utf8_print</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/utf8Conversion.html">intToUtf8</a></span><span class="op">(</span><span class="fl">0x1F600</span> <span class="op">+</span> <span class="fl">0</span><span class="op">:</span><span class="fl">79</span><span class="op">)</span>, chars <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span> <span class="co"># higher character limit</span></span>
+<span class="r-in"><span class="fu">utf8_print</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/utf8Conversion.html" class="external-link">intToUtf8</a></span><span class="op">(</span><span class="fl">0x1F600</span> <span class="op">+</span> <span class="fl">0</span><span class="op">:</span><span class="fl">79</span><span class="op">)</span>, chars <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span> <span class="co"># higher character limit</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "😀​😁​😂​😃​😄​😅​😆​😇​😈​😉​😊​😋​😌​😍​😎​😏​😐​😑​😒​😓​😔​😕​😖​😗​😘​😙​😚​😛​😜​😝​😞​😟​😠​😡​😢​😣​😤​😥​😦​😧​😨​😩​😪​😫​😬​😭​😮​😯​😰​😱​😲​😳​😴​😵​😶​😷​😸​😹​😺​😻​😼​😽​😾​😿​🙀​🙁​🙂​🙃​🙄​🙅​🙆​🙇​🙈​🙉​🙊​🙋​🙌​🙍​🙎​🙏​"</span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># in C locale, output ASCII (same results on all platforms)</span></span>
-<span class="r-in"><span class="va">oldlocale</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/locales.html">Sys.getlocale</a></span><span class="op">(</span><span class="st">"LC_CTYPE"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/invisible.html">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/locales.html">Sys.setlocale</a></span><span class="op">(</span><span class="st">"LC_CTYPE"</span>, <span class="st">"C"</span><span class="op">)</span><span class="op">)</span> <span class="co"># switch to C locale</span></span>
-<span class="r-in"><span class="fu">utf8_print</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/utf8Conversion.html">intToUtf8</a></span><span class="op">(</span><span class="fl">0x1F600</span> <span class="op">+</span> <span class="fl">0</span><span class="op">:</span><span class="fl">79</span><span class="op">)</span><span class="op">)</span></span>
+<span class="r-in"><span class="va">oldlocale</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/locales.html" class="external-link">Sys.getlocale</a></span><span class="op">(</span><span class="st">"LC_CTYPE"</span><span class="op">)</span></span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/locales.html" class="external-link">Sys.setlocale</a></span><span class="op">(</span><span class="st">"LC_CTYPE"</span>, <span class="st">"C"</span><span class="op">)</span><span class="op">)</span> <span class="co"># switch to C locale</span></span>
+<span class="r-in"><span class="fu">utf8_print</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/utf8Conversion.html" class="external-link">intToUtf8</a></span><span class="op">(</span><span class="fl">0x1F600</span> <span class="op">+</span> <span class="fl">0</span><span class="op">:</span><span class="fl">79</span><span class="op">)</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "\U0001f600\U0001f601\U0001f602\U0001f603\U0001f604\U0001f605\U0001f606..."</span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/invisible.html">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/locales.html">Sys.setlocale</a></span><span class="op">(</span><span class="st">"LC_CTYPE"</span>, <span class="va">oldlocale</span><span class="op">)</span><span class="op">)</span> <span class="co"># switch back to old locale</span></span>
+<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/invisible.html" class="external-link">invisible</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/locales.html" class="external-link">Sys.setlocale</a></span><span class="op">(</span><span class="st">"LC_CTYPE"</span>, <span class="va">oldlocale</span><span class="op">)</span><span class="op">)</span> <span class="co"># switch back to old locale</span></span>
 <span class="r-in"></span>
 <span class="r-in"><span class="co"># Mac and Linux only: style the names</span></span>
 <span class="r-in"><span class="co"># see https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_(Select_Graphic_Rendition)_parameters</span></span>
-<span class="r-in"><span class="fu">utf8_print</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html">as.character</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">)</span>, <span class="fl">4</span>, <span class="fl">5</span><span class="op">)</span>,</span>
+<span class="r-in"><span class="fu">utf8_print</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">20</span><span class="op">)</span>, <span class="fl">4</span>, <span class="fl">5</span><span class="op">)</span>,</span>
 <span class="r-in">           names <span class="op">=</span> <span class="st">"1;4"</span>, rownames <span class="op">=</span> <span class="st">"2;3"</span><span class="op">)</span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>      [,1] [,2] [,3] [,4] [,5]</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1,] "1"  "5"  "9"  "13" "17"</span>

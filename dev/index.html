@@ -60,7 +60,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/patperry/r-utf8/">
+  <a href="https://github.com/patperry/r-utf8/" class="external-link">
     <span class="fab fa-github fa-lg"></span>
      
   </a>
@@ -77,38 +77,38 @@
 
       </header><div class="row">
   <div class="contents col-md-9">
-<div id="utf8" class="section level1">
-<div class="page-header"><h1>utf8<a class="anchor" aria-label="anchor" href="#utf8"></a>
+<div class="section level1">
+<div class="page-header"><h1 id="utf8">utf8<a class="anchor" aria-label="anchor" href="#utf8"></a>
 </h1></div>
 <!-- badges: start -->
 
 <!-- badges: end -->
 <p><em>utf8</em> is an R package for manipulating and printing UTF-8 text that fixes <a href="https://twitter.com/ptrckprry/status/901494853758054401" title="Windows enc2utf8 Bug" class="external-link">multiple</a> <a href="https://twitter.com/ptrckprry/status/887732831161425920" title="MacOS Emoji Printing" class="external-link">bugs</a> in R’s UTF-8 handling.</p>
-<div id="installation" class="section level2">
-<h2>Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
+<div class="section level2">
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<div id="stable-version" class="section level3">
-<h3>Stable version<a class="anchor" aria-label="anchor" href="#stable-version"></a>
+<div class="section level3">
+<h3 id="stable-version">Stable version<a class="anchor" aria-label="anchor" href="#stable-version"></a>
 </h3>
 <p><em>utf8</em> is <a href="https://cran.r-project.org/package=utf8" title="CRAN Page" class="external-link">available on CRAN</a>. To install the latest released version, run the following command in R:</p>
 <pre class="chroma">
 <span class="nf"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="o">(</span><span class="s">"utf8"</span><span class="o">)</span></pre>
 </div>
-<div id="development-version" class="section level3">
-<h3>Development version<a class="anchor" aria-label="anchor" href="#development-version"></a>
+<div class="section level3">
+<h3 id="development-version">Development version<a class="anchor" aria-label="anchor" href="#development-version"></a>
 </h3>
 <p>To install the latest development version, run the following:</p>
 <pre class="chroma">
 <span class="nf">devtools</span><span class="nf">::</span><span class="nf"><a href="https://devtools.r-lib.org//reference/remote-reexports.html" class="external-link">install_github</a></span><span class="o">(</span><span class="s">"patperry/r-utf8"</span><span class="o">)</span></pre>
 </div>
 </div>
-<div id="usage" class="section level2">
-<h2>Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
+<div class="section level2">
+<h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h2>
 <pre class="chroma">
 <span class="kr"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="o">(</span><span class="nv"><a href="https://github.com/patperry/r-utf8" class="external-link">utf8</a></span><span class="o">)</span></pre>
-<div id="validate-character-data-and-convert-to-utf-8" class="section level3">
-<h3>Validate character data and convert to UTF-8<a class="anchor" aria-label="anchor" href="#validate-character-data-and-convert-to-utf-8"></a>
+<div class="section level3">
+<h3 id="validate-character-data-and-convert-to-utf-8">Validate character data and convert to UTF-8<a class="anchor" aria-label="anchor" href="#validate-character-data-and-convert-to-utf-8"></a>
 </h3>
 <p>Use <a href="https://rdrr.io/pkg/utf8/man/as_utf8.html" class="external-link"><code>as_utf8()</code></a> to validate input text and convert to UTF-8 encoding. The function alerts you if the input text has the wrong declared encoding:</p>
 <pre class="chroma">
@@ -123,8 +123,8 @@
 <span class="nf"><a href="https://rdrr.io/pkg/utf8/man/as_utf8.html" class="external-link">as_utf8</a></span><span class="o">(</span><span class="nv">x</span><span class="o">)</span> <span class="c"># succeeds</span>
 <span class="c">#&gt; [1] "façile" "façile" "façile"</span></pre>
 </div>
-<div id="normalize-data" class="section level3">
-<h3>Normalize data<a class="anchor" aria-label="anchor" href="#normalize-data"></a>
+<div class="section level3">
+<h3 id="normalize-data">Normalize data<a class="anchor" aria-label="anchor" href="#normalize-data"></a>
 </h3>
 <p>Use <a href="https://rdrr.io/pkg/utf8/man/utf8_normalize.html" class="external-link"><code>utf8_normalize()</code></a> to convert to Unicode composed normal form (NFC). Optionally apply compatibility maps for NFKC normal form or case-fold.</p>
 <pre class="chroma">
@@ -144,8 +144,8 @@
                map_compat <span class="o">=</span> <span class="kc">TRUE</span><span class="o">)</span>
 <span class="c">#&gt; [1] "Yo Unicode l herd U like typefaces so we put some codepoints in your Supplementary Wultilingval Plane so you can encode fonts in your fonts."</span></pre>
 </div>
-<div id="print-emoji" class="section level3">
-<h3>Print emoji<a class="anchor" aria-label="anchor" href="#print-emoji"></a>
+<div class="section level3">
+<h3 id="print-emoji">Print emoji<a class="anchor" aria-label="anchor" href="#print-emoji"></a>
 </h3>
 <p>On some platforms (including MacOS), the R implementation of <a href="https://rdrr.io/r/base/print.html" class="external-link"><code>print()</code></a> uses an outdated version of the Unicode standard to determine which characters are printable. Use <a href="https://rdrr.io/pkg/utf8/man/utf8_print.html" class="external-link"><code>utf8_print()</code></a> for an updated print function:</p>
 <pre class="chroma">
@@ -159,8 +159,8 @@
 <span class="c">#&gt; [1] "😀​😁​😂​😃​😄​😅​😆​😇​😈​😉​😊​😋​😌​😍​😎​😏​😐​😑​😒​😓​😔​😕​😖​😗​😘​😙​😚​😛​😜​😝​😞​😟​😠​😡​😢​😣​😤​😥​😦​😧​😨​😩​😪​😫​😬​😭​😮​😯​😰​😱​😲​😳​😴​😵​😶​😷​😸​😹​😺​😻​😼​😽​😾​😿​🙀​🙁​🙂​🙃​🙄​🙅​🙆​🙇​🙈​🙉​🙊​🙋​🙌​🙍​🙎​🙏​"</span></pre>
 </div>
 </div>
-<div id="citation" class="section level2">
-<h2>Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
+<div class="section level2">
+<h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h2>
 <p>Cite <em>utf8</em> with the following BibTeX entry:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="op">@</span>Manual{,</span>
@@ -171,8 +171,8 @@
 <span id="cb1-6"><a href="#cb1-6"></a>  url =<span class="st"> </span>{https<span class="op">:</span><span class="er">//</span>github.com<span class="op">/</span>patperry<span class="op">/</span>r<span class="op">-</span>utf8},</span>
 <span id="cb1-7"><a href="#cb1-7"></a>}</span></code></pre></div>
 </div>
-<div id="contributing" class="section level2">
-<h2>Contributing<a class="anchor" aria-label="anchor" href="#contributing"></a>
+<div class="section level2">
+<h2 id="contributing">Contributing<a class="anchor" aria-label="anchor" href="#contributing"></a>
 </h2>
 <p>The project maintainer welcomes contributions in the form of feature requests, bug reports, comments, unit tests, vignettes, or other code. If you’d like to contribute, either</p>
 <ul>
@@ -189,11 +189,11 @@
     <div class="links">
 <h2 data-toc-skip>Links</h2>
 <ul class="list-unstyled">
-<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=utf8">https://​cloud.r-project.org/​package=utf8</a>
+<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=utf8" class="external-link">https://​cloud.r-project.org/​package=utf8</a>
 </li>
-<li>Browse source code at <br><a href="https://github.com/patperry/r-utf8/">https://​github.com/​patperry/​r-utf8/​</a>
+<li>Browse source code at <br><a href="https://github.com/patperry/r-utf8/" class="external-link">https://​github.com/​patperry/​r-utf8/​</a>
 </li>
-<li>Report a bug at <br><a href="https://github.com/patperry/r-utf8/issues">https://​github.com/​patperry/​r-utf8/​issues</a>
+<li>Report a bug at <br><a href="https://github.com/patperry/r-utf8/issues" class="external-link">https://​github.com/​patperry/​r-utf8/​issues</a>
 </li>
 </ul>
 </div>
@@ -212,7 +212,7 @@
 <ul class="list-unstyled">
 <li>Patrick O. Perry <br><small class="roles"> Author, copyright holder </small>  </li>
 <li>
-<a href="https://krlmlr.info">Kirill Müller</a> <br><small class="roles"> Maintainer </small>  </li>
+<a href="https://krlmlr.info" class="external-link">Kirill Müller</a> <br><small class="roles"> Maintainer </small>  </li>
 <li><a href="authors.html">More on authors...</a></li>
 </ul>
 </div>
