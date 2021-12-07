@@ -63,32 +63,33 @@
     quotes or spaces, adjusting the width for display.</p>
     </div>
 
-    <div class="ref-usage sourceCode"><pre class="sourceCode r"><code><span class="fu">utf8_encode</span><span class="op">(</span><span class="va">x</span>, width <span class="op">=</span> <span class="fl">0L</span>, quote <span class="op">=</span> <span class="cn">FALSE</span>, justify <span class="op">=</span> <span class="st">"left"</span>, escapes <span class="op">=</span> <span class="cn">NULL</span>,
+    <div id="ref-usage">
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">utf8_encode</span><span class="op">(</span><span class="va">x</span>, width <span class="op">=</span> <span class="fl">0L</span>, quote <span class="op">=</span> <span class="cn">FALSE</span>, justify <span class="op">=</span> <span class="st">"left"</span>, escapes <span class="op">=</span> <span class="cn">NULL</span>,
             display <span class="op">=</span> <span class="cn">FALSE</span>, utf8 <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></code></pre></div>
+    </div>
 
-    <div id="ref-sections">
     <div id="arguments">
     <h2>Arguments</h2>
-    <p></p>
-<dl><dt>x</dt><dd><p>character object.</p></dd>
-</dl><p></p>
-<dl><dt>width</dt><dd><p>integer giving the minimum field width; specify
+    <dl><dt>x</dt>
+<dd><p>character object.</p></dd>
+<dt>width</dt>
+<dd><p>integer giving the minimum field width; specify
         <code>NULL</code> or <code>NA</code> for no minimum.</p></dd>
-</dl><p></p>
-<dl><dt>quote</dt><dd><p>logical scalar indicating whether to surround results
+<dt>quote</dt>
+<dd><p>logical scalar indicating whether to surround results
         with double-quotes and escape internal double-quotes.</p></dd>
-</dl><p></p>
-<dl><dt>justify</dt><dd><p>justification; one of <code>"left"</code>, <code>"right"</code>,
+<dt>justify</dt>
+<dd><p>justification; one of <code>"left"</code>, <code>"right"</code>,
         <code>"centre"</code>, or <code>"none"</code>. Can be abbreviated.</p></dd>
-</dl><p></p>
-<dl><dt>escapes</dt><dd><p>a character string specifying the display style for
+<dt>escapes</dt>
+<dd><p>a character string specifying the display style for
         the backslash escapes, as an ANSI SGR parameter string,
         or NULL for no styling.</p></dd>
-</dl><p></p>
-<dl><dt>display</dt><dd><p>logical scalar indicating whether to optimize the
+<dt>display</dt>
+<dd><p>logical scalar indicating whether to optimize the
         encoding for display, not byte-for-byte data transmission.</p></dd>
-</dl><p></p>
-<dl><dt>utf8</dt><dd><p>logical scalar indicating whether to encode for a UTF-8
+<dt>utf8</dt>
+<dd><p>logical scalar indicating whether to encode for a UTF-8
         capable display (ASCII-only otherwise), or <code>NULL</code> to
         encode for output capabilities as determined by
         <code><a href="output.html">output_utf8()</a></code>.</p></dd>
@@ -107,17 +108,16 @@
     <div id="value">
     <h2>Value</h2>
     <p>A character object with the same attributes as <code>x</code> but with
-    <code>Encoding</code> set to <code>"UTF-8"</code>.</p>
+<code>Encoding</code> set to <code>"UTF-8"</code>.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
     <div class="dont-index"><p><code><a href="utf8_print.html">utf8_print</a></code>.</p></div>
     </div>
-    </div>
 
-    <div id="examples">
+    <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="ref-examples sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># the second element is encoded in latin-1, but declared as UTF-8</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># the second element is encoded in latin-1, but declared as UTF-8</span></span>
 <span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fa\u00E7ile"</span>, <span class="st">"fa\xE7ile"</span>, <span class="st">"fa\xC3\xA7ile"</span><span class="op">)</span></span>
 <span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Encoding.html" class="external-link">Encoding</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"UTF-8"</span>, <span class="st">"UTF-8"</span>, <span class="st">"bytes"</span><span class="op">)</span></span>
 <span class="r-in"></span>
@@ -142,7 +142,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 1.9000.9000.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.1.9000.</p>
 </div>
 
       </footer></div>
