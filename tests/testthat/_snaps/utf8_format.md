@@ -7,7 +7,7 @@
     Output
       function (x) 
       x
-      <bytecode: 0x556e030c5d00>
+      <bytecode: 0x559654fd7d00>
       <environment: namespace:base>
     Code
       mapper(utf8_format(raw, chars = 2, justify = "none", na.print = "NA"))
