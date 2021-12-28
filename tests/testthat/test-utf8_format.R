@@ -34,6 +34,9 @@ test_that(paste0("'format' can handle long text in Unicode locale: UTF-8 is ", l
   if (l10n_info()$`UTF-8`) {
     local_utf8()
     expect_true(cli::is_utf8_output())
+    mapper <- identity
+  } else {
+    mapper <- function(x) lapply(x, charToRaw)
   }
 
   expect_snapshot({
@@ -43,10 +46,12 @@ test_that(paste0("'format' can handle long text in Unicode locale: UTF-8 is ", l
     )
     Encoding(raw) <- "UTF-8"
 
-    utf8_format(raw, chars = 2, justify = "none", na.print = "NA")
-    utf8_format(raw, chars = 2, justify = "left", na.print = "NA")
-    utf8_format(raw, chars = 2, justify = "centre", na.print = "NA")
-    utf8_format(raw, chars = 2, justify = "right", na.print = "NA")
+    mapper
+
+    mapper(utf8_format(raw, chars = 2, justify = "none", na.print = "NA"))
+    mapper(utf8_format(raw, chars = 2, justify = "left", na.print = "NA"))
+    mapper(utf8_format(raw, chars = 2, justify = "centre", na.print = "NA"))
+    mapper(utf8_format(raw, chars = 2, justify = "right", na.print = "NA"))
   })
 })
 
