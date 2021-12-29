@@ -3,12 +3,9 @@
     Code
       raw <- c(NA, "", "a", "ab", "foo", "food", "short text", "性", "性性", "性?")
       Encoding(raw) <- "UTF-8"
-      mapper
+      body(mapper)
     Output
-      function (x) 
       x
-      <bytecode: 0x556e030c5d00>
-      <environment: namespace:base>
     Code
       mapper(utf8_format(raw, chars = 2, justify = "none", na.print = "NA"))
     Output

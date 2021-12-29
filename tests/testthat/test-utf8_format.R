@@ -46,7 +46,7 @@ test_that(paste0("'format' can handle long text in Unicode locale: UTF-8 is ", l
     )
     Encoding(raw) <- "UTF-8"
 
-    mapper
+    body(mapper)
 
     mapper(utf8_format(raw, chars = 2, justify = "none", na.print = "NA"))
     mapper(utf8_format(raw, chars = 2, justify = "left", na.print = "NA"))
