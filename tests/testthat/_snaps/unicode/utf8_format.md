@@ -1,4 +1,4 @@
-# 'format' can handle long text in Unicode locale: UTF-8 is TRUE
+# 'format' can handle long text in Unicode locale
 
     Code
       raw <- c(NA, "", "a", "ab", "foo", "food", "short text", "性", "性性", "性?")

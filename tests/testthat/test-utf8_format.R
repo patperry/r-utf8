@@ -23,23 +23,20 @@ test_that("'format' can handle short text", {
 })
 
 
-# Run opposite test to snapshot output but not alter it
-if (!l10n_info()$`UTF-8`) {
-  test_that("'format' can handle long text in Unicode locale: UTF-8 is TRUE", {
-    skip("Symmetry")
-  })
-}
-
-test_that(paste0("'format' can handle long text in Unicode locale: UTF-8 is ", l10n_info()$`UTF-8`), {
+test_that(paste0("'format' can handle long text in Unicode locale"), {
   if (l10n_info()$`UTF-8`) {
     local_utf8()
     expect_true(cli::is_utf8_output())
     mapper <- identity
+    variant <- "unicode"
   } else {
     mapper <- function(x) lapply(x, charToRaw)
+    variant <- "ansi"
   }
 
-  expect_snapshot({
+  skip_if_not_installed("testthat", "3.1.1")
+
+  expect_snapshot(variant = variant, {
     raw <- c(
       NA, "", "a", "ab", "foo", "food", "short text",
       "\u6027", "\u6027\u6027", "\u6027?"
@@ -54,13 +51,6 @@ test_that(paste0("'format' can handle long text in Unicode locale: UTF-8 is ", l
     mapper(utf8_format(raw, chars = 2, justify = "right", na.print = "NA"))
   })
 })
-
-# Run opposite test to snapshot output but not alter it
-if (l10n_info()$`UTF-8`) {
-  test_that("'format' can handle long text in Unicode locale: UTF-8 is FALSE", {
-    skip("Symmetry")
-  })
-}
 
 test_that("'format' can handle long text in UTF-8 locale, part 2", {
   raw <- c(
