@@ -475,3 +475,11 @@ the [readtext][readtext] package.
 [utf8]: https://en.wikipedia.org/wiki/UTF-8
 
 [windows1252]: https://en.wikipedia.org/wiki/Windows-1252
+
+Session information
+-------
+
+```{r}
+sessioninfo::session_info(include_base = TRUE)
+```
+

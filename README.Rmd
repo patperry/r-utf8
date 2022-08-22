@@ -145,3 +145,10 @@ and if you choose to contribute, you must adhere to its terms.
 [emoji-print]: https://twitter.com/ptrckprry/status/887732831161425920 "MacOS Emoji Printing"
 [issues]: https://github.com/patperry/r-utf8/issues "Issues"
 [windows-enc2utf8]: https://twitter.com/ptrckprry/status/901494853758054401 "Windows enc2utf8 Bug"
+
+<!-- Session information -->
+<!-- ------- -->
+
+<!-- ```{r} -->
+<!-- sessioninfo::session_info(include_base = TRUE) -->
+<!-- ``` -->
