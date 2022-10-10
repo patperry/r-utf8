@@ -64,30 +64,39 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">utf8_normalize</span><span class="op">(</span><span class="va">x</span>, map_case <span class="op">=</span> <span class="cn">FALSE</span>, map_compat <span class="op">=</span> <span class="cn">FALSE</span>,
-               map_quote <span class="op">=</span> <span class="cn">FALSE</span>, remove_ignorable <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">utf8_normalize</span><span class="op">(</span><span class="va">x</span>, map_case <span class="op">=</span> <span class="cn">FALSE</span>, map_compat <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>               map_quote <span class="op">=</span> <span class="cn">FALSE</span>, remove_ignorable <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>character object.</p></dd>
-<dt>map_case</dt>
+
+
+    <dt>map_case</dt>
 <dd><p>a logical value indicating whether to apply Unicode
         case mapping to the text. For most languages, this transformation
         changes uppercase characters to their lowercase equivalents.</p></dd>
-<dt>map_compat</dt>
+
+
+    <dt>map_compat</dt>
 <dd><p>a logical value indicating whether to apply
         Unicode compatibility mappings to the characters, those required
         for NFKC and NFKD normal forms.</p></dd>
-<dt>map_quote</dt>
+
+
+    <dt>map_quote</dt>
 <dd><p>a logical value indicating whether to replace curly
         single quotes and Unicode apostrophe characters with ASCII
         apostrophe (U+0027).</p></dd>
-<dt>remove_ignorable</dt>
+
+
+    <dt>remove_ignorable</dt>
 <dd><p>a logical value indicating whether to remove
         Unicode "default ignorable" characters like zero-width spaces
         and soft hyphens.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -98,7 +107,12 @@
     </div>
     <div id="value">
     <h2>Value</h2>
-    <p>The result is a character object with the same attributes as <code>x</code>    but with <code>Encoding</code> set to <code>"UTF-8"</code>.</p>
+    
+
+<p>The result is a character object with the same attributes as <code>x</code></p>
+
+
+<p>but with <code>Encoding</code> set to <code>"UTF-8"</code>.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -107,8 +121,8 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="va">angstrom</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"\u00c5"</span>, <span class="st">"\u0041\u030a"</span>, <span class="st">"\u212b"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu">utf8_normalize</span><span class="op">(</span><span class="va">angstrom</span><span class="op">)</span> <span class="op">==</span> <span class="st">"\u00c5"</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="va">angstrom</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"\u00c5"</span>, <span class="st">"\u0041\u030a"</span>, <span class="st">"\u212b"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu">utf8_normalize</span><span class="op">(</span><span class="va">angstrom</span><span class="op">)</span> <span class="op">==</span> <span class="st">"\u00c5"</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] TRUE TRUE TRUE</span>
 </code></pre></div>
     </div>
@@ -124,7 +138,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>

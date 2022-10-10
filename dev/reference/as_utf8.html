@@ -62,18 +62,21 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">as_utf8</span><span class="op">(</span><span class="va">x</span>, normalize <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span>
-
-<span class="fu">utf8_valid</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">as_utf8</span><span class="op">(</span><span class="va">x</span>, normalize <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu">utf8_valid</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>character object.</p></dd>
-<dt>normalize</dt>
+
+
+    <dt>normalize</dt>
 <dd><p>a logical value indicating whether to convert to
         Unicode composed normal form (NFC).</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -87,10 +90,15 @@
     </div>
     <div id="value">
     <h2>Value</h2>
-    <p>For <code>as_utf8</code>, the result is a character object with the same
-    attributes as <code>x</code> but with <code>Encoding</code> set to <code>"UTF-8"</code>.
-    For <code>utf8_valid</code> a logical object with the same <code>names</code>,
-<code>dim</code>, and <code>dimnames</code> as <code>x</code>.</p>
+    
+
+<p>For <code>as_utf8</code>, the result is a character object with the same
+    attributes as <code>x</code> but with <code>Encoding</code> set to <code>"UTF-8"</code>.</p>
+
+
+<p>For <code>utf8_valid</code> a logical object with the same <code>names</code>,</p>
+<p></p>
+<p><code>dim</code>, and <code>dimnames</code> as <code>x</code>.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -99,20 +107,20 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># the second element is encoded in latin-1, but declared as UTF-8</span></span>
-<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fa\u00E7ile"</span>, <span class="st">"fa\xE7ile"</span>, <span class="st">"fa\xC3\xA7ile"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Encoding.html" class="external-link">Encoding</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"UTF-8"</span>, <span class="st">"UTF-8"</span>, <span class="st">"bytes"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># attempt to convert to UTF-8 (fails)</span></span>
-<span class="r-in"><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="fu">as_utf8</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">x</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Encoding.html" class="external-link">Encoding</a></span><span class="op">(</span><span class="va">y</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"latin1"</span> <span class="co"># mark the correct encoding</span></span>
-<span class="r-in"><span class="fu">as_utf8</span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="co"># succeeds</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># the second element is encoded in latin-1, but declared as UTF-8</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fa\u00E7ile"</span>, <span class="st">"fa\xE7ile"</span>, <span class="st">"fa\xC3\xA7ile"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Encoding.html" class="external-link">Encoding</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"UTF-8"</span>, <span class="st">"UTF-8"</span>, <span class="st">"bytes"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># attempt to convert to UTF-8 (fails)</span></span></span>
+<span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="fu">as_utf8</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="va">y</span> <span class="op">&lt;-</span> <span class="va">x</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Encoding.html" class="external-link">Encoding</a></span><span class="op">(</span><span class="va">y</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="st">"latin1"</span> <span class="co"># mark the correct encoding</span></span></span>
+<span class="r-in"><span><span class="fu">as_utf8</span><span class="op">(</span><span class="va">y</span><span class="op">)</span> <span class="co"># succeeds</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "façile" "façile" "façile"</span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># test for valid UTF-8</span></span>
-<span class="r-in"><span class="fu">utf8_valid</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># test for valid UTF-8</span></span></span>
+<span class="r-in"><span><span class="fu">utf8_valid</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1]  TRUE FALSE  TRUE</span>
 </code></pre></div>
     </div>
@@ -128,7 +136,7 @@
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>

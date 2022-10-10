@@ -62,18 +62,22 @@
     </div>
 
     <div id="ref-usage">
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="fu">utf8_format</span><span class="op">(</span><span class="va">x</span>, trim <span class="op">=</span> <span class="cn">FALSE</span>, chars <span class="op">=</span> <span class="cn">NULL</span>, justify <span class="op">=</span> <span class="st">"left"</span>,
-            width <span class="op">=</span> <span class="cn">NULL</span>, na.encode <span class="op">=</span> <span class="cn">TRUE</span>, quote <span class="op">=</span> <span class="cn">FALSE</span>,
-            na.print <span class="op">=</span> <span class="cn">NULL</span>, print.gap <span class="op">=</span> <span class="cn">NULL</span>, utf8 <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">utf8_format</span><span class="op">(</span><span class="va">x</span>, trim <span class="op">=</span> <span class="cn">FALSE</span>, chars <span class="op">=</span> <span class="cn">NULL</span>, justify <span class="op">=</span> <span class="st">"left"</span>,</span>
+<span>            width <span class="op">=</span> <span class="cn">NULL</span>, na.encode <span class="op">=</span> <span class="cn">TRUE</span>, quote <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>            na.print <span class="op">=</span> <span class="cn">NULL</span>, print.gap <span class="op">=</span> <span class="cn">NULL</span>, utf8 <span class="op">=</span> <span class="cn">NULL</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div id="arguments">
     <h2>Arguments</h2>
     <dl><dt>x</dt>
 <dd><p>character object.</p></dd>
+
+
 <dt>trim</dt>
 <dd><p>logical scalar indicating whether to suppress padding
     spaces around elements.</p></dd>
+
+
 <dt>chars</dt>
 <dd><p>integer scalar indicating the maximum number of
     character units to display.  Wide characters like emoji take
@@ -83,33 +87,50 @@
     appropriate for the current character locale). Set to <code>NULL</code> to
     limit output to the line width as determined by
     <code>getOption("width")</code>.</p></dd>
+
+
 <dt>justify</dt>
 <dd><p>justification; one of <code>"left"</code>, <code>"right"</code>,
     <code>"centre"</code>, or <code>"none"</code>. Can be abbreviated.</p></dd>
+
+
 <dt>width</dt>
 <dd><p>the minimum field width; set to <code>NULL</code> or
     <code>0</code> for no restriction.</p></dd>
+
+
 <dt>na.encode</dt>
 <dd><p>logical scalar indicating whether to encode
     <code>NA</code> values as character strings.</p></dd>
+
+
 <dt>quote</dt>
 <dd><p>logical scalar indicating whether to format for a context
     with surrounding double-quotes (<code>'"'</code>) and escaped internal
     double-quotes.</p></dd>
+
+
 <dt>na.print</dt>
 <dd><p>character string (or <code>NULL</code>) indicating the
     encoding for <code>NA</code> values. Ignored when <code>na.encode</code>
     is <code>FALSE</code>.</p></dd>
+
+
 <dt>print.gap</dt>
 <dd><p>non-negative integer (or <code>NULL</code>) giving the
     number of spaces in gaps between columns; set to <code>NULL</code>
     or <code>1</code> for a single space.</p></dd>
+
+
 <dt>utf8</dt>
 <dd><p>logical scalar indicating whether to format for a UTF-8
     capable display (ASCII-only otherwise), or <code>NULL</code> to
     format for output capabilities as determined by <code><a href="output.html">output_utf8()</a></code>.</p></dd>
+
+
 <dt>...</dt>
 <dd><p>further arguments passed from other methods. Ignored.</p></dd>
+
 </dl></div>
     <div id="details">
     <h2>Details</h2>
@@ -118,7 +139,9 @@ truncating long character strings.</p>
     </div>
     <div id="value">
     <h2>Value</h2>
-    <p>A character object with the same attributes as <code>x</code> but with
+    
+
+<p>A character object with the same attributes as <code>x</code> but with
 <code>Encoding</code> set to <code>"UTF-8"</code> for elements that can be
 converted to valid UTF-8 and <code>"bytes"</code> for others.</p>
     </div>
@@ -129,16 +152,16 @@ converted to valid UTF-8 and <code>"bytes"</code> for others.</p>
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span class="co"># the second element is encoded in latin-1, but declared as UTF-8</span></span>
-<span class="r-in"><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fa\u00E7ile"</span>, <span class="st">"fa\xE7ile"</span>, <span class="st">"fa\xC3\xA7ile"</span><span class="op">)</span></span>
-<span class="r-in"><span class="fu"><a href="https://rdrr.io/r/base/Encoding.html" class="external-link">Encoding</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"UTF-8"</span>, <span class="st">"UTF-8"</span>, <span class="st">"bytes"</span><span class="op">)</span></span>
-<span class="r-in"></span>
-<span class="r-in"><span class="co"># formatting</span></span>
-<span class="r-in"><span class="fu">utf8_format</span><span class="op">(</span><span class="va">x</span>, chars <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># the second element is encoded in latin-1, but declared as UTF-8</span></span></span>
+<span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fa\u00E7ile"</span>, <span class="st">"fa\xE7ile"</span>, <span class="st">"fa\xC3\xA7ile"</span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Encoding.html" class="external-link">Encoding</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"UTF-8"</span>, <span class="st">"UTF-8"</span>, <span class="st">"bytes"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># formatting</span></span></span>
+<span class="r-in"><span><span class="fu">utf8_format</span><span class="op">(</span><span class="va">x</span>, chars <span class="op">=</span> <span class="fl">3</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "faç…"  "fa..." "fa..."</span>
-<span class="r-in"><span class="fu">utf8_format</span><span class="op">(</span><span class="va">x</span>, chars <span class="op">=</span> <span class="fl">3</span>, justify <span class="op">=</span> <span class="st">"centre"</span>, width <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">utf8_format</span><span class="op">(</span><span class="va">x</span>, chars <span class="op">=</span> <span class="fl">3</span>, justify <span class="op">=</span> <span class="st">"centre"</span>, width <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "   faç…   " "  fa...   " "  fa...   "</span>
-<span class="r-in"><span class="fu">utf8_format</span><span class="op">(</span><span class="va">x</span>, chars <span class="op">=</span> <span class="fl">3</span>, justify <span class="op">=</span> <span class="st">"right"</span><span class="op">)</span></span>
+<span class="r-in"><span><span class="fu">utf8_format</span><span class="op">(</span><span class="va">x</span>, chars <span class="op">=</span> <span class="fl">3</span>, justify <span class="op">=</span> <span class="st">"right"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1] "…ile"       "...\\xe7ile" "...\\xa7ile"</span>
 </code></pre></div>
     </div>
@@ -154,7 +177,7 @@ converted to valid UTF-8 and <code>"bytes"</code> for others.</p>
 </div>
 
 <div class="pkgdown">
-  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.3.9000.</p>
+  <p></p><p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.0.6.9000.</p>
 </div>
 
       </footer></div>
