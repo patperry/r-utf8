@@ -34,7 +34,7 @@ jobs:
     # End custom: services
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - uses: ./.github/workflows/rate-limit
         with:
@@ -86,7 +86,7 @@ jobs:
     # End custom: services
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: ${{ needs.rcc-smoke.outputs.sha }}
 
@@ -142,7 +142,7 @@ jobs:
           - {os: windows-latest, r: '3.6'}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: ${{ needs.rcc-smoke.outputs.sha }}
 
@@ -180,7 +180,7 @@ jobs:
       fail-fast: false
       matrix:
         config:
-          - {os: macOS-latest,   r: 'release'}
+          - {os: macos-latest,   r: 'release'}
 
           - {os: ubuntu-20.04,   r: 'release'}
 
@@ -205,7 +205,7 @@ jobs:
           # End custom: matrix elements
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           ref: ${{ needs.rcc-smoke.outputs.sha }}
 
