@@ -76,7 +76,8 @@
       </header><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
-      <h1 data-toc-skip>Unicode: Emoji, accents, and international text</h1>
+      <h1 data-toc-skip>Unicode: Emoji, accents, and international
+text</h1>
             
       
       <small class="dont-index">Source: <a href="https://github.com/patperry/r-utf8/blob/HEAD/vignettes/utf8.Rmd" class="external-link"><code>vignettes/utf8.Rmd</code></a></small>
@@ -89,9 +90,25 @@
 <div class="section level2">
 <h2 id="character-encoding">Character encoding<a class="anchor" aria-label="anchor" href="#character-encoding"></a>
 </h2>
-<p>Before we can analyze a text in R, we first need to get its digital representation, a sequence of ones and zeros. In practice this works by first choosing an <em>encoding</em> for the text that assigns each character a numerical value, and then translating the sequence of characters in the text to the corresponding sequence of numbers specified by the encoding. Today, most new text is encoded according to the <a href="http://unicode.org/charts/" class="external-link">Unicode standard</a>, specifically the 8-bit block Unicode Transfer Format, <a href="https://en.wikipedia.org/wiki/UTF-8" class="external-link">UTF-8</a>. Joel Spolsky gives a good overview of the situation in an <a href="https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/" class="external-link">essay from 2003</a>.</p>
-<p>The software community has mostly moved to UTF-8 as a standard for text storage and interchange, but there is still a large volume of text in other encodings. Whenever you read a text file into R, you need to specify the encoding. If you don’t, R will try to guess the encoding, and if it guesses incorrectly, it will wrongly interpret the sequence of ones and zeros.</p>
-<p>We will demonstrate the difficulties of encodings with the text of Jane Austen’s novel, <em>Mansfield Park</em> provided by <a href="http://www.gutenberg.org" class="external-link">Project Gutenberg</a>. We will download the text, then read in the lines of the novel.</p>
+<p>Before we can analyze a text in R, we first need to get its digital
+representation, a sequence of ones and zeros. In practice this works by
+first choosing an <em>encoding</em> for the text that assigns each
+character a numerical value, and then translating the sequence of
+characters in the text to the corresponding sequence of numbers
+specified by the encoding. Today, most new text is encoded according to
+the <a href="http://unicode.org/charts/" class="external-link">Unicode standard</a>,
+specifically the 8-bit block Unicode Transfer Format, <a href="https://en.wikipedia.org/wiki/UTF-8" class="external-link">UTF-8</a>. Joel Spolsky gives
+a good overview of the situation in an <a href="https://www.joelonsoftware.com/2003/10/08/the-absolute-minimum-every-software-developer-absolutely-positively-must-know-about-unicode-and-character-sets-no-excuses/" class="external-link">essay
+from 2003</a>.</p>
+<p>The software community has mostly moved to UTF-8 as a standard for
+text storage and interchange, but there is still a large volume of text
+in other encodings. Whenever you read a text file into R, you need to
+specify the encoding. If you don’t, R will try to guess the encoding,
+and if it guesses incorrectly, it will wrongly interpret the sequence of
+ones and zeros.</p>
+<p>We will demonstrate the difficulties of encodings with the text of
+Jane Austen’s novel, <em>Mansfield Park</em> provided by <a href="http://www.gutenberg.org" class="external-link">Project Gutenberg</a>. We will download
+the text, then read in the lines of the novel.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># download the zipped text from a Project Gutenberg mirror</span></span>
 <span><span class="va">url</span> <span class="op">&lt;-</span>  <span class="st">"http://mirror.csclub.uwaterloo.ca/gutenberg/1/4/141/141.zip"</span></span>
@@ -102,7 +119,17 @@
 <span><span class="va">con</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">unz</a></span><span class="op">(</span><span class="va">tmp</span>, <span class="st">"141.txt"</span>, encoding <span class="op">=</span> <span class="st">"UTF-8"</span><span class="op">)</span></span>
 <span><span class="va">lines</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/readLines.html" class="external-link">readLines</a></span><span class="op">(</span><span class="va">con</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/connections.html" class="external-link">close</a></span><span class="op">(</span><span class="va">con</span><span class="op">)</span></span></code></pre></div>
-<p>The <code>unz</code> function and other similar file connection functions have <code>encoding</code> arguments which, if left unspecified default to assuming that text is encoded in your operating system’s native encoding. To ensure consistent behavior across all platforms (Mac, Windows, and Linux), you should set this option explicitly. Here, we set <code>encoding = "UTF-8"</code>. This is a reasonable default, but it is not always appropriate. In general, you should determine the appropriate <code>encoding</code> value by looking at the file. Unfortunately, the file extension <code>".txt"</code> is not informative, and could correspond to any encoding. However, if we read the first few lines of the file, we see the following:</p>
+<p>The <code>unz</code> function and other similar file connection
+functions have <code>encoding</code> arguments which, if left
+unspecified default to assuming that text is encoded in your operating
+system’s native encoding. To ensure consistent behavior across all
+platforms (Mac, Windows, and Linux), you should set this option
+explicitly. Here, we set <code>encoding = "UTF-8"</code>. This is a
+reasonable default, but it is not always appropriate. In general, you
+should determine the appropriate <code>encoding</code> value by looking
+at the file. Unfortunately, the file extension <code>".txt"</code> is
+not informative, and could correspond to any encoding. However, if we
+read the first few lines of the file, we see the following:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lines</span><span class="op">[</span><span class="fl">11</span><span class="op">:</span><span class="fl">20</span><span class="op">]</span></span></code></pre></div>
 <pre><code> [1] "Author: Jane Austen"                                         
@@ -115,21 +142,28 @@
  [8] "Character set encoding: ASCII"                               
  [9] ""                                                            
 [10] "*** START OF THIS PROJECT GUTENBERG EBOOK MANSFIELD PARK ***"</code></pre>
-<p>The character set encoding is reported as ASCII, which is a subset of UTF-8. So, we should be in good shape.</p>
-<p>Unfortunately, we run into trouble as soon as we try to process the text:</p>
+<p>The character set encoding is reported as ASCII, which is a subset of
+UTF-8. So, we should be in good shape.</p>
+<p>Unfortunately, we run into trouble as soon as we try to process the
+text:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">corpus</span><span class="fu">::</span><span class="fu">term_stats</span><span class="op">(</span><span class="va">lines</span><span class="op">)</span> <span class="co"># produces an error</span></span></code></pre></div>
 <pre><code>Error in corpus::term_stats(lines): argument entry 15252 is incorrectly marked as "UTF-8": invalid leading byte (0xA3) at position 36</code></pre>
-<p>The error message tells us that line 15252 contains an invalid byte.</p>
+<p>The error message tells us that line 15252 contains an invalid
+byte.</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lines</span><span class="op">[</span><span class="fl">15252</span><span class="op">]</span></span></code></pre></div>
 <pre><code>[1] "the command of her beauty, and her \xa320,000, any one who could satisfy the"</code></pre>
-<p>We might wonder if there are other lines with invalid data. We can find all such lines using the <code>utf8_valid</code> function:</p>
+<p>We might wonder if there are other lines with invalid data. We can
+find all such lines using the <code>utf8_valid</code> function:</p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lines</span><span class="op">[</span><span class="op">!</span><span class="fu"><a href="../reference/as_utf8.html">utf8_valid</a></span><span class="op">(</span><span class="va">lines</span><span class="op">)</span><span class="op">]</span></span></code></pre></div>
 <pre><code>[1] "the command of her beauty, and her \xa320,000, any one who could satisfy the"</code></pre>
 <p>So, there are no other invalid lines.</p>
-<p>The offending byte in line 15252 is displayed as <code>\xa3</code>, an escape code for hexadecimal value 0xa3, decimal value 163. To understand why this is invalid, we need to learn more about UTF-8 encoding.</p>
+<p>The offending byte in line 15252 is displayed as <code>\xa3</code>,
+an escape code for hexadecimal value 0xa3, decimal value 163. To
+understand why this is invalid, we need to learn more about UTF-8
+encoding.</p>
 </div>
 <div class="section level2">
 <h2 id="utf-8">UTF-8<a class="anchor" aria-label="anchor" href="#utf-8"></a>
@@ -137,7 +171,13 @@
 <div class="section level3">
 <h3 id="ascii">ASCII<a class="anchor" aria-label="anchor" href="#ascii"></a>
 </h3>
-<p>The smallest unit of data transfer on modern computers is the byte, a sequence of eight ones and zeros that can encode a number between 0 and 255 (hexadecimal 0x00 and 0xff). In the earliest character encodings, the numbers from 0 to 127 (hexadecimal 0x00 to 0x7f) were standardized in an encoding known as ASCII, the American Standard Code for Information Interchange. Here are the characters corresponding to these codes:</p>
+<p>The smallest unit of data transfer on modern computers is the byte, a
+sequence of eight ones and zeros that can encode a number between 0 and
+255 (hexadecimal 0x00 and 0xff). In the earliest character encodings,
+the numbers from 0 to 127 (hexadecimal 0x00 to 0x7f) were standardized
+in an encoding known as ASCII, the American Standard Code for
+Information Interchange. Here are the characters corresponding to these
+codes:</p>
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">codes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">127</span>, <span class="fl">8</span>, <span class="fl">16</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">7</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">9</span>, <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
@@ -158,21 +198,36 @@
 5 P Q R S T U V W  X  Y  Z  [  \\ ]  ^ _
 6 ` a b c d e f g  h  i  j  k  l  m  n o
 7 p q r s t u v w  x  y  z  {  |  }  ~  </code></pre>
-<p>The first 32 codes (the first two rows of the table) are special control codes, the most common of which, <code>0x0a</code> denotes a new line (<code>\n</code>). The special code <code>0x00</code> often denotes the end of the input, and R does not allow this value in character strings. Code <code>0x7f</code> corresponds to a “delete” control.</p>
-<p>When you call <code>utf8_print</code>, it uses the low level <code>utf8_encode</code> subroutine format control codes; they format as <code>\uXXXX</code> for four hexadecimal digits <code>XXXX</code> or as <code>\UXXXXYYYY</code> for eight hexadecimal digits <code>XXXXYYYY</code>:</p>
+<p>The first 32 codes (the first two rows of the table) are special
+control codes, the most common of which, <code>0x0a</code> denotes a new
+line (<code>\n</code>). The special code <code>0x00</code> often denotes
+the end of the input, and R does not allow this value in character
+strings. Code <code>0x7f</code> corresponds to a “delete” control.</p>
+<p>When you call <code>utf8_print</code>, it uses the low level
+<code>utf8_encode</code> subroutine format control codes; they format as
+<code>\uXXXX</code> for four hexadecimal digits <code>XXXX</code> or as
+<code>\UXXXXYYYY</code> for eight hexadecimal digits
+<code>XXXXYYYY</code>:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/utf8_print.html">utf8_print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/utf8Conversion.html" class="external-link">intToUtf8</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">0x0f</span><span class="op">)</span>, quote <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <pre><code>[1] \u0001\u0002\u0003\u0004\u0005\u0006\a\b\t\n\v\f\r\u000e\u000f</code></pre>
-<p>Compare <code>utf8_print</code> output with the output with the base R print function:</p>
+<p>Compare <code>utf8_print</code> output with the output with the base
+R print function:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/utf8Conversion.html" class="external-link">intToUtf8</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fl">0x0f</span><span class="op">)</span>, quote <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span></code></pre></div>
 <pre><code>[1] \001\002\003\004\005\006\a\b\t\n\v\f\r\016\017</code></pre>
-<p>Base R format control codes below 128 using octal escapes. There are some other differences between the function which we will highlight below.</p>
+<p>Base R format control codes below 128 using octal escapes. There are
+some other differences between the function which we will highlight
+below.</p>
 </div>
 <div class="section level3">
 <h3 id="latin-1">Latin-1<a class="anchor" aria-label="anchor" href="#latin-1"></a>
 </h3>
-<p>ASCII works fine for most text in English, but not for other languages. The Latin-1 encoding extends ASCII to Latin languages by assigning the numbers 128 to 255 (hexadecimal 0x80 to 0xff) to other common characters in Latin languages. We can see these characters below.</p>
+<p>ASCII works fine for most text in English, but not for other
+languages. The Latin-1 encoding extends ASCII to Latin languages by
+assigning the numbers 128 to 255 (hexadecimal 0x80 to 0xff) to other
+common characters in Latin languages. We can see these characters
+below.</p>
 <div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">codes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fl">128</span><span class="op">:</span><span class="fl">255</span>, <span class="fl">8</span>, <span class="fl">16</span>, byrow <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>                dimnames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">8</span><span class="op">:</span><span class="fl">9</span>, <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0</span><span class="op">:</span><span class="fl">9</span>, <span class="va">letters</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">6</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
@@ -191,12 +246,20 @@ c À Á Â Ã Ä Å Æ Ç È É Ê Ë Ì Í Î Ï
 d Ð Ñ Ò Ó Ô Õ Ö × Ø Ù Ú Û Ü Ý Þ ß
 e à á â ã ä å æ ç è é ê ë ì í î ï
 f ð ñ ò ó ô õ ö ÷ ø ù ú û ü ý þ ÿ</code></pre>
-<p>As with ASCII, the first 32 numbers are control codes. The others are characters common in Latin languages. Note that <code>0xa3</code>, the invalid byte from <em>Mansfield Park</em>, corresponds to a pound sign in the Latin-1 encoding. Given the context of the byte:</p>
+<p>As with ASCII, the first 32 numbers are control codes. The others are
+characters common in Latin languages. Note that <code>0xa3</code>, the
+invalid byte from <em>Mansfield Park</em>, corresponds to a pound sign
+in the Latin-1 encoding. Given the context of the byte:</p>
 <div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lines</span><span class="op">[</span><span class="fl">15252</span><span class="op">]</span></span></code></pre></div>
 <pre><code>[1] "the command of her beauty, and her \xa320,000, any one who could satisfy the"</code></pre>
-<p>this is probably the right symbol. The text is probably encoded in Latin-1, not UTF-8 or ASCII as claimed in the file.</p>
-<p>If you run into an error while reading text that claims to be ASCII, it is probably encoded as Latin-1. Note, however, that this is not the only possibility, and there are many other encodings. The <code>iconvlist</code> function will list the ones that R knows how to process:</p>
+<p>this is probably the right symbol. The text is probably encoded in
+Latin-1, not UTF-8 or ASCII as claimed in the file.</p>
+<p>If you run into an error while reading text that claims to be ASCII,
+it is probably encoded as Latin-1. Note, however, that this is not the
+only possibility, and there are many other encodings. The
+<code>iconvlist</code> function will list the ones that R knows how to
+process:</p>
 <div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/iconv.html" class="external-link">iconvlist</a></span><span class="op">(</span><span class="op">)</span>, n <span class="op">=</span> <span class="fl">20</span><span class="op">)</span></span></code></pre></div>
 <pre><code> [1] "437"            "850"            "852"            "855"           
@@ -208,8 +271,16 @@ f ð ñ ò ó ô õ ö ÷ ø ù ú û ü ý þ ÿ</code></pre>
 <div class="section level3">
 <h3 id="utf-8-1">UTF-8<a class="anchor" aria-label="anchor" href="#utf-8-1"></a>
 </h3>
-<p>With only 256 unique values, a single byte is not enough to encode every character. Multi-byte encodings allow for encoding more. UTF-8 encodes characters using between 1 and 4 bytes each and allows for up to 1,112,064 character codes. Most of these codes are currently unassigned, but every year the Unicode consortium meets and adds new characters. You can find a list of all of the characters in the <a href="http://www.unicode.org/Public/10.0.0/ucd/UnicodeData.txt" class="external-link">Unicode Character Database</a>. A listing of the Emoji characters is <a href="http://www.unicode.org/Public/emoji/5.0/emoji-data.txt" class="external-link">available separately</a>.</p>
-<p>Say you want to input the Unicode character with hexadecimal code 0x2603. You can do so in one of three ways:</p>
+<p>With only 256 unique values, a single byte is not enough to encode
+every character. Multi-byte encodings allow for encoding more. UTF-8
+encodes characters using between 1 and 4 bytes each and allows for up to
+1,112,064 character codes. Most of these codes are currently unassigned,
+but every year the Unicode consortium meets and adds new characters. You
+can find a list of all of the characters in the <a href="http://www.unicode.org/Public/10.0.0/ucd/UnicodeData.txt" class="external-link">Unicode
+Character Database</a>. A listing of the Emoji characters is <a href="http://www.unicode.org/Public/emoji/5.0/emoji-data.txt" class="external-link">available
+separately</a>.</p>
+<p>Say you want to input the Unicode character with hexadecimal code
+0x2603. You can do so in one of three ways:</p>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="st">"\u2603"</span>           <span class="co"># with \u + 4 hex digits</span></span></code></pre></div>
 <pre><code>[1] "☃"</code></pre>
@@ -219,8 +290,16 @@ f ð ñ ò ó ô õ ö ÷ ø ù ú û ü ý þ ÿ</code></pre>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/utf8Conversion.html" class="external-link">intToUtf8</a></span><span class="op">(</span><span class="fl">0x2603</span><span class="op">)</span>  <span class="co"># from an integer</span></span></code></pre></div>
 <pre><code>[1] "☃"</code></pre>
-<p>For characters above <code>0xffff</code>, the first method won’t work. On Windows, a bug in the current version of R (fixed in R-devel) prevents using the second method.</p>
-<p>When you try to print Unicode in R, the system will first try to determine whether the code is printable or not. Non-printable codes include control codes and unassigned codes. On Mac OS, R uses an outdated function to make this determination, so it is unable to print most emoji. The <code>utf8_print</code> function uses the most recent version (10.0.0) of the Unicode standard, and will print all Unicode characters supported by your system:</p>
+<p>For characters above <code>0xffff</code>, the first method won’t
+work. On Windows, a bug in the current version of R (fixed in R-devel)
+prevents using the second method.</p>
+<p>When you try to print Unicode in R, the system will first try to
+determine whether the code is printable or not. Non-printable codes
+include control codes and unassigned codes. On Mac OS, R uses an
+outdated function to make this determination, so it is unable to print
+most emoji. The <code>utf8_print</code> function uses the most recent
+version (10.0.0) of the Unicode standard, and will print all Unicode
+characters supported by your system:</p>
 <div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/print.html" class="external-link">print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/utf8Conversion.html" class="external-link">intToUtf8</a></span><span class="op">(</span><span class="fl">0x1f600</span> <span class="op">+</span> <span class="fl">0</span><span class="op">:</span><span class="fl">79</span><span class="op">)</span><span class="op">)</span> <span class="co"># base R</span></span></code></pre></div>
 <pre><code>[1] "\U0001f600\U0001f601\U0001f602\U0001f603\U0001f604\U0001f605\U0001f606\U0001f607\U0001f608\U0001f609\U0001f60a\U0001f60b\U0001f60c\U0001f60d\U0001f60e\U0001f60f\U0001f610\U0001f611\U0001f612\U0001f613\U0001f614\U0001f615\U0001f616\U0001f617\U0001f618\U0001f619\U0001f61a\U0001f61b\U0001f61c\U0001f61d\U0001f61e\U0001f61f\U0001f620\U0001f621\U0001f622\U0001f623\U0001f624\U0001f625\U0001f626\U0001f627\U0001f628\U0001f629\U0001f62a\U0001f62b\U0001f62c\U0001f62d\U0001f62e\U0001f62f\U0001f630\U0001f631\U0001f632\U0001f633\U0001f634\U0001f635\U0001f636\U0001f637\U0001f638\U0001f639\U0001f63a\U0001f63b\U0001f63c\U0001f63d\U0001f63e\U0001f63f\U0001f640\U0001f641\U0001f642\U0001f643\U0001f644\U0001f645\U0001f646\U0001f647\U0001f648\U0001f649\U0001f64a\U0001f64b\U0001f64c\U0001f64d\U0001f64e\U0001f64f"</code></pre>
@@ -230,24 +309,40 @@ f ð ñ ò ó ô õ ö ÷ ø ù ú û ü ý þ ÿ</code></pre>
 <div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/utf8_print.html">utf8_print</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/utf8Conversion.html" class="external-link">intToUtf8</a></span><span class="op">(</span><span class="fl">0x1f600</span> <span class="op">+</span> <span class="fl">0</span><span class="op">:</span><span class="fl">79</span><span class="op">)</span>, chars <span class="op">=</span> <span class="fl">500</span><span class="op">)</span> <span class="co"># increase character limit</span></span></code></pre></div>
 <pre><code>[1] "😀​😁​😂​😃​😄​😅​😆​😇​😈​😉​😊​😋​😌​😍​😎​😏​😐​😑​😒​😓​😔​😕​😖​😗​😘​😙​😚​😛​😜​😝​😞​😟​😠​😡​😢​😣​😤​😥​😦​😧​😨​😩​😪​😫​😬​😭​😮​😯​😰​😱​😲​😳​😴​😵​😶​😷​😸​😹​😺​😻​😼​😽​😾​😿​🙀​🙁​🙂​🙃​🙄​🙅​🙆​🙇​🙈​🙉​🙊​🙋​🙌​🙍​🙎​🙏​"</code></pre>
-<p>(Characters with codes above 0xffff, including most emoji, are not supported on Windows.)</p>
-<p>The <em>utf8</em> package provides the following utilities for validating, formatting, and printing UTF-8 characters:</p>
+<p>(Characters with codes above 0xffff, including most emoji, are not
+supported on Windows.)</p>
+<p>The <em>utf8</em> package provides the following utilities for
+validating, formatting, and printing UTF-8 characters:</p>
 <ul>
-<li><p><code><a href="../reference/as_utf8.html">as_utf8()</a></code> attempts to convert character data to UTF-8, throwing an error if the data is invalid;</p></li>
-<li><p><code><a href="../reference/as_utf8.html">utf8_valid()</a></code> tests whether character data is valid according to its declared encoding;</p></li>
-<li><p><code><a href="../reference/utf8_normalize.html">utf8_normalize()</a></code> converts text to Unicode composed normal form (NFC), optionally applying case-folding and compatibility maps;</p></li>
-<li><p><code><a href="../reference/utf8_encode.html">utf8_encode()</a></code> encodes a character string, escaping all control characters, so that it can be safely printed to the screen;</p></li>
-<li><p><code><a href="../reference/utf8_format.html">utf8_format()</a></code> formats a character vector by truncating to a specified character width limit or by left, right, or center justifying;</p></li>
-<li><p><code><a href="../reference/utf8_print.html">utf8_print()</a></code> prints UTF-8 character data to the screen;</p></li>
-<li><p><code><a href="../reference/utf8_width.html">utf8_width()</a></code> measures the display with of UTF-8 character strings (many emoji and East Asian characters are twice as wide as other characters).</p></li>
+<li><p><code><a href="../reference/as_utf8.html">as_utf8()</a></code> attempts to convert character data to
+UTF-8, throwing an error if the data is invalid;</p></li>
+<li><p><code><a href="../reference/as_utf8.html">utf8_valid()</a></code> tests whether character data is valid
+according to its declared encoding;</p></li>
+<li><p><code><a href="../reference/utf8_normalize.html">utf8_normalize()</a></code> converts text to Unicode composed
+normal form (NFC), optionally applying case-folding and compatibility
+maps;</p></li>
+<li><p><code><a href="../reference/utf8_encode.html">utf8_encode()</a></code> encodes a character string, escaping
+all control characters, so that it can be safely printed to the
+screen;</p></li>
+<li><p><code><a href="../reference/utf8_format.html">utf8_format()</a></code> formats a character vector by
+truncating to a specified character width limit or by left, right, or
+center justifying;</p></li>
+<li><p><code><a href="../reference/utf8_print.html">utf8_print()</a></code> prints UTF-8 character data to the
+screen;</p></li>
+<li><p><code><a href="../reference/utf8_width.html">utf8_width()</a></code> measures the display with of UTF-8
+character strings (many emoji and East Asian characters are twice as
+wide as other characters).</p></li>
 </ul>
-<p>The package does not provide a method to translate from another encoding to UTF-8 as the <code><a href="https://rdrr.io/r/base/iconv.html" class="external-link">iconv()</a></code> function from base R already serves this purpose.</p>
+<p>The package does not provide a method to translate from another
+encoding to UTF-8 as the <code><a href="https://rdrr.io/r/base/iconv.html" class="external-link">iconv()</a></code> function from base R
+already serves this purpose.</p>
 </div>
 </div>
 <div class="section level2">
 <h2 id="translating-to-utf-8">Translating to UTF-8<a class="anchor" aria-label="anchor" href="#translating-to-utf-8"></a>
 </h2>
-<p>Back to our original problem: getting the text of <em>Mansfield Park</em> into R. Our first attempt failed:</p>
+<p>Back to our original problem: getting the text of <em>Mansfield
+Park</em> into R. Our first attempt failed:</p>
 <div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">corpus</span><span class="fu">::</span><span class="fu">term_stats</span><span class="op">(</span><span class="va">lines</span><span class="op">)</span></span></code></pre></div>
 <pre><code>Error in corpus::term_stats(lines): argument entry 15252 is incorrectly marked as "UTF-8": invalid leading byte (0xA3) at position 36</code></pre>
@@ -255,7 +350,10 @@ f ð ñ ò ó ô õ ö ÷ ø ù ú û ü ý þ ÿ</code></pre>
 <div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lines</span><span class="op">[</span><span class="fl">15252</span><span class="op">]</span></span></code></pre></div>
 <pre><code>[1] "the command of her beauty, and her \xa320,000, any one who could satisfy the"</code></pre>
-<p>The text is likely encoded in Latin-1, not UTF-8 (or ASCII) as we had originally thought. We can test this by attempting to convert from Latin-1 to UTF-8 with the <code><a href="https://rdrr.io/r/base/iconv.html" class="external-link">iconv()</a></code> function and inspecting the output:</p>
+<p>The text is likely encoded in Latin-1, not UTF-8 (or ASCII) as we had
+originally thought. We can test this by attempting to convert from
+Latin-1 to UTF-8 with the <code><a href="https://rdrr.io/r/base/iconv.html" class="external-link">iconv()</a></code> function and inspecting
+the output:</p>
 <div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">lines2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/iconv.html" class="external-link">iconv</a></span><span class="op">(</span><span class="va">lines</span>, <span class="st">"latin1"</span>, <span class="st">"UTF-8"</span><span class="op">)</span></span>
 <span><span class="va">lines2</span><span class="op">[</span><span class="fl">15252</span><span class="op">]</span></span></code></pre></div>
@@ -290,12 +388,26 @@ f ð ñ ò ó ô õ ö ÷ ø ù ú û ü ý þ ÿ</code></pre>
 <div class="section level2">
 <h2 id="the-readtext-package">The <em>readtext</em> package<a class="anchor" aria-label="anchor" href="#the-readtext-package"></a>
 </h2>
-<p>If you need more than reading in a single text file, the <a href="https://github.com/quanteda/readtext" class="external-link">readtext</a> package supports reading in text in a variety of file formats and encodings. Beyond just plain text, that package can read in PDFs, Word documents, RTF, and many other formats. (Unfortunately, that package currently fails when trying to read in <em>Mansfield Park</em>; the authors are aware of the issue and are working on a fix.)</p>
+<p>If you need more than reading in a single text file, the <a href="https://github.com/quanteda/readtext" class="external-link">readtext</a> package
+supports reading in text in a variety of file formats and encodings.
+Beyond just plain text, that package can read in PDFs, Word documents,
+RTF, and many other formats. (Unfortunately, that package currently
+fails when trying to read in <em>Mansfield Park</em>; the authors are
+aware of the issue and are working on a fix.)</p>
 </div>
 <div class="section level2">
 <h2 id="summary">Summary<a class="anchor" aria-label="anchor" href="#summary"></a>
 </h2>
-<p>Text comes in a variety of encodings, and you cannot analyze a text without first knowing its encoding. Many functions for reading in text assume that it is encoded in UTF-8, but this assumption sometimes fails to hold. If you get an error message reporting that your UTF-8 text is invalid, use <code>utf8_valid</code> to find the offending texts. Try printing the data to the console before and after using <code>iconv</code> to convert between character encodings. You can use <code>utf8_print</code> to print UTF-8 characters that R refuses to display, including emoji characters. For reading in exotic file formats like PDF or Word, try the <a href="https://github.com/quanteda/readtext" class="external-link">readtext</a> package.</p>
+<p>Text comes in a variety of encodings, and you cannot analyze a text
+without first knowing its encoding. Many functions for reading in text
+assume that it is encoded in UTF-8, but this assumption sometimes fails
+to hold. If you get an error message reporting that your UTF-8 text is
+invalid, use <code>utf8_valid</code> to find the offending texts. Try
+printing the data to the console before and after using
+<code>iconv</code> to convert between character encodings. You can use
+<code>utf8_print</code> to print UTF-8 characters that R refuses to
+display, including emoji characters. For reading in exotic file formats
+like PDF or Word, try the <a href="https://github.com/quanteda/readtext" class="external-link">readtext</a> package.</p>
 </div>
   </div>
 
