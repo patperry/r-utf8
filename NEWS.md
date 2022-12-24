@@ -1,5 +1,27 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# utf8 1.2.2.9001 (2022-12-24)
+
+- Harmonize yaml formatting.
+
+- Revert changes to matrix section.
+
+- Merge pull request #21 from patperry/f-variants.
+
+
+
+- Reduce parallelism.
+
+- Also check dev on cran-* branches.
+
+- Update hash key for dev.
+
+- Remove R 3.3.
+
+- Merged cran-1.2.2 into main.
+
+
+
 # utf8 1.2.2.9000 (2021-07-24)
 
 - Same as previous version.
