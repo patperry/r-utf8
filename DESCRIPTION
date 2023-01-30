@@ -8,7 +8,7 @@ Authors@R:
       person(given = "Kirill",
              family = "M\u00fcller",
              role = "cre",
-             email = "krlmlr+r@mailbox.org"),
+             email = "kirill@cynkra.com"),
       person(given = "Unicode, Inc.",
              role = c("cph", "dtc"),
              comment = "Unicode Character Database"))
