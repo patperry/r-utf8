@@ -33,8 +33,7 @@ TEST_CFLAGS = $(shell pkg-config --cflags check) \
 
 TEST_LIBS = $(shell pkg-config --libs check)
 
-CLDR = https://raw.githubusercontent.com/unicode-cldr/cldr-segments-modern/master
-UNICODE = http://www.unicode.org/Public/13.0.0
+UNICODE = http://www.unicode.org/Public/14.0.0
 
 UTF8LITE_A = libutf8lite.a
 LIB_O	= src/array.o src/char.o src/encode.o src/error.o src/escape.o \
