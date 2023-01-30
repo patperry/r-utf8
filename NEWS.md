@@ -2,54 +2,15 @@
 
 # utf8 1.2.3 (2023-01-30)
 
-- Same as previous version.
-
-
-# utf8 1.2.2.9003 (2023-01-30)
-
 ## Features
 
 - Support Unicode 14.
-
-Merge commit '6fac1c000e231d37232d429ca6a58f92f407704a'
 
 ## Chore
 
 - Update maintainer e-mail address.
 
 - Fix compiler warnings (@Antonov548, #37).
-
-
-# utf8 1.2.2.9002 (2022-12-30)
-
-- Internal changes only.
-
-
-# utf8 1.2.2.9001 (2022-12-24)
-
-- Harmonize yaml formatting.
-
-- Revert changes to matrix section.
-
-- Merge pull request #21 from patperry/f-variants.
-
-
-
-- Reduce parallelism.
-
-- Also check dev on cran-* branches.
-
-- Update hash key for dev.
-
-- Remove R 3.3.
-
-- Merged cran-1.2.2 into main.
-
-
-
-# utf8 1.2.2.9000 (2021-07-24)
-
-- Same as previous version.
 
 
 # utf8 1.2.2 (2021-07-24)
