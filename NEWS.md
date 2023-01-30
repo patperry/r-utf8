@@ -1,5 +1,25 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# utf8 1.2.3.9001 (2023-01-30)
+
+- Same as previous version.
+
+
+# utf8 1.2.3.9000 (2023-01-30)
+
+## Features
+
+- Support Unicode 14.
+
+Merge commit '6fac1c000e231d37232d429ca6a58f92f407704a'
+
+## Chore
+
+- Update maintainer e-mail address.
+
+- Fix compiler warnings (@Antonov548, #37).
+
+
 # utf8 1.2.3 (2023-01-30)
 
 - Same as previous version.
