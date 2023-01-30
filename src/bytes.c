@@ -388,7 +388,7 @@ void render_byte(struct utf8lite_render *r, uint8_t byte)
 				TRY(utf8lite_render_raw(r, "\\v", 2));
 				break;
 			default:
-				sprintf(buf, "\\x%02x", (unsigned)byte);
+				snprintf(buf, sizeof(buf), "\\x%02x", (unsigned)byte);
 				TRY(utf8lite_render_raw(r, buf, 4));
 				break;
 			}
