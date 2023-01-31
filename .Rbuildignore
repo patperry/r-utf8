@@ -22,5 +22,3 @@
 ^README\.html$
 ^CRAN-RELEASE$
 ^cran-comments\.md$
-^src/vendor/libbacktrace/\.editorconfig$
-^src/vendor/libbacktrace/\.github$
