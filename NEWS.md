@@ -1,5 +1,11 @@
 <!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
 
+# utf8 1.2.3.9002 (2023-02-02)
+
+- Merged cran-1.2.3 into main.
+
+
+
 # utf8 1.2.3.9001 (2023-01-30)
 
 - Same as previous version.
