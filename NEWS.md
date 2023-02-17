@@ -1,4 +1,9 @@
-<!-- NEWS.md is maintained by https://cynkra.github.io/fledge, do not edit -->
+<!-- NEWS.md is maintained by https://fledge.cynkra.com, contributors should not edit this file -->
+
+# utf8 1.2.3.9003 (2023-02-17)
+
+- Internal changes only.
+
 
 # utf8 1.2.3.9002 (2023-02-02)
 
