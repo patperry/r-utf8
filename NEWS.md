@@ -2,25 +2,7 @@
 
 # utf8 1.2.4 (2023-10-16)
 
-## Bug fixes
-
 - Fix compatibility with macOS 14 (#39).
-
-## Features
-
-- Support Unicode 14.
-Merge commit '6fac1c000e231d37232d429ca6a58f92f407704a'
-
-## Chore
-
-- Update maintainer e-mail address.
-- Fix compiler warnings (@Antonov548, #37).
-
-## Uncategorized
-
-- Internal changes only.
-- Merged cran-1.2.3 into main.
-- Same as previous version.
 
 
 # utf8 1.2.3 (2023-01-30)
