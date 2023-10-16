@@ -1,5 +1,12 @@
 <!-- NEWS.md is maintained by https://fledge.cynkra.com, contributors should not edit this file -->
 
+# utf8 1.2.3.9006 (2023-10-16)
+
+## Bug fixes
+
+- Fix compatibility with macOS 14 (#39).
+
+
 # utf8 1.2.3.9005 (2023-10-09)
 
 - Internal changes only.
