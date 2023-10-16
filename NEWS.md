@@ -1,51 +1,26 @@
 <!-- NEWS.md is maintained by https://fledge.cynkra.com, contributors should not edit this file -->
 
-# utf8 1.2.3.9006 (2023-10-16)
+# utf8 1.2.4 (2023-10-16)
 
 ## Bug fixes
 
 - Fix compatibility with macOS 14 (#39).
 
-
-# utf8 1.2.3.9005 (2023-10-09)
-
-- Internal changes only.
-
-
-# utf8 1.2.3.9004 (2023-03-24)
-
-- Internal changes only.
-
-
-# utf8 1.2.3.9003 (2023-02-17)
-
-- Internal changes only.
-
-
-# utf8 1.2.3.9002 (2023-02-02)
-
-- Merged cran-1.2.3 into main.
-
-
-
-# utf8 1.2.3.9001 (2023-01-30)
-
-- Same as previous version.
-
-
-# utf8 1.2.3.9000 (2023-01-30)
-
 ## Features
 
 - Support Unicode 14.
-
 Merge commit '6fac1c000e231d37232d429ca6a58f92f407704a'
 
 ## Chore
 
 - Update maintainer e-mail address.
-
 - Fix compiler warnings (@Antonov548, #37).
+
+## Uncategorized
+
+- Internal changes only.
+- Merged cran-1.2.3 into main.
+- Same as previous version.
 
 
 # utf8 1.2.3 (2023-01-30)
