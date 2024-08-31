@@ -1,5 +1,52 @@
 <!-- NEWS.md is maintained by https://fledge.cynkra.com, contributors should not edit this file -->
 
+# utf8 1.2.3.9009 (2024-08-31)
+
+## Chore
+
+  - Auto-update from GitHub Actions.
+    
+    Run: https://github.com/patperry/r-utf8/actions/runs/10425486174
+
+  - Auto-update from GitHub Actions.
+    
+    Run: https://github.com/patperry/r-utf8/actions/runs/10200110873
+
+  - Auto-update from GitHub Actions.
+    
+    Run: https://github.com/patperry/r-utf8/actions/runs/9727975031
+
+  - Auto-update from GitHub Actions.
+    
+    Run: https://github.com/patperry/r-utf8/actions/runs/9691616880
+
+## Continuous integration
+
+  - Install local package for pkgdown builds.
+
+  - Improve support for protected branches with fledge.
+
+  - Improve support for protected branches, without fledge.
+
+  - Sync with latest developments.
+
+  - Use v2 instead of master.
+
+  - Inline action.
+
+  - Use dev roxygen2 and decor.
+
+  - Fix on Windows, tweak lock workflow.
+
+  - Avoid checking bashisms on Windows.
+
+  - Better commit message.
+
+  - Bump versions, better default, consume custom matrix.
+
+  - Recent updates.
+
+
 # utf8 1.2.3.9008 (2024-01-24)
 
 - Internal changes only.
