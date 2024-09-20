@@ -17,6 +17,7 @@
 #include <assert.h>
 #include <ctype.h>
 #include <limits.h>
+#include <stdio.h>  // snprintf
 #include "rutf8.h"
 
 static int byte_width(uint8_t byte, int flags);
