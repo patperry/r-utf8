@@ -1,5 +1,18 @@
 <!-- NEWS.md is maintained by https://fledge.cynkra.com, contributors should not edit this file -->
 
+# utf8 1.2.3.9011 (2024-10-28)
+
+## Continuous integration
+
+  - Use pkgdown branch (#46).
+    
+      - ci: Use pkgdown branch
+    
+      - ci: Updates from duckdb
+    
+      - ci: Trigger run
+
+
 # utf8 1.2.3.9010 (2024-09-15)
 
 ## Continuous integration
