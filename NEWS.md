@@ -1,5 +1,16 @@
 <!-- NEWS.md is maintained by https://fledge.cynkra.com, contributors should not edit this file -->
 
+# utf8 1.2.3.9012 (2024-11-11)
+
+## Continuous integration
+
+  - Trigger run (#47).
+    
+      - ci: Trigger run
+    
+      - ci: Latest changes
+
+
 # utf8 1.2.3.9011 (2024-10-28)
 
 ## Continuous integration
