@@ -1,5 +1,12 @@
 <!-- NEWS.md is maintained by https://fledge.cynkra.com, contributors should not edit this file -->
 
+# utf8 1.2.3.9013 (2024-11-18)
+
+## Continuous integration
+
+  - Use stable pak (#48).
+
+
 # utf8 1.2.3.9012 (2024-11-11)
 
 ## Continuous integration
