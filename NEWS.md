@@ -1,5 +1,12 @@
 <!-- NEWS.md is maintained by https://fledge.cynkra.com, contributors should not edit this file -->
 
+# utf8 1.2.3.9014 (2024-11-22)
+
+## Continuous integration
+
+  - Correctly detect branch protection (#49).
+
+
 # utf8 1.2.3.9013 (2024-11-18)
 
 ## Continuous integration
