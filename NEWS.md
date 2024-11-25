@@ -1,5 +1,14 @@
 <!-- NEWS.md is maintained by https://fledge.cynkra.com, contributors should not edit this file -->
 
+# utf8 1.2.3.9015 (2024-11-25)
+
+## Continuous integration
+
+- Need to install R on Ubuntu 24.04 (#52).
+
+- Use Ubuntu 24.04 and styler PR (#50).
+
+
 # utf8 1.2.3.9014 (2024-11-22)
 
 ## Continuous integration
