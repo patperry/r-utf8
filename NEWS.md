@@ -1,5 +1,12 @@
 <!-- NEWS.md is maintained by https://fledge.cynkra.com, contributors should not edit this file -->
 
+# utf8 1.2.3.9016 (2024-11-26)
+
+## Continuous integration
+
+- Use styler from main branch (#53).
+
+
 # utf8 1.2.3.9015 (2024-11-25)
 
 ## Continuous integration
