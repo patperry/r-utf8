@@ -1,5 +1,12 @@
 <!-- NEWS.md is maintained by https://fledge.cynkra.com, contributors should not edit this file -->
 
+# utf8 1.2.3.9017 (2024-11-27)
+
+## Continuous integration
+
+- Explicit permissions (#54).
+
+
 # utf8 1.2.3.9016 (2024-11-26)
 
 ## Continuous integration
