@@ -1,5 +1,12 @@
 <!-- NEWS.md is maintained by https://fledge.cynkra.com, contributors should not edit this file -->
 
+# utf8 1.2.3.9019 (2024-12-07)
+
+## Continuous integration
+
+- Use larger retry count for lock-threads workflow (#56).
+
+
 # utf8 1.2.3.9018 (2024-11-28)
 
 ## Continuous integration
