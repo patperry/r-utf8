@@ -1,5 +1,12 @@
 <!-- NEWS.md is maintained by https://fledge.cynkra.com, contributors should not edit this file -->
 
+# utf8 1.2.3.9021 (2024-12-09)
+
+## Continuous integration
+
+- Avoid failure in fledge workflow if no changes (#58).
+
+
 # utf8 1.2.3.9020 (2024-12-08)
 
 ## Continuous integration
