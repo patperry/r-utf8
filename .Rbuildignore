@@ -6,7 +6,6 @@
 ^_pkgdown[.]yml$
 ^CONDUCT[.]md$
 ^Makefile$
-^NEWS[.]md$
 ^README[.]Rmd$
 ^TODO[.]md$
 ^dist$
