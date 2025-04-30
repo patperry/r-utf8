@@ -24,7 +24,7 @@ support."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/ma
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">utf8</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.5</span>
       </span>
     </div>
 
@@ -54,7 +54,7 @@ support."><!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/ma
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Output Capabilities</h1>
-    <small class="dont-index">Source: <a href="https://github.com/patperry/r-utf8/blob/main/R/output.R" class="external-link"><code>R/output.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/patperry/r-utf8/blob/cran-1.2.5/R/output.R" class="external-link"><code>R/output.R</code></a></small>
     <div class="hidden name"><code>output_utf8.Rd</code></div>
     </div>
 
@@ -76,17 +76,17 @@ the given capability.</p>
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p><code>output_ansi</code> tests whether the output connection supports ANSI style
+    <p><code>output_ansi()</code> tests whether the output connection supports ANSI style
 escapes. This is <code>TRUE</code> if the connection is a terminal and not the
 Windows GUI. Otherwise, it is true if running in RStudio 1.1 or later with
 ANSI escapes enabled, provided <code><a href="https://rdrr.io/r/base/showConnections.html" class="external-link">stdout()</a></code> has not been redirected to
 another connection by <code><a href="https://rdrr.io/r/base/sink.html" class="external-link">sink()</a></code>.</p>
-<p><code>output_utf8</code> tests whether the output connection supports UTF-8. For
-most platforms <code>l10n_info()$`UTF-8`</code> gives this information, but this
+<p><code>output_utf8()</code> tests whether the output connection supports UTF-8. For
+most platforms <code>l10n_info()$"UTF-8"</code> gives this information, but this
 does not give an accurate result for Windows GUIs. To work around this, we
 proceed as follows:</p><ul><li><p>if the character locale
 (<code>LC_CTYPE</code>) is <code>"C"</code>, then the result is <code>FALSE</code>;</p></li>
-<li><p>otherwise, if <code>l10n_info()$`UTF-8`</code> is <code>TRUE</code>, then the
+<li><p>otherwise, if <code>l10n_info()$"UTF-8"</code> is <code>TRUE</code>, then the
 result is <code>TRUE</code>;</p></li>
 <li><p>if running on Windows, then the result is <code>TRUE</code>;</p></li>
 <li><p>in all other cases the result is <code>FALSE</code>.</p></li>
@@ -99,12 +99,12 @@ impossible to set the character locale to UTF-8 on Windows. Further, the
 around this, on Windows, we treat all non-C locales on that platform as
 UTF-8. This liberal approach means that characters in the user's locale
 never get escaped; others will get output as <code>&lt;U+XXXX&gt;</code>, with incorrect
-values for <code>utf8_width</code>.</p>
+values for <code><a href="utf8_width.html">utf8_width()</a></code>.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="https://rdrr.io/r/base/Platform.html" class="external-link">.Platform</a></code>, <code><a href="https://rdrr.io/r/base/showConnections.html" class="external-link">isatty</a></code>,
-<code><a href="https://rdrr.io/r/base/l10n_info.html" class="external-link">l10n_info</a></code>, <code><a href="https://rdrr.io/r/base/locales.html" class="external-link">Sys.getlocale</a></code></p></div>
+    <div class="dont-index"><p><code><a href="https://rdrr.io/r/base/Platform.html" class="external-link">.Platform()</a></code>, <code><a href="https://rdrr.io/r/base/showConnections.html" class="external-link">isatty()</a></code>,
+<code><a href="https://rdrr.io/r/base/l10n_info.html" class="external-link">l10n_info()</a></code>, <code><a href="https://rdrr.io/r/base/locales.html" class="external-link">Sys.getlocale()</a></code></p></div>
     </div>
 
     <div id="ref-examples">

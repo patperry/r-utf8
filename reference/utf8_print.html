@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">utf8</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">1.2.5</span>
       </span>
     </div>
 
@@ -53,7 +53,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Print UTF-8 Text</h1>
-    <small class="dont-index">Source: <a href="https://github.com/patperry/r-utf8/blob/main/R/utf8_print.R" class="external-link"><code>R/utf8_print.R</code></a></small>
+    <small class="dont-index">Source: <a href="https://github.com/patperry/r-utf8/blob/cran-1.2.5/R/utf8_print.R" class="external-link"><code>R/utf8_print.R</code></a></small>
     <div class="hidden name"><code>utf8_print.Rd</code></div>
     </div>
 
@@ -64,6 +64,7 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">utf8_print</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
+<span>  <span class="va">...</span>,</span>
 <span>  chars <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  quote <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  na.print <span class="op">=</span> <span class="cn">NULL</span>,</span>
@@ -75,8 +76,7 @@
 <span>  escapes <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  display <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  style <span class="op">=</span> <span class="cn">TRUE</span>,</span>
-<span>  utf8 <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  <span class="va">...</span></span>
+<span>  utf8 <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -86,6 +86,10 @@
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
 <dd><p>character object.</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>further arguments passed from other methods. Ignored.</p></dd>
 
 
 <dt id="arg-chars">chars<a class="anchor" aria-label="anchor" href="#arg-chars"></a></dt>
@@ -156,10 +160,6 @@ codes to style the output.  Ignored when <code><a href="output_utf8.html">output
 UTF-8 capable display, or <code>NULL</code> to set as the result of
 <code><a href="output_utf8.html">output_utf8()</a></code>. Ignored when <code><a href="output_utf8.html">output_utf8()</a></code> is <code>FALSE</code>.</p></dd>
 
-
-<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>further arguments passed from other methods. Ignored.</p></dd>
-
 </dl></div>
     <div id="value">
     <h2>Value</h2>
@@ -176,7 +176,7 @@ parameters, specifying an ANSI SGR parameter string; see
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="utf8_format.html">utf8_format</a></code>.</p></div>
+    <div class="dont-index"><p><code><a href="utf8_format.html">utf8_format()</a></code>.</p></div>
     </div>
 
     <div id="ref-examples">
