@@ -38,7 +38,7 @@ Transform text to normalized form, optionally mapping to lowercase and
 applying compatibility maps.
 }
 \details{
-\code{utf8_normalize} converts the elements of a character object to Unicode
+\code{utf8_normalize()} converts the elements of a character object to Unicode
 normalized composed form (NFC) while applying the character maps specified
 by the \code{map_case}, \code{map_compat}, \code{map_quote}, and
 \code{remove_ignorable} arguments.
@@ -50,5 +50,5 @@ utf8_normalize(angstrom) == "\u00c5"
 
 }
 \seealso{
-\code{\link{as_utf8}}.
+\code{\link[=as_utf8]{as_utf8()}}.
 }

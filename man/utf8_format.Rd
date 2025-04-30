@@ -27,7 +27,7 @@ around elements.}
 \item{chars}{integer scalar indicating the maximum number of character units
 to display.  Wide characters like emoji take two character units; combining
 marks and default ignorables take none. Longer strings get truncated and
-suffixed or prefixed with an ellipsis (\code{"..."} or \code{"\u2026"},
+suffixed or prefixed with an ellipsis (\code{"..."} or \code{"\\u2026"},
 whichever is most appropriate for the current character locale). Set to
 \code{NULL} to limit output to the line width as determined by
 \code{getOption("width")}.}
@@ -66,7 +66,7 @@ valid UTF-8 and \code{"bytes"} for others.
 Format a character object for UTF-8 printing.
 }
 \details{
-\code{utf8_format} formats a character object for printing, optionally
+\code{utf8_format()} formats a character object for printing, optionally
 truncating long character strings.
 }
 \examples{
@@ -82,5 +82,5 @@ utf8_format(x, chars = 3, justify = "right")
 
 }
 \seealso{
-\code{\link{utf8_print}}, \code{\link{utf8_encode}}.
+\code{\link[=utf8_print]{utf8_print()}}, \code{\link[=utf8_encode]{utf8_encode()}}.
 }

@@ -28,7 +28,7 @@ utf8_print(
 to display.  Wide characters like emoji take two character units; combining
 marks and default ignorables take none. Longer strings get truncated and
 suffixed or prefixed with an ellipsis (\code{"..."} in C locale,
-\code{"\u2026"} in others). Set to \code{NULL} to limit output to the line
+\code{"\\u2026"} in others). Set to \code{NULL} to limit output to the line
 width as determined by \code{getOption("width")}.}
 
 \item{quote}{logical scalar indicating whether to put surrounding
@@ -106,5 +106,5 @@ utf8_print(matrix(as.character(1:20), 4, 5),
 
 }
 \seealso{
-\code{\link{utf8_format}}.
+\code{\link[=utf8_format]{utf8_format()}}.
 }

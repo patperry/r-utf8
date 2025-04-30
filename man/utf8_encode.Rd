@@ -45,7 +45,7 @@ Escape the strings in a character object, optionally adding quotes or
 spaces, adjusting the width for display.
 }
 \details{
-\code{utf8_encode} encodes a character object for printing on a UTF-8 device
+\code{utf8_encode()} encodes a character object for printing on a UTF-8 device
 by escaping controls characters and other non-printable characters. When
 \code{display = TRUE}, the function optimizes the encoding for display by
 removing default ignorable characters (soft hyphens, zero-width spaces,
@@ -67,5 +67,5 @@ cat(utf8_encode("hello\nstyled\\\\world", escapes = "1"), "\n")
 
 }
 \seealso{
-\code{\link{utf8_print}}.
+\code{\link[=utf8_print]{utf8_print()}}.
 }
