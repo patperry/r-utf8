@@ -78,8 +78,8 @@ The function returns \code{x} invisibly.
 Print a UTF-8 character object.
 }
 \details{
-\code{utf8_print} prints a character object after formatting it with
-\code{utf8_format}.
+\code{utf8_print()} prints a character object after formatting it with
+\code{\link[=utf8_format]{utf8_format()}}.
 
 For ANSI terminal output (when \code{output_ansi()} is \code{TRUE}), you can
 style the row and column names with the \code{rownames} and \code{names}
