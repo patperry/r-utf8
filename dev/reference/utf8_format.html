@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">utf8</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.2.4.9000</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.2.4.9001</span>
       </span>
     </div>
 
@@ -64,6 +64,7 @@
     <div id="ref-usage">
     <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">utf8_format</span><span class="op">(</span></span>
 <span>  <span class="va">x</span>,</span>
+<span>  <span class="va">...</span>,</span>
 <span>  trim <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  chars <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  justify <span class="op">=</span> <span class="st">"left"</span>,</span>
@@ -72,8 +73,7 @@
 <span>  quote <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  na.print <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  print.gap <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  utf8 <span class="op">=</span> <span class="cn">NULL</span>,</span>
-<span>  <span class="va">...</span></span>
+<span>  utf8 <span class="op">=</span> <span class="cn">NULL</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -83,6 +83,10 @@
 
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
 <dd><p>character object.</p></dd>
+
+
+<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
+<dd><p>further arguments passed from other methods. Ignored.</p></dd>
 
 
 <dt id="arg-trim">trim<a class="anchor" aria-label="anchor" href="#arg-trim"></a></dt>
@@ -135,10 +139,6 @@ space.</p></dd>
 <dd><p>logical scalar indicating whether to format for a UTF-8 capable
 display (ASCII-only otherwise), or <code>NULL</code> to format for output
 capabilities as determined by <code><a href="output_utf8.html">output_utf8()</a></code>.</p></dd>
-
-
-<dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
-<dd><p>further arguments passed from other methods. Ignored.</p></dd>
 
 </dl></div>
     <div id="value">
