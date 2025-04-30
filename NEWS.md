@@ -1,5 +1,38 @@
 <!-- NEWS.md is maintained by https://fledge.cynkra.com, contributors should not edit this file -->
 
+# utf8 1.2.4.9001 (2025-04-30)
+
+## Features
+
+- Strict argument checking for `utf8_format()` and `utf8_print()`, no extra arguments allowed.
+
+## Chore
+
+- Show NEWS on CRAN page (#42, #71).
+
+- Auto-update from GitHub Actions.
+
+  Run: https://github.com/patperry/r-utf8/actions/runs/14756861029
+
+- Match indent style.
+
+- Use roxygen2 with Markdown.
+
+## Continuous integration
+
+- Build-ignore.
+
+- Build-ignore.
+
+## Documentation
+
+- Reference index.
+
+## Performance
+
+- Check interrupt every 1024 calls, avoids a division in tight loops.
+
+
 # utf8 1.2.4.9000 (2025-04-30)
 
 ## Chore
