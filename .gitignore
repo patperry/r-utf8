@@ -9,3 +9,5 @@
 /docs/articles/*.Rmd.in
 .Rproj.user
 CRAN-RELEASE
+/.cache/
+/compile_commands.json

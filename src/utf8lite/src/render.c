@@ -289,15 +289,15 @@ static int utf8lite_escape_utf8(struct utf8lite_render *r, int32_t ch)
 	CHECK_ERROR(r);
 
 	if (ch <= 0xFFFF) {
-		r->length += sprintf(&r->string[r->length],
+		r->length += snprintf(&r->string[r->length], r->length_max - r->length + 1,
 				     "\\u%04x", (unsigned)ch);
 	} else if (r->flags & UTF8LITE_ENCODE_JSON) {
 		hi = UTF8LITE_UTF16_HIGH(ch);
 		lo = UTF8LITE_UTF16_LOW(ch);
-		r->length += sprintf(&r->string[r->length],
+		r->length += snprintf(&r->string[r->length], r->length_max - r->length + 1,
 				     "\\u%04x\\u%04x", hi, lo);
 	} else {
-		r->length += sprintf(&r->string[r->length],
+		r->length += snprintf(&r->string[r->length],  r->length_max - r->length + 1,
 				     "\\U%08"PRIx32, (uint32_t)ch);
 	}
 
@@ -321,7 +321,7 @@ static int utf8lite_escape_ascii(struct utf8lite_render *r, int32_t ch)
 		switch (ch) {
 		case '\a':
 			if (r->flags & UTF8LITE_ENCODE_JSON) {
-				r->length += sprintf(&r->string[r->length],
+				r->length += snprintf(&r->string[r->length], r->length_max - r->length + 1,
 						     "\\u%04x", (unsigned)ch);
 			} else {
 				r->string[r->length++] = '\\';
@@ -356,7 +356,7 @@ static int utf8lite_escape_ascii(struct utf8lite_render *r, int32_t ch)
 			break;
 		case '\v':
 			if (r->flags & UTF8LITE_ENCODE_JSON) {
-				r->length += sprintf(&r->string[r->length],
+				r->length += snprintf(&r->string[r->length], r->length_max - r->length + 1,
 						     "\\u%04x", (unsigned)ch);
 			} else {
 				r->string[r->length++] = '\\';
@@ -365,7 +365,7 @@ static int utf8lite_escape_ascii(struct utf8lite_render *r, int32_t ch)
 			}
 			break;
 		default:
-			r->length += sprintf(&r->string[r->length],
+			r->length += snprintf(&r->string[r->length], r->length_max - r->length + 1,
 					     "\\u%04x", (unsigned)ch);
 			break;
 		}
@@ -556,7 +556,7 @@ int utf8lite_render_printf(struct utf8lite_render *r, const char *format, ...)
 		goto exit;
 	}
 
-	vsprintf(buffer, format, ap2);
+	vsnprintf(buffer, (size_t)len + 1, format, ap2);
 	utf8lite_render_string(r, buffer);
 	free(buffer);
 

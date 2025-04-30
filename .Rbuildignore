@@ -22,3 +22,5 @@
 ^README\.html$
 ^CRAN-RELEASE$
 ^cran-comments\.md$
+^\.cache$
+^compile_commands\.json$
