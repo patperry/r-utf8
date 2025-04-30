@@ -21,6 +21,7 @@ BugReports: https://github.com/patperry/r-utf8/issues
 Depends: 
     R (>= 2.10)
 Suggests:
+    asciicast,
     cli,
     covr,
     knitr,

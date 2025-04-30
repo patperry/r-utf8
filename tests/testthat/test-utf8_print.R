@@ -14,6 +14,9 @@ test_that("'utf8_print' can print unicode", {
       "\"\u0106\u0107\u0108\u0109\u010a\u010b\""
     )
   )
+
+  skip_if_not_installed("asciicast", "2.3.1.9000")
+  asciicast::expect_snapshot_cast(utf8_print(x))
 })
 
 test_that("'utf8_print' works with unnamed character vectors", {
@@ -446,6 +449,9 @@ test_that("'utf8_print' handles Unicode correctly", {
   Encoding(expected) <- "UTF-8"
 
   expect_equal(actual, expected)
+
+  skip_if_not_installed("asciicast", "2.3.1.9000")
+  asciicast::expect_snapshot_cast(utf8_print(x), name = "chartype.svg")
 })
 
 
@@ -495,4 +501,7 @@ test_that("'utf8_print' works in C locale", {
   )
 
   expect_equal(actual, expected)
+
+  skip_if_not_installed("asciicast", "2.3.1.9000")
+  asciicast::expect_snapshot_cast(utf8_print(x), name = "chartype-c.svg")
 })
