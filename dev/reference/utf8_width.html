@@ -94,18 +94,18 @@ output capabilities as determined by <code><a href="output_utf8.html">output_utf
     </div>
     <div id="details">
     <h2>Details</h2>
-    <p><code>utf8_width</code> returns the printed widths of the elements of a character
+    <p><code>utf8_width()</code> returns the printed widths of the elements of a character
 object on a UTF-8 device (or on an ASCII device when <code><a href="output_utf8.html">output_utf8()</a></code> is
-<code>FALSE</code>), when printed with <code>utf8_print</code>. If the string is not
+<code>FALSE</code>), when printed with <code><a href="utf8_print.html">utf8_print()</a></code>. If the string is not
 printable on the device, for example if it contains a control code like
 <code>"\n"</code>, then the result is <code>NA</code>. If <code>encode = TRUE</code>, the
 default, then the function returns the widths of the encoded elements via
-<code>utf8_encode</code>); otherwise, the function returns the widths of the
+<code><a href="utf8_encode.html">utf8_encode()</a></code>); otherwise, the function returns the widths of the
 original elements.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
-    <div class="dont-index"><p><code><a href="utf8_print.html">utf8_print</a></code>.</p></div>
+    <div class="dont-index"><p><code><a href="utf8_print.html">utf8_print()</a></code>.</p></div>
     </div>
 
     <div id="ref-examples">
