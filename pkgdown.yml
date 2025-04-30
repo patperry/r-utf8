@@ -1,7 +1,6 @@
-pandoc: 2.19.2
-pkgdown: 2.0.7.9000
-pkgdown_sha: 170015984ae234da3028b2b083df757227fdd241
+pandoc: 3.1.11
+pkgdown: 2.1.2.9000
+pkgdown_sha: 99457e7fa7f36696ae743b06aca59c0fdd97a7d6
 articles:
   utf8: utf8.html
-last_built: 2023-10-16T06:25Z
-
+last_built: 2025-04-30T13:38Z

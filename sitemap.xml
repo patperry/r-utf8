@@ -1,54 +1,20 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>/404.html</loc>
-  </url>
-  <url>
-    <loc>/CONDUCT.html</loc>
-  </url>
-  <url>
-    <loc>/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>/articles/utf8.html</loc>
-  </url>
-  <url>
-    <loc>/authors.html</loc>
-  </url>
-  <url>
-    <loc>/index.html</loc>
-  </url>
-  <url>
-    <loc>/news/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/as_utf8.html</loc>
-  </url>
-  <url>
-    <loc>/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>/reference/output.html</loc>
-  </url>
-  <url>
-    <loc>/reference/utf8-package.html</loc>
-  </url>
-  <url>
-    <loc>/reference/utf8_encode.html</loc>
-  </url>
-  <url>
-    <loc>/reference/utf8_format.html</loc>
-  </url>
-  <url>
-    <loc>/reference/utf8_normalize.html</loc>
-  </url>
-  <url>
-    <loc>/reference/utf8_print.html</loc>
-  </url>
-  <url>
-    <loc>/reference/utf8_width.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>/404.html</loc></url>
+<url><loc>/CONDUCT.html</loc></url>
+<url><loc>/LICENSE-text.html</loc></url>
+<url><loc>/articles/index.html</loc></url>
+<url><loc>/articles/utf8.html</loc></url>
+<url><loc>/authors.html</loc></url>
+<url><loc>/index.html</loc></url>
+<url><loc>/news/index.html</loc></url>
+<url><loc>/reference/as_utf8.html</loc></url>
+<url><loc>/reference/index.html</loc></url>
+<url><loc>/reference/output_utf8.html</loc></url>
+<url><loc>/reference/utf8-package.html</loc></url>
+<url><loc>/reference/utf8_encode.html</loc></url>
+<url><loc>/reference/utf8_format.html</loc></url>
+<url><loc>/reference/utf8_normalize.html</loc></url>
+<url><loc>/reference/utf8_print.html</loc></url>
+<url><loc>/reference/utf8_width.html</loc></url>
 </urlset>
+
