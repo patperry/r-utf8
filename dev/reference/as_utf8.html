@@ -53,7 +53,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>UTF-8 Character Encoding</h1>
-
+    <small class="dont-index">Source: <a href="https://github.com/patperry/r-utf8/blob/main/R/utf8.R" class="external-link"><code>R/utf8.R</code></a></small>
     <div class="hidden name"><code>as_utf8.Rd</code></div>
     </div>
 
@@ -69,32 +69,32 @@
 
     <div id="arguments">
     <h2>Arguments</h2>
-    <p></p>
+
+
 <dl><dt id="arg-x">x<a class="anchor" aria-label="anchor" href="#arg-x"></a></dt>
 <dd><p>character object.</p></dd>
 
 
-    <dt id="arg-normalize">normalize<a class="anchor" aria-label="anchor" href="#arg-normalize"></a></dt>
-<dd><p>a logical value indicating whether to convert to
-        Unicode composed normal form (NFC).</p></dd>
+<dt id="arg-normalize">normalize<a class="anchor" aria-label="anchor" href="#arg-normalize"></a></dt>
+<dd><p>a logical value indicating whether to convert to Unicode
+composed normal form (NFC).</p></dd>
 
 </dl></div>
-    <div id="details">
-    <h2>Details</h2>
-    <p><code>as_utf8</code> converts a character object from its declared encoding
-    to a valid UTF-8 character object, or throws an error if no conversion
-    is possible. If <code>normalize = TRUE</code>, then the text gets
-    transformed to Unicode composed normal form (NFC) after conversion
-    to UTF-8.</p>
-<p><code>utf8_valid</code> tests whether the elements of a character object
-    can be translated to valid UTF-8 strings.</p>
-    </div>
     <div id="value">
     <h2>Value</h2>
     <p>For <code>as_utf8</code>, the result is a character object with the same
-    attributes as <code>x</code> but with <code>Encoding</code> set to <code>"UTF-8"</code>.</p>
+attributes as <code>x</code> but with <code>Encoding</code> set to <code>"UTF-8"</code>.</p>
 <p>For <code>utf8_valid</code> a logical object with the same <code>names</code>,
-    <code>dim</code>, and <code>dimnames</code> as <code>x</code>.</p>
+<code>dim</code>, and <code>dimnames</code> as <code>x</code>.</p>
+    </div>
+    <div id="details">
+    <h2>Details</h2>
+    <p><code>as_utf8</code> converts a character object from its declared encoding to a
+valid UTF-8 character object, or throws an error if no conversion is
+possible. If <code>normalize = TRUE</code>, then the text gets transformed to
+Unicode composed normal form (NFC) after conversion to UTF-8.</p>
+<p><code>utf8_valid</code> tests whether the elements of a character object can be
+translated to valid UTF-8 strings.</p>
     </div>
     <div id="see-also">
     <h2>See also</h2>
@@ -103,7 +103,8 @@
 
     <div id="ref-examples">
     <h2>Examples</h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># the second element is encoded in latin-1, but declared as UTF-8</span></span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="co"># the second element is encoded in latin-1, but declared as UTF-8</span></span></span>
 <span class="r-in"><span><span class="va">x</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"fa\u00E7ile"</span>, <span class="st">"fa\xE7ile"</span>, <span class="st">"fa\xC3\xA7ile"</span><span class="op">)</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/Encoding.html" class="external-link">Encoding</a></span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"UTF-8"</span>, <span class="st">"UTF-8"</span>, <span class="st">"bytes"</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
@@ -118,6 +119,7 @@
 <span class="r-in"><span><span class="co"># test for valid UTF-8</span></span></span>
 <span class="r-in"><span><span class="fu">utf8_valid</span><span class="op">(</span><span class="va">x</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span> [1]  TRUE FALSE  TRUE</span>
+<span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
   </div>
