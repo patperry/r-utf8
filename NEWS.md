@@ -1,5 +1,18 @@
 <!-- NEWS.md is maintained by https://fledge.cynkra.com, contributors should not edit this file -->
 
+# utf8 1.2.4.9000 (2025-04-30)
+
+## Chore
+
+- Replace `[v]sprintf()` with `[v]snprintf()` (#67).
+
+- Add direct include for snprintf (@MichaelChirico, #43).
+
+## Documentation
+
+- Use roxygen2 (#68, #69).
+
+
 # utf8 1.2.3.9022 (2025-04-30)
 
 ## Chore
