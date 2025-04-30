@@ -6,6 +6,7 @@
 \usage{
 utf8_print(
   x,
+  ...,
   chars = NULL,
   quote = TRUE,
   na.print = NULL,
@@ -17,12 +18,13 @@ utf8_print(
   escapes = NULL,
   display = TRUE,
   style = TRUE,
-  utf8 = NULL,
-  ...
+  utf8 = NULL
 )
 }
 \arguments{
 \item{x}{character object.}
+
+\item{...}{Must be empty.}
 
 \item{chars}{integer scalar indicating the maximum number of character units
 to display.  Wide characters like emoji take two character units; combining
@@ -68,8 +70,6 @@ codes to style the output.  Ignored when \code{output_ansi()} is
 \item{utf8}{logical scalar indicating whether to optimize results for a
 UTF-8 capable display, or \code{NULL} to set as the result of
 \code{output_utf8()}. Ignored when \code{output_utf8()} is \code{FALSE}.}
-
-\item{...}{further arguments passed from other methods. Ignored.}
 }
 \value{
 The function returns \code{x} invisibly.

@@ -6,6 +6,7 @@
 \usage{
 utf8_format(
   x,
+  ...,
   trim = FALSE,
   chars = NULL,
   justify = "left",
@@ -14,12 +15,13 @@ utf8_format(
   quote = FALSE,
   na.print = NULL,
   print.gap = NULL,
-  utf8 = NULL,
-  ...
+  utf8 = NULL
 )
 }
 \arguments{
 \item{x}{character object.}
+
+\item{...}{Must be empty.}
 
 \item{trim}{logical scalar indicating whether to suppress padding spaces
 around elements.}
@@ -54,8 +56,6 @@ space.}
 \item{utf8}{logical scalar indicating whether to format for a UTF-8 capable
 display (ASCII-only otherwise), or \code{NULL} to format for output
 capabilities as determined by \code{output_utf8()}.}
-
-\item{...}{further arguments passed from other methods. Ignored.}
 }
 \value{
 A character object with the same attributes as \code{x} but with

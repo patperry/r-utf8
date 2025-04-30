@@ -83,10 +83,24 @@
 #'            names = "1;4", rownames = "2;3")
 #'
 #' @export utf8_print
-utf8_print <- function(x, chars = NULL, quote = TRUE, na.print = NULL,
-                       print.gap = NULL, right = FALSE, max = NULL,
-                       names = NULL, rownames = NULL, escapes = NULL,
-                       display = TRUE, style = TRUE, utf8 = NULL, ...) {
+utf8_print <- function(
+  x,
+  ...,
+  chars = NULL,
+  quote = TRUE,
+  na.print = NULL,
+  print.gap = NULL,
+  right = FALSE,
+  max = NULL,
+  names = NULL,
+  rownames = NULL,
+  escapes = NULL,
+  display = TRUE,
+  style = TRUE,
+  utf8 = NULL
+) {
+  stopifnot(...length() == 0)
+
   if (is.null(x)) {
     return(invisible(NULL))
   }

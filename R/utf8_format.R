@@ -64,9 +64,21 @@
 #' utf8_format(x, chars = 3, justify = "right")
 #'
 #' @export utf8_format
-utf8_format <- function(x, trim = FALSE, chars = NULL, justify = "left",
-                        width = NULL, na.encode = TRUE, quote = FALSE,
-                        na.print = NULL, print.gap = NULL, utf8 = NULL, ...) {
+utf8_format <- function(
+  x,
+  ...,
+  trim = FALSE,
+  chars = NULL,
+  justify = "left",
+  width = NULL,
+  na.encode = TRUE,
+  quote = FALSE,
+  na.print = NULL,
+  print.gap = NULL,
+  utf8 = NULL
+) {
+  stopifnot(...length() == 0)
+
   if (is.null(x)) {
     return(NULL)
   }
