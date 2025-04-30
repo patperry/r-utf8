@@ -1,5 +1,34 @@
 <!-- NEWS.md is maintained by https://fledge.cynkra.com, contributors should not edit this file -->
 
+# utf8 1.2.3.9022 (2025-04-30)
+
+## Chore
+
+- Add direct include for snprintf (@MichaelChirico, #43).
+
+- Auto-update from GitHub Actions.
+
+  Run: https://github.com/patperry/r-utf8/actions/runs/14636196819
+
+## Continuous integration
+
+- Permissions, better tests for missing suggests, lints (#66).
+
+- Only fail covr builds if token is given (#65).
+
+- Always use `_R_CHECK_FORCE_SUGGESTS_=false` (#64).
+
+- Correct installation of xml2 (#63).
+
+- Explain (#62).
+
+- Add xml2 for covr, print testthat results (#61).
+
+- Fix (#60).
+
+- Sync (#59).
+
+
 # utf8 1.2.3.9021 (2024-12-09)
 
 ## Continuous integration
