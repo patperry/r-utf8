@@ -25,10 +25,11 @@
 #define RUTF8_STYLE_CLOSE "\033[0m"
 #define RUTF8_STYLE_CLOSE_SIZE 4
 
-#define CHECK_EVERY 1000
+// Must be a power of 2
+#define CHECK_EVERY 1024
 #define CHECK_INTERRUPT(i) \
 	do { \
-		if (((i) + 1) % CHECK_EVERY == 0) { \
+		if ((((i) + 1) & (CHECK_EVERY - 1)) == 0) { \
 			R_CheckUserInterrupt(); \
 		} \
 	} while (0)
