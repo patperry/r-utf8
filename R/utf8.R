@@ -16,9 +16,11 @@
 # converts a character vector from its declared encoding to UTF-8
 
 
-#' UTF-8 text encoding and validation.
+#' UTF-8 Character Encoding
 #'
 #' @description
+#' UTF-8 text encoding and validation
+#'
 #' `as_utf8()` converts a character object from its declared encoding to a
 #' valid UTF-8 character object, or throws an error if no conversion is
 #' possible. If `normalize = TRUE`, then the text gets transformed to

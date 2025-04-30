@@ -2,6 +2,22 @@ template:
   params:
     ganalytics: UA-4636081-3
 
+reference:
+- title: All functions
+  contents:
+  - utf8_print
+  - utf8_width
+  - output_ansi
+  - as_utf8
+- title: Transformation
+  contents:
+  - utf8_format
+  - utf8_encode
+  - utf8_normalize
+- title: Package documentation
+  contents:
+  - '`utf8-package`'
+
 development:
   mode: auto
 

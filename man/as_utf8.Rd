@@ -3,7 +3,7 @@
 \name{as_utf8}
 \alias{as_utf8}
 \alias{utf8_valid}
-\title{UTF-8 text encoding and validation.}
+\title{UTF-8 Character Encoding}
 \usage{
 as_utf8(x, normalize = FALSE)
 
@@ -23,6 +23,8 @@ For \code{utf8_valid()} a logical object with the same \code{names},
 \code{dim}, and \code{dimnames} as \code{x}.
 }
 \description{
+UTF-8 text encoding and validation
+
 \code{as_utf8()} converts a character object from its declared encoding to a
 valid UTF-8 character object, or throws an error if no conversion is
 possible. If \code{normalize = TRUE}, then the text gets transformed to
