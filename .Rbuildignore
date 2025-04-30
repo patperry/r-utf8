@@ -24,3 +24,4 @@
 ^\.cache$
 ^compile_commands\.json$
 ^src/\.editorconfig$
+^revdep$

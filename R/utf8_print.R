@@ -19,8 +19,8 @@
 #'
 #' Print a UTF-8 character object.
 #'
-#' `utf8_print` prints a character object after formatting it with
-#' `utf8_format`.
+#' `utf8_print()` prints a character object after formatting it with
+#' [utf8_format()].
 #'
 #' For ANSI terminal output (when `output_ansi()` is `TRUE`), you can
 #' style the row and column names with the `rownames` and `names`
