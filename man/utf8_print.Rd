@@ -24,7 +24,7 @@ utf8_print(
 \arguments{
 \item{x}{character object.}
 
-\item{...}{further arguments passed from other methods. Ignored.}
+\item{...}{These dots are for future extensions and must be empty.}
 
 \item{chars}{integer scalar indicating the maximum number of character units
 to display.  Wide characters like emoji take two character units; combining

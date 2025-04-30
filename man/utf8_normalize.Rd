@@ -6,6 +6,7 @@
 \usage{
 utf8_normalize(
   x,
+  ...,
   map_case = FALSE,
   map_compat = FALSE,
   map_quote = FALSE,
@@ -14,6 +15,8 @@ utf8_normalize(
 }
 \arguments{
 \item{x}{character object.}
+
+\item{...}{These dots are for future extensions and must be empty.}
 
 \item{map_case}{a logical value indicating whether to apply Unicode case
 mapping to the text. For most languages, this transformation changes

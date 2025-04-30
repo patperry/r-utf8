@@ -6,6 +6,7 @@
 \usage{
 utf8_encode(
   x,
+  ...,
   width = 0L,
   quote = FALSE,
   justify = "left",
@@ -16,6 +17,8 @@ utf8_encode(
 }
 \arguments{
 \item{x}{character object.}
+
+\item{...}{These dots are for future extensions and must be empty.}
 
 \item{width}{integer giving the minimum field width; specify \code{NULL} or
 \code{NA} for no minimum.}
