@@ -1,6 +1,6 @@
 <!-- NEWS.md is maintained by https://fledge.cynkra.com, contributors should not edit this file -->
 
-# utf8 1.2.4.9001 (2025-04-30)
+# utf8 1.2.5 (2025-04-30)
 
 ## Features
 
@@ -18,45 +18,23 @@
 
 - Use roxygen2 with Markdown.
 
-## Continuous integration
-
-- Build-ignore.
-
-- Build-ignore.
-
-## Documentation
-
-- Reference index.
-
-## Performance
-
-- Check interrupt every 1024 calls, avoids a division in tight loops.
-
-
-# utf8 1.2.4.9000 (2025-04-30)
-
-## Chore
-
 - Replace `[v]sprintf()` with `[v]snprintf()` (#67).
 
 - Add direct include for snprintf (@MichaelChirico, #43).
 
-## Documentation
-
-- Use roxygen2 (#68, #69).
-
-
-# utf8 1.2.3.9022 (2025-04-30)
-
-## Chore
-
-- Add direct include for snprintf (@MichaelChirico, #43).
-
-- Auto-update from GitHub Actions.
-
   Run: https://github.com/patperry/r-utf8/actions/runs/14636196819
 
+  Run: https://github.com/patperry/r-utf8/actions/runs/10425486174
+
+  Run: https://github.com/patperry/r-utf8/actions/runs/10200110873
+
+  Run: https://github.com/patperry/r-utf8/actions/runs/9727975031
+
+  Run: https://github.com/patperry/r-utf8/actions/runs/9691616880
+
 ## Continuous integration
+
+- Build-ignore.
 
 - Permissions, better tests for missing suggests, lints (#66).
 
@@ -74,160 +52,79 @@
 
 - Sync (#59).
 
-
-# utf8 1.2.3.9021 (2024-12-09)
-
-## Continuous integration
-
 - Avoid failure in fledge workflow if no changes (#58).
-
-
-# utf8 1.2.3.9020 (2024-12-08)
-
-## Continuous integration
 
 - Fetch tags for fledge workflow to avoid unnecessary NEWS entries (#57).
 
-
-# utf8 1.2.3.9019 (2024-12-07)
-
-## Continuous integration
-
 - Use larger retry count for lock-threads workflow (#56).
-
-
-# utf8 1.2.3.9018 (2024-11-28)
-
-## Continuous integration
 
 - Ignore errors when removing pkg-config on macOS (#55).
 
-
-# utf8 1.2.3.9017 (2024-11-27)
-
-## Continuous integration
-
 - Explicit permissions (#54).
 
-
-# utf8 1.2.3.9016 (2024-11-26)
-
-## Continuous integration
-
 - Use styler from main branch (#53).
-
-
-# utf8 1.2.3.9015 (2024-11-25)
-
-## Continuous integration
 
 - Need to install R on Ubuntu 24.04 (#52).
 
 - Use Ubuntu 24.04 and styler PR (#50).
 
+- Correctly detect branch protection (#49).
 
-# utf8 1.2.3.9014 (2024-11-22)
+- Use stable pak (#48).
 
-## Continuous integration
+- Trigger run (#47).
 
-  - Correctly detect branch protection (#49).
+  - ci: Trigger run
 
+  - ci: Latest changes
 
-# utf8 1.2.3.9013 (2024-11-18)
+- Use pkgdown branch (#46).
 
-## Continuous integration
+  - ci: Use pkgdown branch
 
-  - Use stable pak (#48).
+  - ci: Updates from duckdb
 
+- Install via R CMD INSTALL ., not pak (#44).
 
-# utf8 1.2.3.9012 (2024-11-11)
+  - ci: Install via R CMD INSTALL ., not pak
 
-## Continuous integration
+  - ci: Bump version of upload-artifact action
 
-  - Trigger run (#47).
-    
-      - ci: Trigger run
-    
-      - ci: Latest changes
+- Install local package for pkgdown builds.
 
+- Improve support for protected branches with fledge.
 
-# utf8 1.2.3.9011 (2024-10-28)
+- Improve support for protected branches, without fledge.
 
-## Continuous integration
+- Sync with latest developments.
 
-  - Use pkgdown branch (#46).
-    
-      - ci: Use pkgdown branch
-    
-      - ci: Updates from duckdb
-    
-      - ci: Trigger run
+- Use v2 instead of master.
 
+- Inline action.
 
-# utf8 1.2.3.9010 (2024-09-15)
+- Use dev roxygen2 and decor.
 
-## Continuous integration
+- Fix on Windows, tweak lock workflow.
 
-  - Install via R CMD INSTALL ., not pak (#44).
-    
-      - ci: Install via R CMD INSTALL ., not pak
-    
-      - ci: Bump version of upload-artifact action
+- Avoid checking bashisms on Windows.
 
+- Better commit message.
 
-# utf8 1.2.3.9009 (2024-08-31)
+- Bump versions, better default, consume custom matrix.
 
-## Chore
+- Recent updates.
 
-  - Auto-update from GitHub Actions.
-    
-    Run: https://github.com/patperry/r-utf8/actions/runs/10425486174
+## Documentation
 
-  - Auto-update from GitHub Actions.
-    
-    Run: https://github.com/patperry/r-utf8/actions/runs/10200110873
+- Reference index.
 
-  - Auto-update from GitHub Actions.
-    
-    Run: https://github.com/patperry/r-utf8/actions/runs/9727975031
+- Use roxygen2 (#68, #69).
 
-  - Auto-update from GitHub Actions.
-    
-    Run: https://github.com/patperry/r-utf8/actions/runs/9691616880
+## Performance
 
-## Continuous integration
+- Check interrupt every 1024 calls, avoids a division in tight loops.
 
-  - Install local package for pkgdown builds.
-
-  - Improve support for protected branches with fledge.
-
-  - Improve support for protected branches, without fledge.
-
-  - Sync with latest developments.
-
-  - Use v2 instead of master.
-
-  - Inline action.
-
-  - Use dev roxygen2 and decor.
-
-  - Fix on Windows, tweak lock workflow.
-
-  - Avoid checking bashisms on Windows.
-
-  - Better commit message.
-
-  - Bump versions, better default, consume custom matrix.
-
-  - Recent updates.
-
-
-# utf8 1.2.3.9008 (2024-01-24)
-
-- Internal changes only.
-
-
-# utf8 1.2.3.9007 (2024-01-15)
+## Uncategorized
 
 - Internal changes only.
 
