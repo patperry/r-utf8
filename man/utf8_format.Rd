@@ -21,7 +21,7 @@ utf8_format(
 \arguments{
 \item{x}{character object.}
 
-\item{...}{Must be empty.}
+\item{...}{further arguments passed from other methods. Ignored.}
 
 \item{trim}{logical scalar indicating whether to suppress padding spaces
 around elements.}
