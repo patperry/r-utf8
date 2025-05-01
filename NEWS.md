@@ -1,6 +1,6 @@
 <!-- NEWS.md is maintained by https://fledge.cynkra.com, contributors should not edit this file -->
 
-# utf8 1.2.4.9900 (2025-05-01)
+# utf8 1.2.5 (2025-05-01)
 
 ## Features
 
