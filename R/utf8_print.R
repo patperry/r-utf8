@@ -27,6 +27,7 @@
 #' parameters, specifying an ANSI SGR parameter string; see
 #' <https://en.wikipedia.org/wiki/ANSI_escape_code#SGR_(Select_Graphic_Rendition)_parameters>.
 #'
+#' @inheritParams rlang::args_dots_empty
 #' @param x character object.
 #' @param chars integer scalar indicating the maximum number of character units
 #'   to display.  Wide characters like emoji take two character units; combining
@@ -61,7 +62,6 @@
 #' @param utf8 logical scalar indicating whether to optimize results for a
 #'   UTF-8 capable display, or `NULL` to set as the result of
 #'   `output_utf8()`. Ignored when `output_utf8()` is `FALSE`.
-#' @param ... further arguments passed from other methods. Ignored.
 #' @return The function returns `x` invisibly.
 #' @seealso [utf8_format()].
 #' @examples

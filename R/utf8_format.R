@@ -21,6 +21,7 @@
 #' `utf8_format()` formats a character object for printing, optionally
 #' truncating long character strings.
 #'
+#' @inheritParams rlang::args_dots_empty
 #' @param x character object.
 #' @param trim logical scalar indicating whether to suppress padding spaces
 #'   around elements.
@@ -47,7 +48,6 @@
 #' @param utf8 logical scalar indicating whether to format for a UTF-8 capable
 #'   display (ASCII-only otherwise), or `NULL` to format for output
 #'   capabilities as determined by `output_utf8()`.
-#' @param ... further arguments passed from other methods. Ignored.
 #' @return A character object with the same attributes as `x` but with
 #'   `Encoding` set to `"UTF-8"` for elements that can be converted to
 #'   valid UTF-8 and `"bytes"` for others.

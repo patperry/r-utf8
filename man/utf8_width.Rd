@@ -4,10 +4,12 @@
 \alias{utf8_width}
 \title{Measure the Character String Width}
 \usage{
-utf8_width(x, encode = TRUE, quote = FALSE, utf8 = NULL)
+utf8_width(x, ..., encode = TRUE, quote = FALSE, utf8 = NULL)
 }
 \arguments{
 \item{x}{character object.}
+
+\item{...}{These dots are for future extensions and must be empty.}
 
 \item{encode}{whether to encode the object before measuring its width.}
 

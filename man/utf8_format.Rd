@@ -21,7 +21,7 @@ utf8_format(
 \arguments{
 \item{x}{character object.}
 
-\item{...}{further arguments passed from other methods. Ignored.}
+\item{...}{These dots are for future extensions and must be empty.}
 
 \item{trim}{logical scalar indicating whether to suppress padding spaces
 around elements.}

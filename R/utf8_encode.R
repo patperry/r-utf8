@@ -27,6 +27,7 @@
 #' `output_utf8()` is `FALSE` the function escapes all non-ASCII
 #' characters and gives the same results on all platforms.
 #'
+#' @inheritParams rlang::args_dots_empty
 #' @param x character object.
 #' @param width integer giving the minimum field width; specify `NULL` or
 #'   `NA` for no minimum.
@@ -57,8 +58,18 @@
 #' cat(utf8_encode("hello\nstyled\\world", escapes = "1"), "\n")
 #'
 #' @export utf8_encode
-utf8_encode <- function(x, width = 0L, quote = FALSE, justify = "left",
-                        escapes = NULL, display = FALSE, utf8 = NULL) {
+utf8_encode <- function(
+  x,
+  ...,
+  width = 0L,
+  quote = FALSE,
+  justify = "left",
+  escapes = NULL,
+  display = FALSE,
+  utf8 = NULL
+) {
+  stopifnot(...length() == 0)
+
   if (is.null(x)) {
     return(NULL)
   }

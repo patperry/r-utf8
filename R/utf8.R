@@ -87,6 +87,7 @@ utf8_valid <- function(x) {
 #' `utf8_encode()`); otherwise, the function returns the widths of the
 #' original elements.
 #'
+#' @inheritParams rlang::args_dots_empty
 #' @param x character object.
 #' @param encode whether to encode the object before measuring its width.
 #' @param quote whether to quote the object before measuring its width.
@@ -109,12 +110,21 @@ utf8_valid <- function(x) {
 #' utf8_width('"', quote = TRUE)
 #'
 #' @export utf8_width
-utf8_width <- function(x, encode = TRUE, quote = FALSE, utf8 = NULL) {
+utf8_width <- function(
+  x,
+  ...,
+  encode = TRUE,
+  quote = FALSE,
+  utf8 = NULL
+) {
+  stopifnot(...length() == 0)
+
   with_rethrow({
     encode <- as_option("encode", encode)
     quote <- as_option("quote", quote)
     utf8 <- as_output_utf8("utf8", utf8)
   })
+
   .Call(rutf8_utf8_width, x, encode, quote, utf8)
 }
 
@@ -130,6 +140,7 @@ utf8_width <- function(x, encode = TRUE, quote = FALSE, utf8 = NULL) {
 #' by the `map_case`, `map_compat`, `map_quote`, and
 #' `remove_ignorable` arguments.
 #'
+#' @inheritParams rlang::args_dots_empty
 #' @param x character object.
 #' @param map_case a logical value indicating whether to apply Unicode case
 #'   mapping to the text. For most languages, this transformation changes
@@ -150,8 +161,16 @@ utf8_width <- function(x, encode = TRUE, quote = FALSE, utf8 = NULL) {
 #' utf8_normalize(angstrom) == "\u00c5"
 #'
 #' @export utf8_normalize
-utf8_normalize <- function(x, map_case = FALSE, map_compat = FALSE,
-                           map_quote = FALSE, remove_ignorable = FALSE) {
+utf8_normalize <- function(
+  x,
+  ...,
+  map_case = FALSE,
+  map_compat = FALSE,
+  map_quote = FALSE,
+  remove_ignorable = FALSE
+) {
+  stopifnot(...length() == 0)
+
   with_rethrow({
     x <- as_utf8(x, normalize = FALSE)
     map_case <- as_option("map_case", map_case)
