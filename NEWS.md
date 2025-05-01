@@ -1,5 +1,12 @@
 <!-- NEWS.md is maintained by https://fledge.cynkra.com, contributors should not edit this file -->
 
+# utf8 1.2.4.9003 (2025-05-01)
+
+## Chore
+
+- Add ellipsis before optional args (#74).
+
+
 # utf8 1.2.4.9002 (2025-05-01)
 
 ## Documentation
