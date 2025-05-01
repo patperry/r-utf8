@@ -23,7 +23,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">utf8</a>
-        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.2.4.9900</span>
+        <span class="version label label-danger" data-toggle="tooltip" data-placement="bottom" title="In-development version">1.2.4.9003</span>
       </span>
     </div>
 
@@ -53,39 +53,78 @@
   <div class="col-md-9 contents">
     <div class="page-header">
       <h1 data-toc-skip>Changelog <small></small></h1>
-      <small>Source: <a href="https://github.com/patperry/r-utf8/blob/cran-1.2.4.9900/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
+      <small>Source: <a href="https://github.com/patperry/r-utf8/blob/main/NEWS.md" class="external-link"><code>NEWS.md</code></a></small>
     </div>
 
     <div class="section level2">
-<h2 class="page-header" data-toc-text="1.2.4.9900" id="utf8-1249900-2025-05-01">utf8 1.2.4.9900 (2025-05-01)<a class="anchor" aria-label="anchor" href="#utf8-1249900-2025-05-01"></a></h2>
+<h2 class="page-header" data-toc-text="1.2.4.9003" id="utf8-1249003-2025-05-01">utf8 1.2.4.9003 (2025-05-01)<a class="anchor" aria-label="anchor" href="#utf8-1249003-2025-05-01"></a></h2>
 <div class="section level3">
-<h3 id="features-1-2-4-9900">Features<a class="anchor" aria-label="anchor" href="#features-1-2-4-9900"></a></h3>
+<h3 id="chore-1-2-4-9003">Chore<a class="anchor" aria-label="anchor" href="#chore-1-2-4-9003"></a></h3>
+<ul><li>Add ellipsis before optional args (<a href="https://github.com/patperry/r-utf8/issues/74" class="external-link">#74</a>).</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.2.4.9002" id="utf8-1249002-2025-05-01">utf8 1.2.4.9002 (2025-05-01)<a class="anchor" aria-label="anchor" href="#utf8-1249002-2025-05-01"></a></h2>
+<div class="section level3">
+<h3 id="documentation-1-2-4-9002">Documentation<a class="anchor" aria-label="anchor" href="#documentation-1-2-4-9002"></a></h3>
+<ul><li>Formatting.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.2.4.9001" id="utf8-1249001-2025-04-30">utf8 1.2.4.9001 (2025-04-30)<a class="anchor" aria-label="anchor" href="#utf8-1249001-2025-04-30"></a></h2>
+<div class="section level3">
+<h3 id="features-1-2-4-9001">Features<a class="anchor" aria-label="anchor" href="#features-1-2-4-9001"></a></h3>
 <ul><li>Strict argument checking for <code><a href="../reference/utf8_format.html">utf8_format()</a></code> and <code><a href="../reference/utf8_print.html">utf8_print()</a></code>, no extra arguments allowed.</li>
 </ul></div>
 <div class="section level3">
-<h3 id="chore-1-2-4-9900">Chore<a class="anchor" aria-label="anchor" href="#chore-1-2-4-9900"></a></h3>
-<ul><li><p>Add ellipsis before optional args (<a href="https://github.com/patperry/r-utf8/issues/74" class="external-link">#74</a>).</p></li>
-<li><p>Show NEWS on CRAN page (<a href="https://github.com/patperry/r-utf8/issues/42" class="external-link">#42</a>, <a href="https://github.com/patperry/r-utf8/issues/71" class="external-link">#71</a>).</p></li>
+<h3 id="chore-1-2-4-9001">Chore<a class="anchor" aria-label="anchor" href="#chore-1-2-4-9001"></a></h3>
+<ul><li><p>Show NEWS on CRAN page (<a href="https://github.com/patperry/r-utf8/issues/42" class="external-link">#42</a>, <a href="https://github.com/patperry/r-utf8/issues/71" class="external-link">#71</a>).</p></li>
 <li>
 <p>Auto-update from GitHub Actions.</p>
 <p>Run: <a href="https://github.com/patperry/r-utf8/actions/runs/14756861029" class="external-link uri">https://github.com/patperry/r-utf8/actions/runs/14756861029</a></p>
 </li>
 <li><p>Match indent style.</p></li>
 <li><p>Use roxygen2 with Markdown.</p></li>
-<li><p>Replace <code>[v]sprintf()</code> with <code>[v]snprintf()</code> (<a href="https://github.com/patperry/r-utf8/issues/67" class="external-link">#67</a>).</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="continuous-integration-1-2-4-9001">Continuous integration<a class="anchor" aria-label="anchor" href="#continuous-integration-1-2-4-9001"></a></h3>
+<ul><li><p>Build-ignore.</p></li>
+<li><p>Build-ignore.</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="documentation-1-2-4-9001">Documentation<a class="anchor" aria-label="anchor" href="#documentation-1-2-4-9001"></a></h3>
+<ul><li>Reference index.</li>
+</ul></div>
+<div class="section level3">
+<h3 id="performance-1-2-4-9001">Performance<a class="anchor" aria-label="anchor" href="#performance-1-2-4-9001"></a></h3>
+<ul><li>Check interrupt every 1024 calls, avoids a division in tight loops.</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.2.4.9000" id="utf8-1249000-2025-04-30">utf8 1.2.4.9000 (2025-04-30)<a class="anchor" aria-label="anchor" href="#utf8-1249000-2025-04-30"></a></h2>
+<div class="section level3">
+<h3 id="chore-1-2-4-9000">Chore<a class="anchor" aria-label="anchor" href="#chore-1-2-4-9000"></a></h3>
+<ul><li><p>Replace <code>[v]sprintf()</code> with <code>[v]snprintf()</code> (<a href="https://github.com/patperry/r-utf8/issues/67" class="external-link">#67</a>).</p></li>
+<li><p>Add direct include for snprintf (<a href="https://github.com/MichaelChirico" class="external-link">@MichaelChirico</a>, <a href="https://github.com/patperry/r-utf8/issues/43" class="external-link">#43</a>).</p></li>
+</ul></div>
+<div class="section level3">
+<h3 id="documentation-1-2-4-9000">Documentation<a class="anchor" aria-label="anchor" href="#documentation-1-2-4-9000"></a></h3>
+<ul><li>Use roxygen2 (<a href="https://github.com/patperry/r-utf8/issues/68" class="external-link">#68</a>, <a href="https://github.com/patperry/r-utf8/issues/69" class="external-link">#69</a>).</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.2.3.9022" id="utf8-1239022-2025-04-30">utf8 1.2.3.9022 (2025-04-30)<a class="anchor" aria-label="anchor" href="#utf8-1239022-2025-04-30"></a></h2>
+<div class="section level3">
+<h3 id="chore-1-2-3-9022">Chore<a class="anchor" aria-label="anchor" href="#chore-1-2-3-9022"></a></h3>
+<ul><li><p>Add direct include for snprintf (<a href="https://github.com/MichaelChirico" class="external-link">@MichaelChirico</a>, <a href="https://github.com/patperry/r-utf8/issues/43" class="external-link">#43</a>).</p></li>
 <li>
-<p>Add direct include for snprintf (<a href="https://github.com/MichaelChirico" class="external-link">@MichaelChirico</a>, <a href="https://github.com/patperry/r-utf8/issues/43" class="external-link">#43</a>).</p>
+<p>Auto-update from GitHub Actions.</p>
 <p>Run: <a href="https://github.com/patperry/r-utf8/actions/runs/14636196819" class="external-link uri">https://github.com/patperry/r-utf8/actions/runs/14636196819</a></p>
-<p>Run: <a href="https://github.com/patperry/r-utf8/actions/runs/10425486174" class="external-link uri">https://github.com/patperry/r-utf8/actions/runs/10425486174</a></p>
-<p>Run: <a href="https://github.com/patperry/r-utf8/actions/runs/10200110873" class="external-link uri">https://github.com/patperry/r-utf8/actions/runs/10200110873</a></p>
-<p>Run: <a href="https://github.com/patperry/r-utf8/actions/runs/9727975031" class="external-link uri">https://github.com/patperry/r-utf8/actions/runs/9727975031</a></p>
-<p>Run: <a href="https://github.com/patperry/r-utf8/actions/runs/9691616880" class="external-link uri">https://github.com/patperry/r-utf8/actions/runs/9691616880</a></p>
 </li>
 </ul></div>
 <div class="section level3">
-<h3 id="continuous-integration-1-2-4-9900">Continuous integration<a class="anchor" aria-label="anchor" href="#continuous-integration-1-2-4-9900"></a></h3>
-<ul><li><p>Build-ignore.</p></li>
-<li><p>Permissions, better tests for missing suggests, lints (<a href="https://github.com/patperry/r-utf8/issues/66" class="external-link">#66</a>).</p></li>
+<h3 id="continuous-integration-1-2-3-9022">Continuous integration<a class="anchor" aria-label="anchor" href="#continuous-integration-1-2-3-9022"></a></h3>
+<ul><li><p>Permissions, better tests for missing suggests, lints (<a href="https://github.com/patperry/r-utf8/issues/66" class="external-link">#66</a>).</p></li>
 <li><p>Only fail covr builds if token is given (<a href="https://github.com/patperry/r-utf8/issues/65" class="external-link">#65</a>).</p></li>
 <li><p>Always use <code>_R_CHECK_FORCE_SUGGESTS_=false</code> (<a href="https://github.com/patperry/r-utf8/issues/64" class="external-link">#64</a>).</p></li>
 <li><p>Correct installation of xml2 (<a href="https://github.com/patperry/r-utf8/issues/63" class="external-link">#63</a>).</p></li>
@@ -93,32 +132,130 @@
 <li><p>Add xml2 for covr, print testthat results (<a href="https://github.com/patperry/r-utf8/issues/61" class="external-link">#61</a>).</p></li>
 <li><p>Fix (<a href="https://github.com/patperry/r-utf8/issues/60" class="external-link">#60</a>).</p></li>
 <li><p>Sync (<a href="https://github.com/patperry/r-utf8/issues/59" class="external-link">#59</a>).</p></li>
-<li><p>Avoid failure in fledge workflow if no changes (<a href="https://github.com/patperry/r-utf8/issues/58" class="external-link">#58</a>).</p></li>
-<li><p>Fetch tags for fledge workflow to avoid unnecessary NEWS entries (<a href="https://github.com/patperry/r-utf8/issues/57" class="external-link">#57</a>).</p></li>
-<li><p>Use larger retry count for lock-threads workflow (<a href="https://github.com/patperry/r-utf8/issues/56" class="external-link">#56</a>).</p></li>
-<li><p>Ignore errors when removing pkg-config on macOS (<a href="https://github.com/patperry/r-utf8/issues/55" class="external-link">#55</a>).</p></li>
-<li><p>Explicit permissions (<a href="https://github.com/patperry/r-utf8/issues/54" class="external-link">#54</a>).</p></li>
-<li><p>Use styler from main branch (<a href="https://github.com/patperry/r-utf8/issues/53" class="external-link">#53</a>).</p></li>
-<li><p>Need to install R on Ubuntu 24.04 (<a href="https://github.com/patperry/r-utf8/issues/52" class="external-link">#52</a>).</p></li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.2.3.9021" id="utf8-1239021-2024-12-09">utf8 1.2.3.9021 (2024-12-09)<a class="anchor" aria-label="anchor" href="#utf8-1239021-2024-12-09"></a></h2>
+<div class="section level3">
+<h3 id="continuous-integration-1-2-3-9021">Continuous integration<a class="anchor" aria-label="anchor" href="#continuous-integration-1-2-3-9021"></a></h3>
+<ul><li>Avoid failure in fledge workflow if no changes (<a href="https://github.com/patperry/r-utf8/issues/58" class="external-link">#58</a>).</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.2.3.9020" id="utf8-1239020-2024-12-08">utf8 1.2.3.9020 (2024-12-08)<a class="anchor" aria-label="anchor" href="#utf8-1239020-2024-12-08"></a></h2>
+<div class="section level3">
+<h3 id="continuous-integration-1-2-3-9020">Continuous integration<a class="anchor" aria-label="anchor" href="#continuous-integration-1-2-3-9020"></a></h3>
+<ul><li>Fetch tags for fledge workflow to avoid unnecessary NEWS entries (<a href="https://github.com/patperry/r-utf8/issues/57" class="external-link">#57</a>).</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.2.3.9019" id="utf8-1239019-2024-12-07">utf8 1.2.3.9019 (2024-12-07)<a class="anchor" aria-label="anchor" href="#utf8-1239019-2024-12-07"></a></h2>
+<div class="section level3">
+<h3 id="continuous-integration-1-2-3-9019">Continuous integration<a class="anchor" aria-label="anchor" href="#continuous-integration-1-2-3-9019"></a></h3>
+<ul><li>Use larger retry count for lock-threads workflow (<a href="https://github.com/patperry/r-utf8/issues/56" class="external-link">#56</a>).</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.2.3.9018" id="utf8-1239018-2024-11-28">utf8 1.2.3.9018 (2024-11-28)<a class="anchor" aria-label="anchor" href="#utf8-1239018-2024-11-28"></a></h2>
+<div class="section level3">
+<h3 id="continuous-integration-1-2-3-9018">Continuous integration<a class="anchor" aria-label="anchor" href="#continuous-integration-1-2-3-9018"></a></h3>
+<ul><li>Ignore errors when removing pkg-config on macOS (<a href="https://github.com/patperry/r-utf8/issues/55" class="external-link">#55</a>).</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.2.3.9017" id="utf8-1239017-2024-11-27">utf8 1.2.3.9017 (2024-11-27)<a class="anchor" aria-label="anchor" href="#utf8-1239017-2024-11-27"></a></h2>
+<div class="section level3">
+<h3 id="continuous-integration-1-2-3-9017">Continuous integration<a class="anchor" aria-label="anchor" href="#continuous-integration-1-2-3-9017"></a></h3>
+<ul><li>Explicit permissions (<a href="https://github.com/patperry/r-utf8/issues/54" class="external-link">#54</a>).</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.2.3.9016" id="utf8-1239016-2024-11-26">utf8 1.2.3.9016 (2024-11-26)<a class="anchor" aria-label="anchor" href="#utf8-1239016-2024-11-26"></a></h2>
+<div class="section level3">
+<h3 id="continuous-integration-1-2-3-9016">Continuous integration<a class="anchor" aria-label="anchor" href="#continuous-integration-1-2-3-9016"></a></h3>
+<ul><li>Use styler from main branch (<a href="https://github.com/patperry/r-utf8/issues/53" class="external-link">#53</a>).</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.2.3.9015" id="utf8-1239015-2024-11-25">utf8 1.2.3.9015 (2024-11-25)<a class="anchor" aria-label="anchor" href="#utf8-1239015-2024-11-25"></a></h2>
+<div class="section level3">
+<h3 id="continuous-integration-1-2-3-9015">Continuous integration<a class="anchor" aria-label="anchor" href="#continuous-integration-1-2-3-9015"></a></h3>
+<ul><li><p>Need to install R on Ubuntu 24.04 (<a href="https://github.com/patperry/r-utf8/issues/52" class="external-link">#52</a>).</p></li>
 <li><p>Use Ubuntu 24.04 and styler PR (<a href="https://github.com/patperry/r-utf8/issues/50" class="external-link">#50</a>).</p></li>
-<li><p>Correctly detect branch protection (<a href="https://github.com/patperry/r-utf8/issues/49" class="external-link">#49</a>).</p></li>
-<li><p>Use stable pak (<a href="https://github.com/patperry/r-utf8/issues/48" class="external-link">#48</a>).</p></li>
-<li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.2.3.9014" id="utf8-1239014-2024-11-22">utf8 1.2.3.9014 (2024-11-22)<a class="anchor" aria-label="anchor" href="#utf8-1239014-2024-11-22"></a></h2>
+<div class="section level3">
+<h3 id="continuous-integration-1-2-3-9014">Continuous integration<a class="anchor" aria-label="anchor" href="#continuous-integration-1-2-3-9014"></a></h3>
+<ul><li>Correctly detect branch protection (<a href="https://github.com/patperry/r-utf8/issues/49" class="external-link">#49</a>).</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.2.3.9013" id="utf8-1239013-2024-11-18">utf8 1.2.3.9013 (2024-11-18)<a class="anchor" aria-label="anchor" href="#utf8-1239013-2024-11-18"></a></h2>
+<div class="section level3">
+<h3 id="continuous-integration-1-2-3-9013">Continuous integration<a class="anchor" aria-label="anchor" href="#continuous-integration-1-2-3-9013"></a></h3>
+<ul><li>Use stable pak (<a href="https://github.com/patperry/r-utf8/issues/48" class="external-link">#48</a>).</li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.2.3.9012" id="utf8-1239012-2024-11-11">utf8 1.2.3.9012 (2024-11-11)<a class="anchor" aria-label="anchor" href="#utf8-1239012-2024-11-11"></a></h2>
+<div class="section level3">
+<h3 id="continuous-integration-1-2-3-9012">Continuous integration<a class="anchor" aria-label="anchor" href="#continuous-integration-1-2-3-9012"></a></h3>
+<ul><li>
 <p>Trigger run (<a href="https://github.com/patperry/r-utf8/issues/47" class="external-link">#47</a>).</p>
 <ul><li><p>ci: Trigger run</p></li>
 <li><p>ci: Latest changes</p></li>
 </ul></li>
-<li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.2.3.9011" id="utf8-1239011-2024-10-28">utf8 1.2.3.9011 (2024-10-28)<a class="anchor" aria-label="anchor" href="#utf8-1239011-2024-10-28"></a></h2>
+<div class="section level3">
+<h3 id="continuous-integration-1-2-3-9011">Continuous integration<a class="anchor" aria-label="anchor" href="#continuous-integration-1-2-3-9011"></a></h3>
+<ul><li>
 <p>Use pkgdown branch (<a href="https://github.com/patperry/r-utf8/issues/46" class="external-link">#46</a>).</p>
 <ul><li><p>ci: Use pkgdown branch</p></li>
 <li><p>ci: Updates from duckdb</p></li>
+<li><p>ci: Trigger run</p></li>
 </ul></li>
-<li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.2.3.9010" id="utf8-1239010-2024-09-15">utf8 1.2.3.9010 (2024-09-15)<a class="anchor" aria-label="anchor" href="#utf8-1239010-2024-09-15"></a></h2>
+<div class="section level3">
+<h3 id="continuous-integration-1-2-3-9010">Continuous integration<a class="anchor" aria-label="anchor" href="#continuous-integration-1-2-3-9010"></a></h3>
+<ul><li>
 <p>Install via R CMD INSTALL ., not pak (<a href="https://github.com/patperry/r-utf8/issues/44" class="external-link">#44</a>).</p>
 <ul><li><p>ci: Install via R CMD INSTALL ., not pak</p></li>
 <li><p>ci: Bump version of upload-artifact action</p></li>
 </ul></li>
-<li><p>Install local package for pkgdown builds.</p></li>
+</ul></div>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.2.3.9009" id="utf8-1239009-2024-08-31">utf8 1.2.3.9009 (2024-08-31)<a class="anchor" aria-label="anchor" href="#utf8-1239009-2024-08-31"></a></h2>
+<div class="section level3">
+<h3 id="chore-1-2-3-9009">Chore<a class="anchor" aria-label="anchor" href="#chore-1-2-3-9009"></a></h3>
+<ul><li>
+<p>Auto-update from GitHub Actions.</p>
+<p>Run: <a href="https://github.com/patperry/r-utf8/actions/runs/10425486174" class="external-link uri">https://github.com/patperry/r-utf8/actions/runs/10425486174</a></p>
+</li>
+<li>
+<p>Auto-update from GitHub Actions.</p>
+<p>Run: <a href="https://github.com/patperry/r-utf8/actions/runs/10200110873" class="external-link uri">https://github.com/patperry/r-utf8/actions/runs/10200110873</a></p>
+</li>
+<li>
+<p>Auto-update from GitHub Actions.</p>
+<p>Run: <a href="https://github.com/patperry/r-utf8/actions/runs/9727975031" class="external-link uri">https://github.com/patperry/r-utf8/actions/runs/9727975031</a></p>
+</li>
+<li>
+<p>Auto-update from GitHub Actions.</p>
+<p>Run: <a href="https://github.com/patperry/r-utf8/actions/runs/9691616880" class="external-link uri">https://github.com/patperry/r-utf8/actions/runs/9691616880</a></p>
+</li>
+</ul></div>
+<div class="section level3">
+<h3 id="continuous-integration-1-2-3-9009">Continuous integration<a class="anchor" aria-label="anchor" href="#continuous-integration-1-2-3-9009"></a></h3>
+<ul><li><p>Install local package for pkgdown builds.</p></li>
 <li><p>Improve support for protected branches with fledge.</p></li>
 <li><p>Improve support for protected branches, without fledge.</p></li>
 <li><p>Sync with latest developments.</p></li>
@@ -131,21 +268,15 @@
 <li><p>Bump versions, better default, consume custom matrix.</p></li>
 <li><p>Recent updates.</p></li>
 </ul></div>
-<div class="section level3">
-<h3 id="documentation-1-2-4-9900">Documentation<a class="anchor" aria-label="anchor" href="#documentation-1-2-4-9900"></a></h3>
-<ul><li><p>Formatting.</p></li>
-<li><p>Reference index.</p></li>
-<li><p>Use roxygen2 (<a href="https://github.com/patperry/r-utf8/issues/68" class="external-link">#68</a>, <a href="https://github.com/patperry/r-utf8/issues/69" class="external-link">#69</a>).</p></li>
-</ul></div>
-<div class="section level3">
-<h3 id="performance-1-2-4-9900">Performance<a class="anchor" aria-label="anchor" href="#performance-1-2-4-9900"></a></h3>
-<ul><li>Check interrupt every 1024 calls, avoids a division in tight loops.</li>
-</ul></div>
-<div class="section level3">
-<h3 id="uncategorized-1-2-4-9900">Uncategorized<a class="anchor" aria-label="anchor" href="#uncategorized-1-2-4-9900"></a></h3>
+</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.2.3.9008" id="utf8-1239008-2024-01-24">utf8 1.2.3.9008 (2024-01-24)<a class="anchor" aria-label="anchor" href="#utf8-1239008-2024-01-24"></a></h2>
 <ul><li>Internal changes only.</li>
 </ul></div>
-</div>
+    <div class="section level2">
+<h2 class="page-header" data-toc-text="1.2.3.9007" id="utf8-1239007-2024-01-15">utf8 1.2.3.9007 (2024-01-15)<a class="anchor" aria-label="anchor" href="#utf8-1239007-2024-01-15"></a></h2>
+<ul><li>Internal changes only.</li>
+</ul></div>
     <div class="section level2">
 <h2 class="page-header" data-toc-text="1.2.4" id="utf8-124-2023-10-16">utf8 1.2.4 (2023-10-16)<small>2023-10-22</small><a class="anchor" aria-label="anchor" href="#utf8-124-2023-10-16"></a></h2>
 <ul><li>Fix compatibility with macOS 14 (<a href="https://github.com/patperry/r-utf8/issues/39" class="external-link">#39</a>).</li>
