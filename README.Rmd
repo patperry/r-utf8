@@ -24,8 +24,7 @@ utf8
 <!-- badges: end -->
 
 
-*utf8* is an R package for manipulating and printing UTF-8 text that fixes
-[multiple][windows-enc2utf8] [bugs][emoji-print] in R's UTF-8 handling.
+*utf8* is an R package for manipulating and printing UTF-8 text that fixes multiple bugs in R's UTF-8 handling.
 
 
 Installation
@@ -142,6 +141,4 @@ and if you choose to contribute, you must adhere to its terms.
 [cran]: https://cran.r-project.org/package=utf8 "CRAN Page"
 [cran-badge]: https://www.r-pkg.org/badges/version/utf8 "CRAN Page"
 [cranlogs-badge]: https://cranlogs.r-pkg.org/badges/utf8 "CRAN Downloads"
-[emoji-print]: https://twitter.com/ptrckprry/status/887732831161425920 "MacOS Emoji Printing"
 [issues]: https://github.com/patperry/r-utf8/issues "Issues"
-[windows-enc2utf8]: https://twitter.com/ptrckprry/status/901494853758054401 "Windows enc2utf8 Bug"
