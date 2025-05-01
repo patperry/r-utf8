@@ -1,20 +1,6 @@
 <!-- NEWS.md is maintained by https://fledge.cynkra.com, contributors should not edit this file -->
 
-# utf8 1.2.4.9003 (2025-05-01)
-
-## Chore
-
-- Add ellipsis before optional args (#74).
-
-
-# utf8 1.2.4.9002 (2025-05-01)
-
-## Documentation
-
-- Formatting.
-
-
-# utf8 1.2.4.9001 (2025-04-30)
+# utf8 1.2.4.9900 (2025-05-01)
 
 ## Features
 
@@ -22,228 +8,23 @@
 
 ## Chore
 
-- Show NEWS on CRAN page (#42, #71).
+- Replace `[v]sprintf()` with `[v]snprintf()` (#67).
 
-- Auto-update from GitHub Actions.
+- Add direct include for `snprintf()` (@MichaelChirico, #43).
 
-  Run: https://github.com/patperry/r-utf8/actions/runs/14756861029
-
-- Match indent style.
-
-- Use roxygen2 with Markdown.
-
-## Continuous integration
-
-- Build-ignore.
-
-- Build-ignore.
+- Add ellipsis before optional args (#74).
 
 ## Documentation
 
-- Reference index.
+- Show NEWS on CRAN page (#42, #71).
+
+- Add pkgdown reference index.
+
+- Use roxygen2 (#68, #69) with Markdown.
 
 ## Performance
 
 - Check interrupt every 1024 calls, avoids a division in tight loops.
-
-
-# utf8 1.2.4.9000 (2025-04-30)
-
-## Chore
-
-- Replace `[v]sprintf()` with `[v]snprintf()` (#67).
-
-- Add direct include for snprintf (@MichaelChirico, #43).
-
-## Documentation
-
-- Use roxygen2 (#68, #69).
-
-
-# utf8 1.2.3.9022 (2025-04-30)
-
-## Chore
-
-- Add direct include for snprintf (@MichaelChirico, #43).
-
-- Auto-update from GitHub Actions.
-
-  Run: https://github.com/patperry/r-utf8/actions/runs/14636196819
-
-## Continuous integration
-
-- Permissions, better tests for missing suggests, lints (#66).
-
-- Only fail covr builds if token is given (#65).
-
-- Always use `_R_CHECK_FORCE_SUGGESTS_=false` (#64).
-
-- Correct installation of xml2 (#63).
-
-- Explain (#62).
-
-- Add xml2 for covr, print testthat results (#61).
-
-- Fix (#60).
-
-- Sync (#59).
-
-
-# utf8 1.2.3.9021 (2024-12-09)
-
-## Continuous integration
-
-- Avoid failure in fledge workflow if no changes (#58).
-
-
-# utf8 1.2.3.9020 (2024-12-08)
-
-## Continuous integration
-
-- Fetch tags for fledge workflow to avoid unnecessary NEWS entries (#57).
-
-
-# utf8 1.2.3.9019 (2024-12-07)
-
-## Continuous integration
-
-- Use larger retry count for lock-threads workflow (#56).
-
-
-# utf8 1.2.3.9018 (2024-11-28)
-
-## Continuous integration
-
-- Ignore errors when removing pkg-config on macOS (#55).
-
-
-# utf8 1.2.3.9017 (2024-11-27)
-
-## Continuous integration
-
-- Explicit permissions (#54).
-
-
-# utf8 1.2.3.9016 (2024-11-26)
-
-## Continuous integration
-
-- Use styler from main branch (#53).
-
-
-# utf8 1.2.3.9015 (2024-11-25)
-
-## Continuous integration
-
-- Need to install R on Ubuntu 24.04 (#52).
-
-- Use Ubuntu 24.04 and styler PR (#50).
-
-
-# utf8 1.2.3.9014 (2024-11-22)
-
-## Continuous integration
-
-  - Correctly detect branch protection (#49).
-
-
-# utf8 1.2.3.9013 (2024-11-18)
-
-## Continuous integration
-
-  - Use stable pak (#48).
-
-
-# utf8 1.2.3.9012 (2024-11-11)
-
-## Continuous integration
-
-  - Trigger run (#47).
-    
-      - ci: Trigger run
-    
-      - ci: Latest changes
-
-
-# utf8 1.2.3.9011 (2024-10-28)
-
-## Continuous integration
-
-  - Use pkgdown branch (#46).
-    
-      - ci: Use pkgdown branch
-    
-      - ci: Updates from duckdb
-    
-      - ci: Trigger run
-
-
-# utf8 1.2.3.9010 (2024-09-15)
-
-## Continuous integration
-
-  - Install via R CMD INSTALL ., not pak (#44).
-    
-      - ci: Install via R CMD INSTALL ., not pak
-    
-      - ci: Bump version of upload-artifact action
-
-
-# utf8 1.2.3.9009 (2024-08-31)
-
-## Chore
-
-  - Auto-update from GitHub Actions.
-    
-    Run: https://github.com/patperry/r-utf8/actions/runs/10425486174
-
-  - Auto-update from GitHub Actions.
-    
-    Run: https://github.com/patperry/r-utf8/actions/runs/10200110873
-
-  - Auto-update from GitHub Actions.
-    
-    Run: https://github.com/patperry/r-utf8/actions/runs/9727975031
-
-  - Auto-update from GitHub Actions.
-    
-    Run: https://github.com/patperry/r-utf8/actions/runs/9691616880
-
-## Continuous integration
-
-  - Install local package for pkgdown builds.
-
-  - Improve support for protected branches with fledge.
-
-  - Improve support for protected branches, without fledge.
-
-  - Sync with latest developments.
-
-  - Use v2 instead of master.
-
-  - Inline action.
-
-  - Use dev roxygen2 and decor.
-
-  - Fix on Windows, tweak lock workflow.
-
-  - Avoid checking bashisms on Windows.
-
-  - Better commit message.
-
-  - Bump versions, better default, consume custom matrix.
-
-  - Recent updates.
-
-
-# utf8 1.2.3.9008 (2024-01-24)
-
-- Internal changes only.
-
-
-# utf8 1.2.3.9007 (2024-01-15)
-
-- Internal changes only.
 
 
 # utf8 1.2.4 (2023-10-16)

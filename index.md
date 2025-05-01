@@ -1,49 +1,7 @@
----
-output:
-  github_document:
-    html_preview: false
----
 
 <!-- README.md and index.md are generated from README.Rmd. Please edit that file. -->
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "man/figures/README-",
-  out.width = "100%"
-)
 
-pkgload::load_all()
-
-set.seed(20230702)
-
-clean_output <- function(x, options) {
-  x <- gsub("0x[0-9a-f]+", "0xdeadbeef", x)
-  x <- gsub("dataframe_[0-9]*_[0-9]*", "      dataframe_42_42      ", x)
-  x <- gsub("[0-9]*\\.___row_number ASC", "42.___row_number ASC", x)
-
-  index <- x
-  index <- gsub("─", "-", index)
-  index <- strsplit(paste(index, collapse = "\n"), "\n---\n")[[1]][[2]]
-  writeLines(index, "index.md")
-
-  x <- fansi::strip_sgr(x)
-  x
-}
-
-options(
-  cli.num_colors = 256,
-  cli.width = 80,
-  width = 80,
-  pillar.bold = TRUE
-)
-
-local({
-  hook_source <- knitr::knit_hooks$get("document")
-  knitr::knit_hooks$set(document = clean_output)
-})
-```
 
 
 # utf8
@@ -82,7 +40,8 @@ devtools::install_github("patperry/r-utf8")
 
 ## Usage
 
-```{r}
+
+``` r
 library(utf8)
 ```
 
@@ -91,15 +50,18 @@ library(utf8)
 Use `as_utf8()` to validate input text and convert to UTF-8 encoding. The
 function alerts you if the input text has the wrong declared encoding:
 
-```{r, error = TRUE}
+
+``` r
 # second entry is encoded in latin-1, but declared as UTF-8
 x <- c("fa\u00E7ile", "fa\xE7ile", "fa\xC3\xA7ile")
 Encoding(x) <- c("UTF-8", "UTF-8", "bytes")
 as_utf8(x) # fails
+#> Error in as_utf8(x): entry 2 has wrong Encoding; marked as "UTF-8" but leading byte 0xE7 followed by invalid continuation byte (0xdeadbeef) at position 4
 
 # mark the correct encoding
 Encoding(x[2]) <- "latin1"
 as_utf8(x) # succeeds
+#> [1] "façile" "façile" "façile"
 ```
 
 ### Normalize data
@@ -107,18 +69,23 @@ as_utf8(x) # succeeds
 Use `utf8_normalize()` to convert to Unicode composed normal form (NFC).
 Optionally apply compatibility maps for NFKC normal form or case-fold.
 
-```{r}
+
+``` r
 # three ways to encode an angstrom character
 (angstrom <- c("\u00c5", "\u0041\u030a", "\u212b"))
+#> [1] "Å" "Å" "Å"
 utf8_normalize(angstrom) == "\u00c5"
+#> [1] TRUE TRUE TRUE
 
 # perform full Unicode case-folding
 utf8_normalize("Größe", map_case = TRUE)
+#> [1] "grösse"
 
 # apply compatibility maps to NFKC normal form
 # (example from https://twitter.com/aprilarcus/status/367557195186970624)
 utf8_normalize("𝖸𝗈 𝐔𝐧𝐢𝐜𝐨𝐝𝐞 𝗅 𝗁𝖾𝗋𝖽 𝕌 𝗅𝗂𝗄𝖾 𝑡𝑦𝑝𝑒𝑓𝑎𝑐𝑒𝑠 𝗌𝗈 𝗐𝖾 𝗉𝗎𝗍 𝗌𝗈𝗆𝖾 𝚌𝚘𝚍𝚎𝚙𝚘𝚒𝚗𝚝𝚜 𝗂𝗇 𝗒𝗈𝗎𝗋 𝔖𝔲𝔭𝔭𝔩𝔢𝔪𝔢𝔫𝔱𝔞𝔯𝔶 𝔚𝔲𝔩𝔱𝔦𝔩𝔦𝔫𝔤𝔳𝔞𝔩 𝔓𝔩𝔞𝔫𝔢 𝗌𝗈 𝗒𝗈𝗎 𝖼𝖺𝗇 𝓮𝓷𝓬𝓸𝓭𝓮 𝕗𝕠𝕟𝕥𝕤 𝗂𝗇 𝗒𝗈𝗎𝗋 𝒇𝒐𝒏𝒕𝒔.",
                map_compat = TRUE)
+#> [1] "Yo Unicode l herd U like typefaces so we put some codepoints in your Supplementary Wultilingval Plane so you can encode fonts in your fonts."
 ```
 
 ### Print emoji
@@ -127,12 +94,16 @@ On some platforms (including MacOS), the R implementation of `print()` uses an
 outdated version of the Unicode standard to determine which characters are
 printable. Use `utf8_print()` for an updated print function:
 
-```{r}
-print(intToUtf8(0x1F600 + 0:79)) # with default R print function
 
-utf8_print(intToUtf8(0x1F600 + 0:79)) # with utf8_print, truncates line
+``` r
+print(intToUtf8(0xdeadbeefF600 + 0:79)) # with default R print function
+#> [1] "😀😁😂😃😄😅😆😇😈😉😊😋😌😍😎😏😐😑😒😓😔😕😖😗😘😙😚😛😜😝😞😟😠😡😢😣😤😥😦😧😨😩😪😫😬😭😮😯😰😱😲😳😴😵😶😷😸😹😺😻😼😽😾😿🙀🙁🙂🙃🙄🙅🙆🙇🙈🙉🙊🙋🙌🙍🙎🙏"
 
-utf8_print(intToUtf8(0x1F600 + 0:79), chars = 1000) # higher character limit
+utf8_print(intToUtf8(0xdeadbeefF600 + 0:79)) # with utf8_print, truncates line
+#> [1] "😀​😁​😂​😃​😄​😅​😆​😇​😈​😉​😊​😋​😌​😍​😎​😏​😐​😑​😒​😓​😔​😕​😖​😗​😘​😙​😚​😛​😜​😝​😞​😟​😠​😡​😢​😣​…"
+
+utf8_print(intToUtf8(0xdeadbeefF600 + 0:79), chars = 1000) # higher character limit
+#> [1] "😀​😁​😂​😃​😄​😅​😆​😇​😈​😉​😊​😋​😌​😍​😎​😏​😐​😑​😒​😓​😔​😕​😖​😗​😘​😙​😚​😛​😜​😝​😞​😟​😠​😡​😢​😣​😤​😥​😦​😧​😨​😩​😪​😫​😬​😭​😮​😯​😰​😱​😲​😳​😴​😵​😶​😷​😸​😹​😺​😻​😼​😽​😾​😿​🙀​🙁​🙂​🙃​🙄​🙅​🙆​🙇​🙈​🙉​🙊​🙋​🙌​🙍​🙎​🙏​"
 ```
 
 
@@ -140,8 +111,14 @@ utf8_print(intToUtf8(0x1F600 + 0:79), chars = 1000) # higher character limit
 
 Cite *utf8* with the following BibTeX entry:
 
-```{r echo = FALSE, comment = NA}
-print(suppressWarnings(citation("utf8")), "Bibtex")
+
+```
+@Manual{,
+  title = {utf8: Unicode Text Processing},
+  author = {Patrick O. Perry},
+  note = {R package version 1.2.4.9900, https://github.com/patperry/r-utf8},
+  url = {https://ptrckprry.com/r-utf8/},
+}
 ```
 
 
