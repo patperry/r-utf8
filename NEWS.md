@@ -8,129 +8,23 @@
 
 ## Chore
 
-- Add ellipsis before optional args (#74).
-
-- Show NEWS on CRAN page (#42, #71).
-
-- Auto-update from GitHub Actions.
-
-  Run: https://github.com/patperry/r-utf8/actions/runs/14756861029
-
-- Match indent style.
-
-- Use roxygen2 with Markdown.
-
 - Replace `[v]sprintf()` with `[v]snprintf()` (#67).
 
-- Add direct include for snprintf (@MichaelChirico, #43).
+- Add direct include for `snprintf()` (@MichaelChirico, #43).
 
-  Run: https://github.com/patperry/r-utf8/actions/runs/14636196819
-
-  Run: https://github.com/patperry/r-utf8/actions/runs/10425486174
-
-  Run: https://github.com/patperry/r-utf8/actions/runs/10200110873
-
-  Run: https://github.com/patperry/r-utf8/actions/runs/9727975031
-
-  Run: https://github.com/patperry/r-utf8/actions/runs/9691616880
-
-## Continuous integration
-
-- Build-ignore.
-
-- Permissions, better tests for missing suggests, lints (#66).
-
-- Only fail covr builds if token is given (#65).
-
-- Always use `_R_CHECK_FORCE_SUGGESTS_=false` (#64).
-
-- Correct installation of xml2 (#63).
-
-- Explain (#62).
-
-- Add xml2 for covr, print testthat results (#61).
-
-- Fix (#60).
-
-- Sync (#59).
-
-- Avoid failure in fledge workflow if no changes (#58).
-
-- Fetch tags for fledge workflow to avoid unnecessary NEWS entries (#57).
-
-- Use larger retry count for lock-threads workflow (#56).
-
-- Ignore errors when removing pkg-config on macOS (#55).
-
-- Explicit permissions (#54).
-
-- Use styler from main branch (#53).
-
-- Need to install R on Ubuntu 24.04 (#52).
-
-- Use Ubuntu 24.04 and styler PR (#50).
-
-- Correctly detect branch protection (#49).
-
-- Use stable pak (#48).
-
-- Trigger run (#47).
-
-  - ci: Trigger run
-
-  - ci: Latest changes
-
-- Use pkgdown branch (#46).
-
-  - ci: Use pkgdown branch
-
-  - ci: Updates from duckdb
-
-- Install via R CMD INSTALL ., not pak (#44).
-
-  - ci: Install via R CMD INSTALL ., not pak
-
-  - ci: Bump version of upload-artifact action
-
-- Install local package for pkgdown builds.
-
-- Improve support for protected branches with fledge.
-
-- Improve support for protected branches, without fledge.
-
-- Sync with latest developments.
-
-- Use v2 instead of master.
-
-- Inline action.
-
-- Use dev roxygen2 and decor.
-
-- Fix on Windows, tweak lock workflow.
-
-- Avoid checking bashisms on Windows.
-
-- Better commit message.
-
-- Bump versions, better default, consume custom matrix.
-
-- Recent updates.
+- Add ellipsis before optional args (#74).
 
 ## Documentation
 
-- Formatting.
+- Show NEWS on CRAN page (#42, #71).
 
-- Reference index.
+- Add pkgdown reference index.
 
-- Use roxygen2 (#68, #69).
+- Use roxygen2 (#68, #69) with Markdown.
 
 ## Performance
 
 - Check interrupt every 1024 calls, avoids a division in tight loops.
-
-## Uncategorized
-
-- Internal changes only.
 
 
 # utf8 1.2.4 (2023-10-16)
