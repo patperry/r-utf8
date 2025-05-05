@@ -41,8 +41,8 @@ For a complete list of functions, use \code{library(help = "utf8")}.
 Useful links:
 \itemize{
   \item \url{https://ptrckprry.com/r-utf8/}
-  \item \url{https://github.com/patperry/r-utf8}
-  \item Report bugs at \url{https://github.com/patperry/r-utf8/issues}
+  \item \url{https://github.com/krlmlr/r-utf8}
+  \item Report bugs at \url{https://github.com/krlmlr/r-utf8/issues}
 }
 
 }

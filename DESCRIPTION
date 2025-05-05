@@ -16,8 +16,8 @@ Description: Process and print 'UTF-8' encoded international
     text (Unicode). Input, validate, normalize, encode, format, and
     display.
 License: Apache License (== 2.0) | file LICENSE
-URL: https://ptrckprry.com/r-utf8/, https://github.com/patperry/r-utf8
-BugReports: https://github.com/patperry/r-utf8/issues
+URL: https://ptrckprry.com/r-utf8/, https://github.com/krlmlr/r-utf8
+BugReports: https://github.com/krlmlr/r-utf8/issues
 Depends: 
     R (>= 2.10)
 Suggests:
