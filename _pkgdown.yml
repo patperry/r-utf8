@@ -1,4 +1,7 @@
+url: https://krlmlr.github.io/r-utf8/
+
 template:
+  bootstrap: 5
   params:
     ganalytics: UA-4636081-3
 
